@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Converters\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RM.BLL.Abstractions\RM.BLL.Abstractions.csproj" />
+    <ProjectReference Include="..\RM.DAL.Abstractions\RM.DAL.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
