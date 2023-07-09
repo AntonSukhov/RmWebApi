@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
-using RM.DAL.Converters;
 using RM.DAL.DbContexts;
+using RM.DAL.Extensions;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RM.DAL.Repositories
@@ -39,10 +38,10 @@ namespace RM.DAL.Repositories
         #region Методы
 
         ///<inheritdoc/>
-        public async Task<IEnumerable<WorkUnitModel>> GetWorkUnits()
+        public async Task<IEnumerable<WorkUnitModel>> GetAll()
         {
             return await _contractGpdDbContext.WorkUnits.AsNoTracking()
-                                                        .Select(p => p.ConvertEntityToModel())
+                                                        .MapWorkUnitEntityToModel()
                                                         .ToListAsync();
         }
 

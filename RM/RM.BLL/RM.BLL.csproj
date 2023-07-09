@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Converters\" />
-    <Folder Include="Services\" />
+	 <Folder Include="Converters\" />
+	 <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

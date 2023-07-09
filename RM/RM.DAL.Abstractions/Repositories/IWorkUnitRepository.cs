@@ -12,10 +12,10 @@ namespace RM.DAL.Abstractions.Repositories
         #region Методы
 
         /// <summary>
-        /// Предоставляет единицы работ
+        /// Предоставляет все единицы работ
         /// </summary>
         /// <returns>Единицы работ</returns>
-        Task<IEnumerable<WorkUnitModel>> GetWorkUnits();
+        Task<IEnumerable<WorkUnitModel>> GetAll();
 
         #endregion
     }

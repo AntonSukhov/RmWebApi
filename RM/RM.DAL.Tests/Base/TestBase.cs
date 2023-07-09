@@ -14,6 +14,11 @@ namespace RM.DAL.Tests.Base
         /// </summary>
         protected readonly ITestOutputHelper _output;
 
+        /// <summary>
+        /// Отсутствует значение
+        /// </summary>
+        protected readonly string _missingValue = "Null";
+
         #endregion
 
         #region Конструкторы

@@ -25,6 +25,7 @@ namespace RM.WebApi.Extensions
         {
             if (configuration.GetValue<string>(Constants.DataStorageTypeString) == Constants.MsSqlServer)
             {
+                //TODO: вынести UseSqlServer отсюда
                 services.AddDbContext<IContractGpdDbContext, ContractGpdDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(Constants.DefaultConnectionString)));
             }
         }
@@ -36,7 +37,7 @@ namespace RM.WebApi.Extensions
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IWorkUnitRepository, WorkUnitRepository>();
-            services.AddS
+            services.AddScoped<IWorkTypeRepository, WorkTypeRepository>();
         }
 
         /// <summary>

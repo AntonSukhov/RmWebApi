@@ -1,4 +1,6 @@
-﻿namespace RM.DAL.Entities
+﻿using System;
+
+namespace RM.DAL.Entities
 {
     /// <summary>
     /// Сущность вида работ
@@ -10,7 +12,7 @@
         /// <summary>
         /// ИД вида работ
         /// </summary>
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Название вида работ

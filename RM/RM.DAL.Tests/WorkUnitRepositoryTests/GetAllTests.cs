@@ -1,14 +1,16 @@
 ﻿using FluentAssertions;
+using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Base;
+using RM.DAL.Tests.Fixtures;
 using Xunit.Abstractions;
 
 namespace RM.DAL.Tests.WorkUnitRepositoryTests
 {
     /// <summary>
-    /// Тесты для метода <see cref="IWorkUnitRepository.GetWorkUnits"/>
+    /// Тесты для метода <see cref="IWorkUnitRepository.GetAll"/>
     /// </summary>
-    public class GetWorkUnitsTests : TestBase, IClassFixture<WorkUnitRepositoryFixture>
+    public class GetAllTests : TestBase, IClassFixture<WorkUnitRepositoryFixture>
     {
         #region Поля
 
@@ -25,7 +27,7 @@ namespace RM.DAL.Tests.WorkUnitRepositoryTests
         /// Конструктор
         /// </summary>
         /// <param name="repositoryFixture"></param>
-        public GetWorkUnitsTests(WorkUnitRepositoryFixture repositoryFixture, ITestOutputHelper output) : base(output)
+        public GetAllTests(WorkUnitRepositoryFixture repositoryFixture, ITestOutputHelper output) : base(output)
         {
             _workUnitRepository = repositoryFixture?.WorkUnitRepository ?? throw new ArgumentNullException(nameof(repositoryFixture));
         }
@@ -39,15 +41,20 @@ namespace RM.DAL.Tests.WorkUnitRepositoryTests
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task GetWorkUnitsTest()
+        public async Task GetAllTest()
         {
             _output.WriteLine($"Входные параметры метода: отсутствуют");
 
-            var expected = await _workUnitRepository.GetWorkUnits();
+            var actual = new[]
+            {
+                new WorkUnitModel { Id = 1, Name = "машина" },
+                new WorkUnitModel { Id = 2, Name = "шт." },
+                new WorkUnitModel { Id = 3, Name = "Кв.м." }
+            };
 
-            expected.Should().NotBeNull()
-                             .And
-                             .HaveCountGreaterThan(0);
+            var expected = await _workUnitRepository.GetAll();
+
+            expected.Should().BeEquivalentTo(actual);
         }
 
         #endregion

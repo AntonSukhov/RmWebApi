@@ -3,14 +3,14 @@
 namespace ContractGpdApiTests.Helpers
 {
     /// <summary>
-    /// Класс помощи в работе с конфигурациями
+    /// Помощник в работе с конфигурациями
     /// </summary>
     internal static class ConfigurationHelper
     {
         #region Методы
 
         /// <summary>
-        /// Метод получения строки подключения к БД
+        /// Получает строку подключения к БД
         /// </summary>
         /// <param name="configFilePath">Путь к конфигурационному файлу</param>
         /// <param name="connectionSectionName">Название секции конфигурационного файла для подключения к базе данных</param>

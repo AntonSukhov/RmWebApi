@@ -1,4 +1,6 @@
-﻿namespace RM.DAL.Abstractions.Models
+﻿using System;
+
+namespace RM.DAL.Abstractions.Models
 {
     /// <summary>
     /// Модель вида работ
@@ -10,7 +12,7 @@
         /// <summary>
         /// ИД вида работ
         /// </summary>
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Название вида работ

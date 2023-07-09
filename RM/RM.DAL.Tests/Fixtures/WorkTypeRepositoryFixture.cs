@@ -4,8 +4,11 @@ using RM.DAL.Abstractions.Repositories;
 using RM.DAL.MsSql.DbContexts;
 using RM.DAL.Repositories;
 
-namespace RM.DAL.Tests.WorkUnitRepositoryTests
+namespace RM.DAL.Tests.Fixtures
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class WorkTypeRepositoryFixture
     {
         #region Свойства

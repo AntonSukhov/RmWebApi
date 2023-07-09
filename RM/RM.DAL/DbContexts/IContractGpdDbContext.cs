@@ -6,7 +6,7 @@ namespace RM.DAL.DbContexts
     /// <summary>
     /// Контекст работы с базой данных договоров ГПД
     /// </summary>
-    public interface IContractGpdDbContext
+    public interface IContractGpdDbContext : IBaseDbContext
     {
         #region Свойства
 

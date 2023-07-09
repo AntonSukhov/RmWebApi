@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RM.DAL.DbContexts;
 using RM.DAL.Entities;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace RM.DAL.MsSql.DbContexts
 {
@@ -22,7 +25,7 @@ namespace RM.DAL.MsSql.DbContexts
         #region Конструкторы
 
         /// <summary>
-        /// Конструктор по умолчанию 
+        /// Конструктор 
         /// </summary>
         /// <param name="options">Опции контекста работы с базой данных договоров ГПД</param>
         public ContractGpdDbContext(DbContextOptions<ContractGpdDbContext> options) : base(options) { }
@@ -32,9 +35,23 @@ namespace RM.DAL.MsSql.DbContexts
         #region Методы
 
         /// <inheritdoc/>
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            //TODO: для отладки, потом заменить на нормальное протоколирование
+            optionsBuilder.LogTo(message => Debug.WriteLine(message), LogLevel.Information)
+                          .EnableSensitiveDataLogging();
+        }
+
+        /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
         }
+
+        /// <inheritdoc/>
+        public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
 
         #endregion
     }

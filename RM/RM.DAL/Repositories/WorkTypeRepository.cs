@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RM.DAL.Abstractions.Models;
+using RM.DAL.Abstractions.Models.Pagination;
 using RM.DAL.Abstractions.Repositories;
-using RM.DAL.Converters;
 using RM.DAL.DbContexts;
+using RM.DAL.Extensions;
+using RM.DAL.Extensions.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,11 +42,34 @@ namespace RM.DAL.Repositories
         #region Методы
 
         ///<inheritdoc/>
-        public async Task<IEnumerable<WorkTypeModel>> GetWorkTypes()
+        public async Task<IEnumerable<WorkTypeModel>> GetAll(PageOptionsModel pageOptions = null)
         {
-            var result = await _contractGpdDbContext.WorkTypes.Include(p => p.WorkUnit).ToListAsync();
+            return await _contractGpdDbContext.WorkTypes.AsNoTracking()
+                                                        .OrderBy(p => p.Id)
+                                                        .Page(pageOptions)
+                                                        .MapWorkTypeEntityToModel()
+                                                        .ToListAsync();
+        }
 
-            return result.Select(p => p.ConvertEntityToModel());
+        ///<inheritdoc/>
+        public async Task<WorkTypeModel> Create(string workTypeName, byte? workUnitId)
+        {
+            if (workTypeName == null)
+            {
+                throw new ArgumentNullException(nameof(workTypeName));
+            }
+
+            var workTypeModel = new WorkTypeModel
+            {
+                Id = Guid.NewGuid(),
+                Name = workTypeName,
+                WorkUnit = workUnitId != null ? new WorkUnitModel { Id = workUnitId.Value } : null
+            };
+            var workTypeEntity = workTypeModel.ConvertModelToEntity(true);
+
+            await _contractGpdDbContext.WorkTypes.AddAsync(workTypeEntity);
+            await _contractGpdDbContext.SaveChangesAsync();
+            return workTypeModel;
         }
 
         #endregion
