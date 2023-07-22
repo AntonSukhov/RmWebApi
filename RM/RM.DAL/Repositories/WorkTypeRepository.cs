@@ -52,7 +52,7 @@ namespace RM.DAL.Repositories
         }
 
         ///<inheritdoc/>
-        public async Task<WorkTypeModel> Create(string workTypeName, byte? workUnitId)
+        public async Task<WorkTypeModel> Create(string workTypeName, byte? workUnitId = null)
         {
             if (workTypeName == null)
             {
@@ -65,11 +65,39 @@ namespace RM.DAL.Repositories
                 Name = workTypeName,
                 WorkUnit = workUnitId != null ? new WorkUnitModel { Id = workUnitId.Value } : null
             };
+
             var workTypeEntity = workTypeModel.ConvertModelToEntity(true);
 
             await _contractGpdDbContext.WorkTypes.AddAsync(workTypeEntity);
             await _contractGpdDbContext.SaveChangesAsync();
+
             return workTypeModel;
+        }
+
+        ///<inheritdoc/>
+        public async Task Update(Guid workTypeId, string workTypeName, byte? workUnitId = null)
+        {
+            if (workTypeName == null)
+            {
+                throw new ArgumentNullException(nameof(workTypeName));
+            }
+
+            var workType = await _contractGpdDbContext.WorkTypes.SingleOrDefaultAsync(p => p.Id == workTypeId) ?? throw new Exception($"Вид работ с ИД '{workTypeId}' не найден");
+
+            workType.Name = workTypeName;
+            workType.WorkUnitId = workUnitId;
+
+            await _contractGpdDbContext.SaveChangesAsync();
+        }
+
+        ///<inheritdoc/>
+        public async Task Delete(Guid workTypeId)
+        {
+            var workType = await _contractGpdDbContext.WorkTypes.SingleOrDefaultAsync(p => p.Id == workTypeId) ?? throw new Exception($"Вид работ с ИД '{workTypeId}' не найден");
+
+            _contractGpdDbContext.WorkTypes.Remove(workType);
+
+            await _contractGpdDbContext.SaveChangesAsync();
         }
 
         #endregion
