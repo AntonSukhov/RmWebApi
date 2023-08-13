@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RM.DAL.Entities;
+using RM.DAL.Abstractions.Models;
 
 namespace RM.DAL.DbContexts
 {
@@ -13,12 +13,12 @@ namespace RM.DAL.DbContexts
         /// <summary>
         /// Единицы работ
         /// </summary>
-        DbSet<WorkUnitEntity> WorkUnits { get; set; }
+        DbSet<WorkUnitModel> WorkUnits { get; set; }
 
         /// <summary>
         /// Виды работ
         /// </summary>
-        DbSet<WorkTypeEntity> WorkTypes { get; set; }
+        DbSet<WorkTypeModel> WorkTypes { get; set; }
 
         #endregion
     }

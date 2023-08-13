@@ -45,10 +45,10 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         {
             _output.WriteLine($"Входные параметры метода: отсутствие");
 
+            var input = await _workTypeRepository.Create($"Вид работ {DateTime.Now:yyyy.MM.dd HH:mm:ss ff}");
+
             var workTypeName = $"Вид работ {Guid.NewGuid()}";
             var workUnitId = (byte)1;
-
-            var input = await _workTypeRepository.Create($"Вид работ {DateTime.Now:yyyy.MM.dd HH:mm:ss ff}");
 
             await _workTypeRepository.Update(input.Id, workTypeName, workUnitId);
 

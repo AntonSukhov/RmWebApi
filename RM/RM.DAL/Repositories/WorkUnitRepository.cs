@@ -41,7 +41,6 @@ namespace RM.DAL.Repositories
         public async Task<IEnumerable<WorkUnitModel>> GetAll()
         {
             return await _contractGpdDbContext.WorkUnits.AsNoTracking()
-                                                        .MapWorkUnitEntityToModel()
                                                         .ToListAsync();
         }
 

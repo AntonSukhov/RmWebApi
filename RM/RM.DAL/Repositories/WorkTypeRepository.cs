@@ -4,7 +4,6 @@ using RM.DAL.Abstractions.Models.Pagination;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
 using RM.DAL.Extensions;
-using RM.DAL.Extensions.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,9 +44,9 @@ namespace RM.DAL.Repositories
         public async Task<IEnumerable<WorkTypeModel>> GetAll(PageOptionsModel pageOptions = null)
         {
             return await _contractGpdDbContext.WorkTypes.AsNoTracking()
+                                                        .Include(p => p.WorkUnit)
                                                         .OrderBy(p => p.Id)
                                                         .Page(pageOptions)
-                                                        .MapWorkTypeEntityToModel()
                                                         .ToListAsync();
         }
 
@@ -63,12 +62,10 @@ namespace RM.DAL.Repositories
             {
                 Id = Guid.NewGuid(),
                 Name = workTypeName,
-                WorkUnit = workUnitId != null ? new WorkUnitModel { Id = workUnitId.Value } : null
+                WorkUnitId = workUnitId
             };
 
-            var workTypeEntity = workTypeModel.ConvertModelToEntity(true);
-
-            await _contractGpdDbContext.WorkTypes.AddAsync(workTypeEntity);
+            await _contractGpdDbContext.WorkTypes.AddAsync(workTypeModel);
             await _contractGpdDbContext.SaveChangesAsync();
 
             return workTypeModel;

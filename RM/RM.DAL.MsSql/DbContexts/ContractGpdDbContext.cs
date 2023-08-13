@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RM.DAL.Abstractions.Models;
 using RM.DAL.DbContexts;
-using RM.DAL.Entities;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -15,10 +15,10 @@ namespace RM.DAL.MsSql.DbContexts
         #region Свойства
 
         /// <inheritdoc/>
-        public DbSet<WorkUnitEntity> WorkUnits { get; set; }
+        public DbSet<WorkUnitModel> WorkUnits { get; set; }
 
         /// <inheritdoc/>
-        public DbSet<WorkTypeEntity> WorkTypes { get; set; }
+        public DbSet<WorkTypeModel> WorkTypes { get; set; }
 
         #endregion
 

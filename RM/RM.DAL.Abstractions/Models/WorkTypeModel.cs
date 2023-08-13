@@ -20,6 +20,11 @@ namespace RM.DAL.Abstractions.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// ИД единицы работ для вида работ
+        /// </summary>
+        public byte? WorkUnitId { get; set; }
+
+        /// <summary>
         /// Единица работ для вида работ
         /// </summary>
         public WorkUnitModel WorkUnit { get; set; }

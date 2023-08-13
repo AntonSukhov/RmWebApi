@@ -51,6 +51,8 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
 
             var expected = await _workTypeRepository.Create(workTypeName, workUnitId);
 
+            await _workTypeRepository.Delete(expected.Id);
+
             expected.Should().NotBeNull();
         }
 
