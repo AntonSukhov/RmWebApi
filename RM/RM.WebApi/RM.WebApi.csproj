@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RM.BLL.Abstractions\RM.BLL.Abstractions.csproj" />
     <ProjectReference Include="..\RM.DAL.MsSql\RM.DAL.MsSql.csproj" />
     <ProjectReference Include="..\RM.DAL\RM.DAL.csproj" />
+    <ProjectReference Include="..\RM.BLL\RM.BLL.csproj" />
   </ItemGroup>
 
 </Project>

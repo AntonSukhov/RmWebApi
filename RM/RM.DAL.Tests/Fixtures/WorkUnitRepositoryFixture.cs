@@ -1,36 +1,38 @@
-﻿using ContractGpdApiTests.Helpers;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using RM.Common.Helpers;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.MsSql.DbContexts;
 using RM.DAL.Repositories;
 
-namespace RM.DAL.Tests.Fixtures
+namespace RM.DAL.Tests.Fixtures;
+
+/// <summary>
+/// Настройка контекста для тестирования репозитория единиц работ.
+/// </summary>
+public class WorkUnitRepositoryFixture
 {
-    public class WorkUnitRepositoryFixture
+    #region Свойства
+
+    /// <summary>
+    /// Тестируемый репозиторий.
+    /// </summary>
+    public IWorkUnitRepository WorkUnitRepository { get; }
+
+    #endregion
+
+    #region Конструкторы
+
+    /// <summary>
+    /// Конструктор.
+    /// </summary>
+    public WorkUnitRepositoryFixture()
     {
-        #region Свойства
+        var optionsBuilder = new DbContextOptionsBuilder<ContractGpdDbContext>();
+        optionsBuilder.UseSqlServer(ConfigurationHelper.GetConnectionString());
+        var options = optionsBuilder.Options;
 
-        /// <summary>
-        /// Тестируемый репозиторий
-        /// </summary>
-        public IWorkUnitRepository WorkUnitRepository { get; }
-
-        #endregion
-
-        #region Конструкторы
-
-        /// <summary>
-        /// Конструктор
-        /// </summary>
-        public WorkUnitRepositoryFixture()
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<ContractGpdDbContext>();
-            optionsBuilder.UseSqlServer(ConfigurationHelper.GetConnectionString());
-            var options = optionsBuilder.Options;
-
-            WorkUnitRepository = new WorkUnitRepository(new ContractGpdDbContext(options));
-        }
-
-        #endregion
+        WorkUnitRepository = new WorkUnitRepository(new ContractGpdDbContext(options));
     }
+
+    #endregion
 }

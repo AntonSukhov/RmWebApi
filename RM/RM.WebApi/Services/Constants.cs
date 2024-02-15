@@ -1,20 +1,19 @@
-﻿namespace RM.WebApi.Services
+﻿namespace RM.WebApi.Services;
+
+/// <summary>
+/// Сервис для работы с константами.
+/// </summary>
+public static class Constants
 {
-    /// <summary>
-    /// Сервис для работы с константами
-    /// </summary>
-    public static class Constants
-    {
-        #region Поля
+    #region Поля
 
-        public const string DefaultConnectionString = "DefaultConnection";
+    public const string DefaultConnectionString = "DefaultConnection";
 
-        public const string DataStorageTypeString = "DataStorageType";
+    public const string DataStorageTypeString = "DataStorageType";
 
-        public const string MsSqlServer = "MSSQL";
+    public const string MsSqlServer = "MSSQL";
 
-        public const string PostgreSql = "PostgreSQL";
+    public const string PostgreSql = "PostgreSQL";
 
-        #endregion
-    }
+    #endregion
 }

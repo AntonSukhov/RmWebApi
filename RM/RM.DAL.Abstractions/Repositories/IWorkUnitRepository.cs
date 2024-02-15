@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace RM.DAL.Abstractions.Repositories
+namespace RM.DAL.Abstractions.Repositories;
+
+/// <summary>
+/// Репозиторий единицы работ.
+/// </summary>
+public interface IWorkUnitRepository
 {
+    #region Методы
+
     /// <summary>
-    /// Репозиторий единицы работ
+    /// Предоставляет все единицы работ.
     /// </summary>
-    public interface IWorkUnitRepository
-    {
-        #region Методы
+    /// <returns>Единицы работ.</returns>
+    Task<IEnumerable<WorkUnitModel>> GetAllAsync();
 
-        /// <summary>
-        /// Предоставляет все единицы работ
-        /// </summary>
-        /// <returns>Единицы работ</returns>
-        Task<IEnumerable<WorkUnitModel>> GetAll();
-
-        #endregion
-    }
+    #endregion
 }
+

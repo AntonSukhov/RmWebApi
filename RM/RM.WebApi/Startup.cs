@@ -21,8 +21,9 @@ namespace RM.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterDbContexts(Configuration);
-            services.RegisterRepositories();
+            services.RegisterRepositories();         
             services.RegisterServices();
+            services.RegisterValidators();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
