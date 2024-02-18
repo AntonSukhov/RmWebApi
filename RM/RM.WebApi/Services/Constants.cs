@@ -15,5 +15,7 @@ public static class Constants
 
     public const string PostgreSql = "PostgreSQL";
 
+    public const string ApplicationJsonContentType = "application/json";
+
     #endregion
 }
