@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.BLL.Abstractions.Models;
@@ -10,30 +9,17 @@ namespace RM.WebApi.Controllers;
 /// <summary>
 /// Контроллер работы с видами работ.
 /// </summary>
+/// <param name="workTypeService">Сервис работы с видами работ.</param>
 [ApiController]
 [Route("api/work-type")]
-public class WorkTypeApiController : ControllerBase
+public class WorkTypeApiController(IWorkTypeService workTypeService) : ControllerBase
 {
    #region Поля
 
     /// <summary>
     /// Сервис работы с видами работ.
     /// </summary>
-    private readonly IWorkTypeService _workTypeService;
-
-    #endregion
-
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор по умолчанию.
-    /// </summary>
-    /// <param name="workTypeService">Сервис работы с видами работ.</param>
-    /// <exception cref="ArgumentNullException"/>
-    public WorkTypeApiController(IWorkTypeService workTypeService) 
-    {  
-        _workTypeService = workTypeService ?? throw new ArgumentNullException(nameof(workTypeService));
-    }
+    private readonly IWorkTypeService _workTypeService = workTypeService;
 
     #endregion
 

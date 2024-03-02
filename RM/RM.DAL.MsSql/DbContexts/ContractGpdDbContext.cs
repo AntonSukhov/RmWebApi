@@ -7,18 +7,9 @@ namespace RM.DAL.MsSql.DbContexts;
 /// <summary>
 /// Контекст работы с базой данных договоров ГПД.
 /// </summary>
-public class ContractGpdDbContext : ContractGpdDbContextBase
+/// <param name="options">Опции контекста работы с базой данных договоров ГПД.</param>
+public class ContractGpdDbContext(DbContextOptions<ContractGpdDbContext> options) : ContractGpdDbContextBase(options)
 {
-
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор. 
-    /// </summary>
-    /// <param name="options">Опции контекста работы с базой данных договоров ГПД.</param>
-    public ContractGpdDbContext(DbContextOptions<ContractGpdDbContext> options) : base(options) { }
-
-    #endregion
 
     #region Методы
 

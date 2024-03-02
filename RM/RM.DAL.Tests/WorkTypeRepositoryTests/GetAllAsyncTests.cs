@@ -8,27 +8,18 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeRepository.GetAllAsync"/>.
 /// </summary>
-public class GetAllAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
+/// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
+public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
     /// <summary>
     /// Репозиторий вида работ.
     /// </summary>
-    private readonly IWorkTypeRepository _repository;
+    private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
 
     #endregion
-
     #region Конструкторы
-
-    /// <summary>
-    /// Конструктор.
-    /// </summary>
-    /// <param name="fixture"></param>
-    public GetAllAsyncTests(WorkTypeRepositoryFixture fixture)
-    {
-        _repository = fixture?.WorkTypeRepository ?? throw new ArgumentNullException(nameof(fixture));
-    }
 
     #endregion
 
@@ -39,7 +30,7 @@ public class GetAllAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     /// </summary>
     [Theory]
     [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), MemberType = typeof(PaginationTestData))]
-    public async Task GetAllAsyncForCorrectPageOptionsTest(PageOptionsModel? pageOptions)
+    public async Task ForCorrectPageOptions(PageOptionsModel? pageOptions)
     {     
         var expected = await _repository.GetAllAsync(pageOptions);
 
@@ -52,7 +43,7 @@ public class GetAllAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     /// Тест получения видов работ из базы данных для некорректных настроек страницы.
     /// </summary>
     [Fact]
-    public async Task GetAllAsyncForIncorrectPageOptionsTest()
+    public async Task ForIncorrectPageOptions()
     {     
        var errors = new List<Exception>();
 

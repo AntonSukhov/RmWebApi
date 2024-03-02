@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.BLL.Abstractions.Models;
@@ -10,30 +9,17 @@ namespace RM.WebApi.Controllers;
 /// <summary>
 /// Контроллер работы с единицами работ.
 /// </summary>
+/// <param name="workUnitService">Сервис получения данных о единицах работ.</param>
 [ApiController]
 [Route("api/work-unit")]
-public class WorkUnitApiController : ControllerBase
+public class WorkUnitApiController(IWorkUnitService workUnitService) : ControllerBase
 {
     #region Поля
 
     /// <summary>
     /// Сервис получения данных о единицах работ.
     /// </summary>
-    private readonly IWorkUnitService _workUnitService;
-
-    #endregion
-
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор по умолчанию.
-    /// </summary>
-    /// <param name="workUnitService">Сервис получения данных о единицах работ.</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public WorkUnitApiController(IWorkUnitService workUnitService) 
-    {  
-        _workUnitService = workUnitService ?? throw new ArgumentNullException(nameof(workUnitService));
-    }
+    private readonly IWorkUnitService _workUnitService = workUnitService;
 
     #endregion
 

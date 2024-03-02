@@ -5,31 +5,19 @@ using RM.DAL.Tests.Fixtures;
 using RM.DAL.Tests.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
-    
+
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeRepository.CreateAsync"/>.
 /// </summary>
-public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
+/// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
+public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
     /// <summary>
     /// Репозиторий вида работ.
     /// </summary>
-    private readonly IWorkTypeRepository _repository;
-
-    #endregion
-
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор.
-    /// </summary>
-    /// <param name="fixture"></param>
-    public CreateAsyncTests(WorkTypeRepositoryFixture fixture)
-    {
-        _repository = fixture?.WorkTypeRepository ?? throw new ArgumentNullException(nameof(fixture));
-    }
+    private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
 
     #endregion
 
@@ -41,7 +29,7 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task CreateAsyncForCorrectDataTest(WorkTypeModel workTypeModel)
+    public async Task ForCorrectData(WorkTypeModel workTypeModel)
     {      
         await _repository.CreateAsync(workTypeModel);
 
@@ -61,9 +49,8 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task CreateAsyncForIncorrectDataTest(WorkTypeModel? workTypeModel)
+    public async Task ForIncorrectData(WorkTypeModel? workTypeModel)
     {      
-
         var action = async () => await _repository.CreateAsync(workTypeModel);
 
         await action.Should().ThrowAsync<Exception>();

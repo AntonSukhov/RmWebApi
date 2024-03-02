@@ -17,44 +17,48 @@ namespace RM.DAL.Extensions
     {
         #region Поля
 
-        internal static readonly MethodInfo EnumerableDefaultIfEmpty = typeof(Enumerable).GetMethods()
-                                                                                         .First(x => x.Name == "DefaultIfEmpty" && 
-                                                                                                     x.GetParameters().Length == 1);
-        internal static readonly MethodInfo QueryableSelectMany = typeof(Queryable).GetMethods()
-                                                                                   .Where(x => x.Name == "SelectMany" && 
-                                                                                               x.GetParameters().Length == 3)
-                                                                                   .OrderBy(x => x.ToString().Length)
-                                                                                   .First();
-        internal static readonly MethodInfo QueryableWhere = typeof(Queryable).GetMethods()
-                                                                              .First(x => x.Name == "Where" && 
-                                                                                          x.GetParameters().Length == 2);
-        internal static readonly MethodInfo QueryableGroupJoin = typeof(Queryable).GetMethods()
-                                                                                  .First(x => x.Name == "GroupJoin" && 
-                                                                                              x.GetParameters().Length == 5);
+        /// <summary>
+        /// Метаданные метода <see cref="Enumerable.DefaultIfEmpty{TSource}(IEnumerable{TSource})"/>.
+        /// </summary>
+        private static readonly MethodInfo EnumerableDefaultIfEmptyMetadata = typeof(Enumerable).GetMethods()
+                                                                                                .First(m => m.Name == nameof(Enumerable.DefaultIfEmpty) &&   
+                                                                                                            m.GetParameters().Length == 1);
+        /// <summary>
+        /// Метаданные метода <see cref="Queryable.SelectMany{TSource, TCollection, TResult}(IQueryable{TSource}, Expression{Func{TSource, IEnumerable{TCollection}}}, Expression{Func{TSource, TCollection, TResult}})"/>.
+        /// </summary>
+        private static readonly MethodInfo QueryableSelectManyMetadata = typeof(Queryable).GetMethods()
+                                                                                          .Last(m => m.Name == nameof(Queryable.SelectMany) && 
+                                                                                                     m.GetParameters().Length == 3);
+        /// <summary>
+        /// Метаданные метода <see cref="Queryable.GroupJoin{TOuter, TInner, TKey, TResult}(IQueryable{TOuter}, IEnumerable{TInner}, Expression{Func{TOuter, TKey}}, Expression{Func{TInner, TKey}}, Expression{Func{TOuter, IEnumerable{TInner}, TResult}})"/>.
+        /// </summary>
+        private static readonly MethodInfo QueryableGroupJoinMetadata = typeof(Queryable).GetMethods()
+                                                                                         .First(m => m.Name == nameof(Queryable.GroupJoin) && 
+                                                                                                     m.GetParameters().Length == 5);
 
         #endregion
 
         #region Методы
 
-       /// <summary>
-        /// Соединяет две коллекции с помощью левого соединения
+        /// <summary>
+        /// Соединяет две последовательности с помощью левого соединения.
         /// </summary>
-        /// <typeparam name="TOuter"></typeparam>
-        /// <typeparam name="TInner"></typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="outer"></param>
-        /// <param name="inner"></param>
-        /// <param name="outerKeySelector"></param>
-        /// <param name="innerKeySelector"></param>
-        /// <param name="resultSelector"></param>
-        /// <returns></returns>
+        /// <typeparam name="TOuter">Тип данных элементов первой последовательности.</typeparam>
+        /// <typeparam name="TInner">Тип данных элементов второй последовательности.</typeparam>
+        /// <typeparam name="TKey">Тип данных ключей, возвращаемых функциями селектора ключа.</typeparam>
+        /// <typeparam name="TResult">Тип данных результирующих элементов.</typeparam>
+        /// <param name="outer">Первая последовательность элементов для соединения.</param>
+        /// <param name="inner">Последовательность элементов, соединяемая с первой последовательностью элементов.</param>
+        /// <param name="outerKeySelector">Функция, извлекающая ключ соединения из каждого элемента первой последовательности.</param>
+        /// <param name="innerKeySelector">Функция, извлекающая ключ соединения из каждого элемента второй последовательности.</param>
+        /// <param name="resultSelector">Функция для создания результирующего элемента для пары соответствующих элементов.</param>
+        /// <returns>Последовательность элементов, полученных в результате левого соединения двух последовательностей элементов.</returns>
         public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
             this IQueryable<TOuter> outer,
-            IQueryable<TInner> inner,
-            Expression<Func<TOuter, TKey>> outerKeySelector,
-            Expression<Func<TInner, TKey>> innerKeySelector,
-            Expression<Func<TOuter, TInner, TResult>> resultSelector)
+                 IQueryable<TInner> inner,
+                 Expression<Func<TOuter, TKey>> outerKeySelector,
+                 Expression<Func<TInner, TKey>> innerKeySelector,
+                 Expression<Func<TOuter, TInner, TResult>> resultSelector)
         {
 
             ArgumentNullException.ThrowIfNull(outer);
@@ -63,23 +67,29 @@ namespace RM.DAL.Extensions
             ArgumentNullException.ThrowIfNull(innerKeySelector);
             ArgumentNullException.ThrowIfNull(resultSelector);
 
-            var keyValuePairHolderWithGroup = typeof(KeyValuePairHolder<,>).MakeGenericType(
+            var keyValuePairHolderMetadata = typeof(KeyValuePairHolder<,>).MakeGenericType(
                     typeof(TOuter),
                     typeof(IEnumerable<>).MakeGenericType(typeof(TInner))
                 );
+
             var paramOuter = Expression.Parameter(typeof(TOuter));
             var paramInner = Expression.Parameter(typeof(IEnumerable<TInner>));
+            var paramGroup = Expression.Parameter(keyValuePairHolderMetadata);
 
-            var resultSel = Expression
+            var itemFirstName = nameof(KeyValuePairHolder<TKey, IEnumerable<TInner>>.ItemFirst);
+            var itemSecondName = nameof(KeyValuePairHolder<TKey, IEnumerable<TInner>>.ItemSecond);
+
+            //Создаём ламбда выражение для отображения результата выполнения метода Queryable.GroupJoin
+            var resultSelect = Expression
                 .Lambda(
                     Expression.MemberInit(
-                        Expression.New(keyValuePairHolderWithGroup),
+                        Expression.New(keyValuePairHolderMetadata),
                         Expression.Bind(
-                            keyValuePairHolderWithGroup.GetMember("Item1").Single(),
+                            keyValuePairHolderMetadata.GetMember(itemFirstName).Single(),
                             paramOuter
                         ),
                         Expression.Bind(
-                            keyValuePairHolderWithGroup.GetMember("Item2").Single(),
+                            keyValuePairHolderMetadata.GetMember(itemSecondName).Single(),
                             paramInner
                         )
                     ),
@@ -87,55 +97,56 @@ namespace RM.DAL.Extensions
                     paramInner
                 );
 
-            var groupJoin = QueryableGroupJoin
+            //Выполняем метод Queryable.GroupJoin
+            var groupJoinResult = QueryableGroupJoinMetadata
                 .MakeGenericMethod(
                     typeof(TOuter),
                     typeof(TInner),
                     typeof(TKey),
-                    keyValuePairHolderWithGroup
+                    keyValuePairHolderMetadata
                 )
                 .Invoke(
-                    "ThisArgumentIsIgnoredForStaticMethods",
-                    [
+                    null,
+                    new object[]
+                    {
                         outer,
                         inner,
                         outerKeySelector,
                         innerKeySelector,
-                        resultSel
-                    ]
+                        resultSelect
+                    }
                 );
 
-
-            var paramGroup = Expression.Parameter(keyValuePairHolderWithGroup);
+            //Создаём ламбда выражение для дальнейшего выполнения метода Enumerable.DefaultIfEmpty
             var collectionSelector = Expression.Lambda(
                             Expression.Call(
                                     null,
-                                    EnumerableDefaultIfEmpty.MakeGenericMethod(typeof(TInner)),
-                                    Expression.MakeMemberAccess(paramGroup, keyValuePairHolderWithGroup.GetProperty("Item2")))
+                                    EnumerableDefaultIfEmptyMetadata.MakeGenericMethod(typeof(TInner)),
+                                    Expression.MakeMemberAccess(paramGroup, keyValuePairHolderMetadata.GetProperty(itemSecondName)))
                             ,
                             paramGroup
                         );
 
             var newResultSelector = new ResultSelectorRewriter<TOuter, TInner, TResult>(resultSelector).CombinedExpression;
 
-
-            var selectMany1Result = QueryableSelectMany
+            //Выполняем метод Queryable.SelectMany
+            var selectManyResult = QueryableSelectManyMetadata
                 .MakeGenericMethod(
-                    keyValuePairHolderWithGroup,
+                    keyValuePairHolderMetadata,
                     typeof(TInner),
                     typeof(TResult)
                 )
                 .Invoke(
-                    "ThisArgumentIsIgnoredForStaticMethods",
+                    null,
                     new object[]
                     {
-                        groupJoin,
+                        groupJoinResult,
                         collectionSelector,
                         newResultSelector
                     }
                 );
 
-            return (IQueryable<TResult>)selectMany1Result;
+            return (IQueryable<TResult>)selectManyResult;
         }
 
     
@@ -175,12 +186,24 @@ namespace RM.DAL.Extensions
     }
 
 
-    internal class KeyValuePairHolder<T1, T2>
+    /// <summary>
+    /// Держатель пары ключевых объектов.
+    /// </summary>
+    /// <typeparam name="TFirst">Тип данных первого объекта.</typeparam>
+    /// <typeparam name="TSecond">Тип данных второго объекта.</typeparam>
+    internal class KeyValuePairHolder<TFirst, TSecond>
     {
         #region Свойства
 
-        public T1 Item1 { get; set; }
-        public T2 Item2 { get; set; }
+        /// <summary>
+        /// Первый ключевой объект.
+        /// </summary>
+        public TFirst ItemFirst { get; set; }
+
+        /// <summary>
+        /// Второй ключевой объект.
+        /// </summary>
+        public TSecond ItemSecond { get; set; }
 
         #endregion
     }
@@ -226,9 +249,10 @@ namespace RM.DAL.Extensions
             if (node == _oldTInnerParamExpression)
                 return _newTInnerParamExpression;
             else if (node == _oldTOuterParamExpression)
-                return Expression.PropertyOrField(_newTOuterParamExpression, "Item1");
+                return Expression.PropertyOrField(_newTOuterParamExpression, 
+                                                  nameof(KeyValuePairHolder<TOuter, IEnumerable<TInner>>.ItemFirst));
             else
-                throw new InvalidOperationException($"Did not expect a parameter: {node}");
+                throw new ArgumentException($"Неизвестный параметр: {node}");
         }
 
         #endregion

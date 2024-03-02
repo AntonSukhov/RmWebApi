@@ -9,30 +9,18 @@ namespace RM.DAL.Repositories
     /// <summary>
     /// Репозиторий единицы работ.
     /// </summary>
-    public class WorkUnitRepository : IWorkUnitRepository
+    /// <param name="dbContext">Контекст работы с базой данных договоров ГПД<./param>
+    public class WorkUnitRepository(ContractGpdDbContextBase dbContext) : IWorkUnitRepository
     {
         #region Поля
 
         /// <summary>
         /// Контекст работы с базой данных договоров ГПД.
         /// </summary>
-        private readonly ContractGpdDbContextBase _dbContext;
+        private readonly ContractGpdDbContextBase _dbContext = dbContext;
 
         #endregion
-
-        #region Конструкторы.
-
-        /// <summary>
-        /// Конструктор.
-        /// </summary>
-        /// <param name="dbContext">Контекст работы с базой данных договоров ГПД<./param>
-        public WorkUnitRepository(ContractGpdDbContextBase dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        #endregion
-
+ 
         #region Методы
 
         /// <inheritdoc/>

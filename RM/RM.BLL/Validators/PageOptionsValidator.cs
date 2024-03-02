@@ -12,7 +12,7 @@ public class PageOptionsValidator: AbstractValidator<PageOptionsModel>
     #region Конструкторы
 
     /// <summary>
-    /// Конструктор.
+    /// Конструктор по умолчанию.
     /// </summary>
     public PageOptionsValidator()
     {

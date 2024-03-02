@@ -11,7 +11,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     #region Свойства
 
     /// <summary>
-    /// Данные для теста <see cref="CreateAsyncTests.CreateAsyncForCorrectDataTest"/>.
+    /// Данные для теста <see cref="CreateAsyncTests.ForCorrectData"/>.
     /// </summary>
     public static TheoryData<WorkTypeModel> CreateAsyncForCorrectDataTestData()
     {
@@ -38,7 +38,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
     /// <summary>
-    /// Данные для теста <see cref="CreateAsyncTests.CreateAsyncForIncorrectDataTest"/>.
+    /// Данные для теста <see cref="CreateAsyncTests.ForIncorrectData"/>.
     /// </summary>
     public static TheoryData<WorkTypeModel?> CreateAsyncForIncorrectDataTestData()
     {
@@ -73,7 +73,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
     /// <summary>
-    /// Данные для теста <see cref="DeleteAsyncTests.DeleteAsyncForCorrectDataTest"/>.
+    /// Данные для теста <see cref="DeleteAsyncTests.ForCorrectData"/>.
     /// </summary>
     public static TheoryData<WorkTypeModel> DeleteAsyncForCorrectDataTestData()
     {
@@ -100,7 +100,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
     /// <summary>
-    /// Данные для теста <see cref="DeleteAsyncTests.DeleteAsyncNotExistedWorkTypeTest"/>.
+    /// Данные для теста <see cref="DeleteAsyncTests.NotExistedWorkType"/>.
     /// </summary>
     public static TheoryData<Guid> DeleteAsyncNotExistedWorkTypeTestData()
     {
@@ -112,7 +112,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
     /// <summary>
-    /// Данные для теста <see cref="UpdateAsyncTests.UpdateAsyncForCorrectInputDataTest"/>.
+    /// Данные для теста <see cref="UpdateAsyncTests.ForCorrectInputData"/>.
     /// </summary>
     public static TheoryData<WorkTypeModel, string, byte?> UpdateAsyncForCorrectInputDataTestData()
     {
@@ -161,7 +161,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
      /// <summary>
-    /// Данные для теста <see cref="UpdateAsyncTests.UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTest"/>.
+    /// Данные для теста <see cref="UpdateAsyncTests.ForIncorrectWorkTypeNameOrWorkUnitId"/>.
     /// </summary>
     public static TheoryData<WorkTypeModel, string?, byte?> UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTestData()
     {

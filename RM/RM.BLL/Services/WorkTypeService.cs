@@ -14,7 +14,11 @@ namespace RM.BLL;
 /// <summary>
 /// Сервис видов работ.
 /// </summary>
-public class WorkTypeService : IWorkTypeService
+/// <param name="repository">Репозиторий видов работ.</param>
+/// <param name="workTypeValidator">Валидатор вида работ.</param>
+/// <param name="pageOptionsValidator">Валидатор настроек страницы.</param>
+public class WorkTypeService(IWorkTypeRepository repository, WorkTypeValidator workTypeValidator, 
+                             PageOptionsValidator pageOptionsValidator) : IWorkTypeService
 {
 
     #region Поля
@@ -22,37 +26,20 @@ public class WorkTypeService : IWorkTypeService
     /// <summary>
     /// Репозиторий видов работ.
     /// </summary>
-    private readonly IWorkTypeRepository _repository;
+    private readonly IWorkTypeRepository _repository = repository;
 
     /// <summary>
     /// Валидатор вида работ.
     /// </summary>
-    private readonly WorkTypeValidator _workTypeValidator;
+    private readonly WorkTypeValidator _workTypeValidator = workTypeValidator;
 
     /// <summary>
     /// Валидатор настроек страницы.
     /// </summary>
-    private readonly PageOptionsValidator _pageOptionsValidator;
+    private readonly PageOptionsValidator _pageOptionsValidator = pageOptionsValidator;
 
     #endregion
 
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор.
-    /// </summary>
-    /// <param name="repository">Репозиторий видов работ.</param>
-    /// <param name="workTypeValidator">Валидатор вида работ.</param>
-    /// <param name="pageOptionsValidator">Валидатор настроек страницы.</param>
-    public WorkTypeService(IWorkTypeRepository repository, WorkTypeValidator workTypeValidator, PageOptionsValidator pageOptionsValidator)
-    {
-        _repository = repository;
-        _workTypeValidator = workTypeValidator;
-        _pageOptionsValidator = pageOptionsValidator;
-    }
-
-    #endregion
-    
     #region Методы
 
     /// <inheritdoc/>

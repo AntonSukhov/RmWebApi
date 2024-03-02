@@ -11,7 +11,7 @@ public class WorkTypeValidator: AbstractValidator<WorkTypeModel>
     #region Конструкторы
  
     /// <summary>
-    /// Конструктор.
+    /// Конструктор по умолчанию.
     /// </summary>
     public WorkTypeValidator()
     {

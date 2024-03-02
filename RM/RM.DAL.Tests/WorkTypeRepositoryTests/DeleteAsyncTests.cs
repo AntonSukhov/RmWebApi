@@ -10,27 +10,15 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeRepository.Delete"/>.
 /// </summary>
-public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
+/// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
+public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
     /// <summary>
     /// Репозиторий вида работ.
     /// </summary>
-    private readonly IWorkTypeRepository _repository;
-
-    #endregion
-
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор.
-    /// </summary>
-    /// <param name="fixture"></param>
-    public DeleteAsyncTests(WorkTypeRepositoryFixture fixture)
-    {
-        _repository = fixture?.WorkTypeRepository ?? throw new ArgumentNullException(nameof(fixture));
-    }
+    private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
 
     #endregion
 
@@ -42,9 +30,8 @@ public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task DeleteAsyncForCorrectDataTest(WorkTypeModel workTypeModel)
+    public async Task ForCorrectData(WorkTypeModel workTypeModel)
     {      
-
         await _repository.CreateAsync(workTypeModel);
 
         await _repository.DeleteAsync(workTypeModel.Id);
@@ -62,7 +49,7 @@ public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncNotExistedWorkTypeTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
 
-    public async Task DeleteAsyncNotExistedWorkTypeTest(Guid workTypeId)
+    public async Task NotExistedWorkType(Guid workTypeId)
     {
         var action = async () => await _repository.DeleteAsync(workTypeId);
 

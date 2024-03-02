@@ -27,6 +27,13 @@ public interface IWorkTypeRepository
     Task<WorkTypeModel> GetByIdAsync(Guid workTypeId);
 
     /// <summary>
+    /// Предоставляет вид работ по его названию.
+    /// </summary>
+    /// <param name="workTypeId">Название вида работ.</param>
+    /// <returns>Вид работ.</returns>
+    Task<WorkTypeModel> GetByNameAsync(string workTypeName);
+
+    /// <summary>
     /// Создаёт вид работ.
     /// </summary>
     /// <param name="workTypeModel">Модель создаваемого вида работ.</param>

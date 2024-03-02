@@ -10,27 +10,15 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
     /// <summary>
     /// Тесты для метода <see cref="IWorkTypeRepository.UpdateAsync"/>.
     /// </summary>
-    public class UpdateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
+    /// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
+    public class UpdateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
     {
         #region Поля
 
         /// <summary>
         /// Репозиторий вида работ.
         /// </summary>
-        private readonly IWorkTypeRepository _repository;
-
-        #endregion
-
-        #region Конструкторы
-
-        /// <summary>
-        /// Конструктор.
-        /// </summary>
-        /// <param name="fixture"></param>
-        public UpdateAsyncTests(WorkTypeRepositoryFixture fixture)
-        {
-            _repository = fixture?.WorkTypeRepository ?? throw new ArgumentNullException(nameof(fixture));
-        }
+        private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
 
         #endregion
 
@@ -42,7 +30,7 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         [Theory]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForCorrectInputDataTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
-        public async Task UpdateAsyncForCorrectInputDataTest(WorkTypeModel workTypeModel, string workTypeName, byte? workUnitId)
+        public async Task ForCorrectInputData(WorkTypeModel workTypeModel, string workTypeName, byte? workUnitId)
         {
             await _repository.CreateAsync(workTypeModel);
 
@@ -69,7 +57,8 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         [Theory]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
-        public async Task UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTest(WorkTypeModel workTypeModel, string? workTypeName, byte? workUnitId)
+        public async Task ForIncorrectWorkTypeNameOrWorkUnitId(WorkTypeModel workTypeModel, string? workTypeName, 
+                                                               byte? workUnitId)
         {
             await _repository.CreateAsync(workTypeModel);
 
@@ -81,7 +70,6 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
             await action.Should().ThrowAsync<DbUpdateException>(); 
      
             await _repository.DeleteAsync(workTypeModel.Id);
-
         }
 
         #endregion

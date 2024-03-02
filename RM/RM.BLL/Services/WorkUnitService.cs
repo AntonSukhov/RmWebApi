@@ -11,27 +11,15 @@ namespace RM.BLL.Services;
 /// <summary>
 /// Сервис единицы работ.
 /// </summary>
-public class WorkUnitService : IWorkUnitService
+/// <param name="repository">Репозиторий единицы работ.</param>
+public class WorkUnitService(IWorkUnitRepository repository) : IWorkUnitService
 {
     #region Поля
 
     /// <summary>
     /// Репозиторий единицы работ.
     /// </summary>
-    private readonly IWorkUnitRepository _repository;
-
-    #endregion
-
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор.
-    /// </summary>
-    /// <param name="repository">Репозиторий единицы работ.</param>
-    public WorkUnitService(IWorkUnitRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly IWorkUnitRepository _repository = repository;
 
     #endregion
 
