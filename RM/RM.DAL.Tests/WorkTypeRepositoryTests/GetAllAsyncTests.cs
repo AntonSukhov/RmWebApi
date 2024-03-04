@@ -14,54 +14,100 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     #region Поля
 
     /// <summary>
-    /// Репозиторий вида работ.
+    /// Репозиторий вида работ, работающий с MS SQL.
     /// </summary>
-    private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
+    private readonly IWorkTypeRepository _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
 
-    #endregion
-    #region Конструкторы
+    /// <summary>
+    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// </summary>
+    private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
 
     #endregion
 
     #region Методы
 
     /// <summary>
-    /// Тест получения видов работ из базы данных.
+    /// Тест получения видов работ. MS SQL.
     /// </summary>
     [Theory]
     [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), MemberType = typeof(PaginationTestData))]
-    public async Task ForCorrectPageOptions(PageOptionsModel? pageOptions)
-    {     
-        var expected = await _repository.GetAllAsync(pageOptions);
+    public async Task ForCorrectPageOptionsMsSql(PageOptionsModel? pageOptions)
+    {
+        await ForCorrectPageOptions(pageOptions, _repositoryMsSql);
+    }
+
+    /// <summary>
+    /// Тест получения видов работ. PostgreSQL.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), MemberType = typeof(PaginationTestData))]
+    public async Task ForCorrectPageOptionsPostgreSql(PageOptionsModel? pageOptions)
+    {
+        await ForCorrectPageOptions(pageOptions, _repositoryPostgreSql);
+    }
+
+    /// <summary>
+    /// Тест получения видов работ для некорректных настроек страницы. MS SQL.
+    /// </summary>
+    [Fact]
+    public async Task ForIncorrectPageOptionsMsSql()
+    {
+        await ForIncorrectPageOptions(_repositoryMsSql);
+    }
+
+    /// <summary>
+    /// Тест получения видов работ для некорректных настроек страницы. PostgreSQL.
+    /// </summary>
+    [Fact]
+    public async Task ForIncorrectPageOptionsPostgreSql()
+    {
+        await ForIncorrectPageOptions(_repositoryPostgreSql);
+    }
+
+    #region Закрытые методы
+
+    /// <summary>
+    /// Тест получения видов работ.
+    /// </summary>
+    /// <param name="pageOptions">Модель настроек стараницы.</param>
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task ForCorrectPageOptions(PageOptionsModel? pageOptions, IWorkTypeRepository repository)
+    {
+        var expected = await repository.GetAllAsync(pageOptions);
 
         expected.Should().NotBeNull()
                          .And
                          .HaveCountGreaterThan(0);
     }
 
-     /// <summary>
-    /// Тест получения видов работ из базы данных для некорректных настроек страницы.
+    /// <summary>
+    /// Тест получения видов работ для некорректных настроек страницы.
     /// </summary>
-    [Fact]
-    public async Task ForIncorrectPageOptions()
-    {     
-       var errors = new List<Exception>();
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task ForIncorrectPageOptions(IWorkTypeRepository repository)
+    {
+        var errors = new List<Exception>();
 
-       foreach (var pageOptions in PaginationTestData.GetIncorrectPageOptions())
-       {
+        foreach (var pageOptions in PaginationTestData.GetIncorrectPageOptions())
+        {
             try
             {
-                var action = async () => await _repository.GetAllAsync(pageOptions);
-                await action.Invoke();         
+                var action = async () => await repository.GetAllAsync(pageOptions);
+                await action.Invoke();
             }
             catch (Exception ex)
             {
                 errors.Add(ex);
             }
-       }
+        }
 
-       errors.Should().HaveCount(4);
+        errors.Should().HaveCount(4);
     }
+
+    #endregion
 
     #endregion
 }

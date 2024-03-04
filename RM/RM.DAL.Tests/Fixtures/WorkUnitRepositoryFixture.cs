@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RM.Common.Helpers;
+using RM.Common.Services;
 using RM.DAL.Abstractions.Repositories;
-using RM.DAL.MsSql.DbContexts;
 using RM.DAL.Repositories;
 
 namespace RM.DAL.Tests.Fixtures;
@@ -14,9 +14,14 @@ public class WorkUnitRepositoryFixture
     #region Свойства
 
     /// <summary>
-    /// Тестируемый репозиторий.
+    /// Тестируемый репозиторий, работающий с базой данных MS SQL.
     /// </summary>
-    public IWorkUnitRepository WorkUnitRepository { get; }
+    public IWorkUnitRepository WorkUnitRepositoryMsSql { get; }
+
+    /// <summary>
+    /// Тестируемый репозиторий, работающий с базой данных PostgreSql.
+    /// </summary>
+    public IWorkUnitRepository WorkUnitRepositoryPostgreSql { get; }
 
     #endregion
 
@@ -27,11 +32,17 @@ public class WorkUnitRepositoryFixture
     /// </summary>
     public WorkUnitRepositoryFixture()
     {
-        var optionsBuilder = new DbContextOptionsBuilder<ContractGpdDbContext>();
-        optionsBuilder.UseSqlServer(ConfigurationHelper.GetConnectionString());
-        var options = optionsBuilder.Options;
+        var optionsBuilderMsSql = new DbContextOptionsBuilder<MsSql.DbContexts.ContractGpdDbContext>();
+        var optionsBuilderPostgreSql = new DbContextOptionsBuilder<PostgreSql.DbContexts.ContractGpdDbContext>();
+        
+        optionsBuilderMsSql.UseSqlServer(ConfigurationHelper.GetConnectionString(Constants.MsSqlDbContractConnectionString));
+        optionsBuilderPostgreSql.UseNpgsql(ConfigurationHelper.GetConnectionString(Constants.PostgreDbContractConnectionString));
+        
+        var optionsMsSql = optionsBuilderMsSql.Options;
+        var optionsPostgreSql = optionsBuilderPostgreSql.Options;
 
-        WorkUnitRepository = new WorkUnitRepository(new ContractGpdDbContext(options));
+        WorkUnitRepositoryMsSql = new WorkUnitRepository(new MsSql.DbContexts.ContractGpdDbContext(optionsMsSql));
+        WorkUnitRepositoryPostgreSql = new WorkUnitRepository(new PostgreSql.DbContexts.ContractGpdDbContext(optionsPostgreSql));
     }
 
     #endregion

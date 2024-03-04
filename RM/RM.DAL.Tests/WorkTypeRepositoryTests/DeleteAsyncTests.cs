@@ -16,27 +16,83 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     #region Поля
 
     /// <summary>
-    /// Репозиторий вида работ.
+    /// Репозиторий вида работ, работающий с MS SQL.
     /// </summary>
-    private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
+    private readonly IWorkTypeRepository _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
+
+    /// <summary>
+    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// </summary>
+    private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
 
     #endregion
 
     #region Методы
 
     /// <summary>
-    /// Тест удаления вида работ для корректных данных из источника данных.
+    /// Тест удаления вида работ для корректных данных из источника данных. MS SQL.
     /// </summary>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForCorrectData(WorkTypeModel workTypeModel)
+    public async Task ForCorrectDataMsSql(WorkTypeModel workTypeModel)
     {      
-        await _repository.CreateAsync(workTypeModel);
+        await ForCorrectData(workTypeModel, _repositoryMsSql);
+    }
 
-        await _repository.DeleteAsync(workTypeModel.Id);
+    /// <summary>
+    /// Тест удаления вида работ для корректных данных из источника данных. MS SQL.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncForCorrectDataTestData),
+                MemberType = typeof(WorkTypeRepositoryTestData))]
+    public async Task ForCorrectDataPostgreSql(WorkTypeModel workTypeModel)
+    {      
+        await ForCorrectData(workTypeModel, _repositoryPostgreSql);
+    }
 
-        var expected = await _repository.GetByIdAsync(workTypeModel.Id);
+    /// <summary>
+    /// Тест удаления несуществующего вида работ. MS SQL.
+    /// </summary>
+    /// <param name="workTypeId">Идентификатор вида работ.</param>
+    [Theory]
+    [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncNotExistedWorkTypeTestData),
+                MemberType = typeof(WorkTypeRepositoryTestData))]
+
+    public async Task NotExistedWorkTypeMsSql(Guid workTypeId)
+    {
+        await NotExistedWorkType(workTypeId, _repositoryMsSql);  
+    }
+
+    /// <summary>
+    /// Тест удаления несуществующего вида работ. PostgreSQL.
+    /// </summary>
+    /// <param name="workTypeId">Идентификатор вида работ.</param>
+    [Theory]
+    [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncNotExistedWorkTypeTestData),
+                MemberType = typeof(WorkTypeRepositoryTestData))]
+
+    public async Task NotExistedWorkTypePostgreSql(Guid workTypeId)
+    {
+        await NotExistedWorkType(workTypeId, _repositoryPostgreSql);  
+    }
+
+
+    #region Закрытые методы
+
+    /// <summary>
+    /// Тест удаления вида работ для корректных данных.
+    /// </summary>
+    /// <param name="workTypeModel">Модель вида работ.</param>
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task ForCorrectData(WorkTypeModel workTypeModel, IWorkTypeRepository repository)
+    {      
+        await repository.CreateAsync(workTypeModel);
+
+        await repository.DeleteAsync(workTypeModel.Id);
+
+        var expected = await repository.GetByIdAsync(workTypeModel.Id);
         
         expected.Should().BeNull();
     }
@@ -45,17 +101,16 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     /// Тест удаления несуществующего вида работ.
     /// </summary>
     /// <param name="workTypeId">Идентификатор вида работ.</param>
-    [Theory]
-    [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncNotExistedWorkTypeTestData),
-                MemberType = typeof(WorkTypeRepositoryTestData))]
-
-    public async Task NotExistedWorkType(Guid workTypeId)
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task NotExistedWorkType(Guid workTypeId, IWorkTypeRepository repository)
     {
-        var action = async () => await _repository.DeleteAsync(workTypeId);
+        var action = async () => await repository.DeleteAsync(workTypeId);
 
         await action.Should().ThrowAsync<DbUpdateConcurrencyException>();    
     }
 
+    #endregion
 
     #endregion
 }

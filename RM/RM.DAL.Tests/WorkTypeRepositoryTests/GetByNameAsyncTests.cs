@@ -14,23 +14,68 @@ public class GetByNameAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixt
     #region Поля
 
     /// <summary>
-    /// Репозиторий вида работ.
+    /// Репозиторий вида работ, работающий с MS SQL.
     /// </summary>
-    private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
+    private readonly IWorkTypeRepository _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
+
+    /// <summary>
+    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// </summary>
+    private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
 
     #endregion
 
     #region Методы
 
     /// <summary>
-    /// Тест получения вида работ по его названию для существующего в источнике данных вида работ.
+    /// Тест получения вида работ по его названию для существующего в источнике данных вида работ. MS SQL.
     /// </summary>
     [Fact]
-    public async Task ForExistedWorkType()
+    public async Task ForExistedWorkTypeMsSql()
     {     
-        var workType = (await _repository.GetAllAsync()).First();
+        await ForExistedWorkType(_repositoryMsSql);
+    }
 
-        var expected = await _repository.GetByNameAsync(workType.Name);
+    /// <summary>
+    /// Тест получения вида работ по его названию для существующего в источнике данных вида работ. PostgreSQL.
+    /// </summary>
+    [Fact]
+    public async Task ForExistedWorkTypePostgreSql()
+    {     
+        await ForExistedWorkType(_repositoryPostgreSql);
+    }
+
+
+    /// <summary>
+    /// Тест получения вида работ по его названию для несуществующего в источнике данных вида работ. MS SQL.
+    /// </summary>
+    [Fact]
+    public async Task ForNotExistedWorkTypeMsSql()
+    {     
+        await ForNotExistedWorkType(_repositoryMsSql);
+    }
+
+    /// <summary>
+    /// Тест получения вида работ по его названию для несуществующего в источнике данных вида работ. PostgreSQL.
+    /// </summary>
+    [Fact]
+    public async Task ForNotExistedWorkTypePostgreSql()
+    {     
+        await ForNotExistedWorkType(_repositoryPostgreSql);
+    }
+
+    #region Закрытые методы
+
+    /// <summary>
+    /// Тест получения вида работ по его названию для существующего в источнике данных вида работ.
+    /// </summary>
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task ForExistedWorkType(IWorkTypeRepository repository)
+    {     
+        var workType = (await repository.GetAllAsync()).First();
+
+        var expected = await repository.GetByNameAsync(workType.Name);
 
         expected.Should().NotBeNull()
                          .And
@@ -40,14 +85,16 @@ public class GetByNameAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixt
     /// <summary>
     /// Тест получения вида работ по его названию для несуществующего в источнике данных вида работ.
     /// </summary>
-    [Fact]
-    public async Task ForNotExistedWorkType()
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task ForNotExistedWorkType(IWorkTypeRepository repository)
     {     
-
-        var expected = await _repository.GetByNameAsync($"WorkTypeName{Guid.NewGuid()}");
+        var expected = await repository.GetByNameAsync($"WorkTypeName{Guid.NewGuid()}");
 
         expected.Should().BeNull();
     }
+
+    #endregion
 
     #endregion
 }

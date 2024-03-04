@@ -14,21 +14,47 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     #region Поля
 
     /// <summary>
-    /// Репозиторий единицы работ.
+    /// Репозиторий единицы работ, работающий с MS SQL.
     /// </summary>
-    private readonly IWorkUnitRepository _repository = fixture.WorkUnitRepository;
+    private readonly IWorkUnitRepository _repositoryMsSql = fixture.WorkUnitRepositoryMsSql;
+
+    /// <summary>
+    /// Репозиторий единицы работ, работающий с PostgreSQL.
+    /// </summary>
+    private readonly IWorkUnitRepository _repositoryPostgreSql = fixture.WorkUnitRepositoryPostgreSql;
 
     #endregion
 
     #region Методы
 
     /// <summary>
-    /// Тест получения всех единиц работ из источника данных.
+    /// Тест получения всех единиц работ из источника данных. MS SQL.
     /// </summary>
     [Fact]
-    public async Task GetAllTest()
+    public async Task GetAllTestMsSql()
     {
-        var expected = await _repository.GetAllAsync();
+        await GetAllTest(_repositoryMsSql);
+    }
+
+    /// <summary>
+    /// Тест получения всех единиц работ из источника данных. PostgreSQL.
+    /// </summary>
+    [Fact]
+    public async Task GetAllTestPostgreSql()
+    {
+        await GetAllTest(_repositoryPostgreSql);
+    }
+
+    #region Закрытые методы
+
+    /// <summary>
+    /// Тест получения всех единиц работ из источника данных.
+    /// </summary>
+    /// <param name="repository">Репозиторий единицы работ.</param>
+    /// <returns/>
+    private async Task GetAllTest(IWorkUnitRepository repository)
+    {
+        var expected = await repository.GetAllAsync();
 
         expected.Should().BeEquivalentTo(new[]
         {
@@ -37,6 +63,8 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
             new WorkUnitModel { Id = 3, Name = "Кв.м." }
         });
     }
+
+    #endregion
 
     #endregion
 }

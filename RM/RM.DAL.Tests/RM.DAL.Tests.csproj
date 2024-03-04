@@ -39,6 +39,7 @@
     <ProjectReference Include="..\RM.DAL.MsSql\RM.DAL.MsSql.csproj" />
     <ProjectReference Include="..\RM.DAL\RM.DAL.csproj" />
     <ProjectReference Include="..\RM.Common\RM.Common.csproj" />
+    <ProjectReference Include="..\RM.DAL.PostgreSql\RM.DAL.PostgreSql.csproj" />
   </ItemGroup>
 
 </Project>

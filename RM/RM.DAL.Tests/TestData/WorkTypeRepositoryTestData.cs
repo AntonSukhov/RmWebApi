@@ -11,7 +11,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     #region Свойства
 
     /// <summary>
-    /// Данные для теста <see cref="CreateAsyncTests.ForCorrectData"/>.
+    /// Данные для теста создания вида работ для корректных входных данных.
     /// </summary>
     public static TheoryData<WorkTypeModel> CreateAsyncForCorrectDataTestData()
     {
@@ -37,8 +37,36 @@ public class WorkTypeRepositoryTestData : PaginationTestData
         };
     }
 
+
     /// <summary>
-    /// Данные для теста <see cref="CreateAsyncTests.ForIncorrectData"/>.
+    /// Данные для теста создания вида работ для корректных входных данных.
+    /// </summary>
+    public static TheoryData<WorkTypeModel> CreateAsyncForCorrectDataTestData2()
+    {
+        return new TheoryData<WorkTypeModel>
+        {
+            new WorkTypeModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Вид работ {Guid.NewGuid()}"
+            },
+            new WorkTypeModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Вид работ {Guid.NewGuid()}",
+                WorkUnitId = 1
+            },
+            new WorkTypeModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Вид работ {Guid.NewGuid()}",
+                WorkUnitId = 2
+            }
+        };
+    }
+
+    /// <summary>
+    /// Данные для теста создания вида работ для некорректных входных данных.
     /// </summary>
     public static TheoryData<WorkTypeModel?> CreateAsyncForIncorrectDataTestData()
     {
@@ -73,7 +101,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
     /// <summary>
-    /// Данные для теста <see cref="DeleteAsyncTests.ForCorrectData"/>.
+    /// Данные для теста удаления вида работ для корректных входных данных.
     /// </summary>
     public static TheoryData<WorkTypeModel> DeleteAsyncForCorrectDataTestData()
     {
@@ -100,7 +128,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
     /// <summary>
-    /// Данные для теста <see cref="DeleteAsyncTests.NotExistedWorkType"/>.
+    /// Данные для теста удаления несуществующего вида работ.
     /// </summary>
     public static TheoryData<Guid> DeleteAsyncNotExistedWorkTypeTestData()
     {
@@ -112,7 +140,7 @@ public class WorkTypeRepositoryTestData : PaginationTestData
     }
 
     /// <summary>
-    /// Данные для теста <see cref="UpdateAsyncTests.ForCorrectInputData"/>.
+    /// Данные для теста обновления вида работ для корректных входных данных.
     /// </summary>
     public static TheoryData<WorkTypeModel, string, byte?> UpdateAsyncForCorrectInputDataTestData()
     {
@@ -160,8 +188,8 @@ public class WorkTypeRepositoryTestData : PaginationTestData
         };
     }
 
-     /// <summary>
-    /// Данные для теста <see cref="UpdateAsyncTests.ForIncorrectWorkTypeNameOrWorkUnitId"/>.
+    /// <summary>
+    /// Данные для теста обновления вида работ для некорректных входных данных.
     /// </summary>
     public static TheoryData<WorkTypeModel, string?, byte?> UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTestData()
     {

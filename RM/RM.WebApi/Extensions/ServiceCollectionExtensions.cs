@@ -5,11 +5,10 @@ using RM.BLL;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Services;
 using RM.BLL.Validators;
+using RM.Common.Services;
 using RM.DAL;
 using RM.DAL.Abstractions.Repositories;
-using RM.DAL.MsSql.DbContexts;
 using RM.DAL.Repositories;
-using RM.WebApi.Services;
 
 namespace RM.WebApi.Extensions;
 
@@ -30,7 +29,12 @@ public static class ServiceCollectionExtensions
         if (configuration.GetValue<string>(Constants.DataStorageTypeString) == Constants.MsSqlServer)
         {
             //TODO: вынести UseSqlServer отсюда
-            services.AddDbContext<ContractGpdDbContextBase, ContractGpdDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(Constants.DefaultConnectionString)));
+            services.AddDbContext<ContractGpdDbContextBase, DAL.MsSql.DbContexts.ContractGpdDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(Constants.MsSqlDbContractConnectionString)));
+        }
+        else if (configuration.GetValue<string>(Constants.DataStorageTypeString) == Constants.PostgreSql)
+        {
+            //TODO: вынести UseNpgsql отсюда
+            services.AddDbContext<ContractGpdDbContextBase, DAL.PostgreSql.DbContexts.ContractGpdDbContext>(options => options.UseNpgsql(configuration.GetConnectionString(Constants.PostgreDbContractConnectionString)));
         }
     }
 

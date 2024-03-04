@@ -1,4 +1,4 @@
-﻿namespace RM.WebApi.Services;
+﻿namespace RM.Common.Services;
 
 /// <summary>
 /// Сервис для работы с константами.
@@ -7,7 +7,9 @@ public static class Constants
 {
     #region Поля
 
-    public const string DefaultConnectionString = "DefaultConnection";
+    public const string MsSqlDbContractConnectionString = "MsSqlDbContractConnection";
+
+    public const string PostgreDbContractConnectionString = "PostgreDbContractConnection";
 
     public const string DataStorageTypeString = "DataStorageType";
 

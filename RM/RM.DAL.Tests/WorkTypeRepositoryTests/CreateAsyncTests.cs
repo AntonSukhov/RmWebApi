@@ -10,32 +10,90 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 /// Тесты для метода <see cref="IWorkTypeRepository.CreateAsync"/>.
 /// </summary>
 /// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
-public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
+public class CreateAsyncTests: IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
     /// <summary>
-    /// Репозиторий вида работ.
+    /// Репозиторий вида работ, работающий с MS SQL.
     /// </summary>
-    private readonly IWorkTypeRepository _repository = fixture.WorkTypeRepository;
+    private readonly IWorkTypeRepository _repositoryMsSql;
+
+    /// <summary>
+    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// </summary>
+    private readonly IWorkTypeRepository _repositoryPostgreSql;
 
     #endregion
+
+
+    public CreateAsyncTests(WorkTypeRepositoryFixture fixture)
+    {
+        _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
+        _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
+    }
 
     #region Методы
 
     /// <summary>
-    /// Тест создания вида работ для корректных входных данных.
+    /// Тест создания вида работ для корректных входных данных. MS SQL.
     /// </summary>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForCorrectData(WorkTypeModel workTypeModel)
+    public async Task ForCorrectDataMsSql(WorkTypeModel workTypeModel)
     {      
-        await _repository.CreateAsync(workTypeModel);
+        await ForCorrectData(workTypeModel, _repositoryMsSql);
+    }
 
-        var expected = await _repository.GetByIdAsync(workTypeModel.Id);
+    /// <summary>
+    /// Тест создания вида работ для корректных входных данных. PostgreSQL.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForCorrectDataTestData2),
+                MemberType = typeof(WorkTypeRepositoryTestData))]
+    public async Task ForCorrectDataPostgreSql(WorkTypeModel workTypeModel)
+    {      
+        await ForCorrectData(workTypeModel, _repositoryPostgreSql);
+    }
+
+    /// <summary>
+    /// Тест создания вида работ для некорректных входных данных. MS SQL.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
+                MemberType = typeof(WorkTypeRepositoryTestData))]
+    public async Task ForIncorrectDataMsSql(WorkTypeModel? workTypeModel)
+    {      
+         await ForIncorrectData(workTypeModel, _repositoryMsSql);
+    }
+
+    /// <summary>
+    /// Тест создания вида работ для некорректных входных данных. PostgreSQL.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
+                MemberType = typeof(WorkTypeRepositoryTestData))]
+    public async Task ForIncorrectDataPostgreSql(WorkTypeModel? workTypeModel)
+    {      
+         await ForIncorrectData(workTypeModel, _repositoryPostgreSql);
+    }
+
+    #region Закрытые методы
+
+    /// <summary>
+    /// Тест создания вида работ для корректных входных данных.
+    /// </summary>
+    /// <param name="workTypeModel">Модель вида работ.</param>
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task ForCorrectData(WorkTypeModel workTypeModel, IWorkTypeRepository repository)
+    {      
+        await repository.CreateAsync(workTypeModel);
+
+        var expected = await repository.GetByIdAsync(workTypeModel.Id);
         
-        await _repository.DeleteAsync(workTypeModel.Id);
+        await repository.DeleteAsync(workTypeModel.Id);
 
         expected.Should().NotBeNull()
                          .And
@@ -46,15 +104,18 @@ public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     /// <summary>
     /// Тест создания вида работ для некорректных входных данных.
     /// </summary>
-    [Theory]
-    [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
-                MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForIncorrectData(WorkTypeModel? workTypeModel)
+    /// <param name="workTypeModel">Модель вида работ.</param>
+    /// <param name="repository">Репозиторий вида работ.</param>
+    /// <returns/>
+    private async Task ForIncorrectData(WorkTypeModel? workTypeModel, IWorkTypeRepository repository)
     {      
-        var action = async () => await _repository.CreateAsync(workTypeModel);
+        var action = async () => await repository.CreateAsync(workTypeModel);
 
         await action.Should().ThrowAsync<Exception>();
     }
 
+
+    #endregion 
+    
     #endregion
 }

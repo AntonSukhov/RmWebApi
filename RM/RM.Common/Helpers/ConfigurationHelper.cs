@@ -8,23 +8,20 @@ namespace RM.Common.Helpers;
 /// </summary>
 public static class ConfigurationHelper
 {
-    #region Поля
-
-    private static readonly ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-
-    #endregion
-
     #region Методы
 
     /// <summary>
     /// Получает строку подключения к БД.
-    /// </summary>
-    /// <param name="configFilePath">Путь к конфигурационному файлу.</param>
+    /// </summary>   
     /// <param name="connectionSectionName">Название секции конфигурационного файла для подключения к базе данных.</param>
+    /// <param name="configFilePath">Путь к конфигурационному файлу.</param>
     /// <returns>Строка подключения к БД.</returns>
-    public static string? GetConnectionString(string configFilePath = "appconfig.json", string connectionSectionName = "DefaultConnection") 
-    {
-        return configurationBuilder.AddJsonFile(configFilePath).Build().GetConnectionString(connectionSectionName);
+    public static string? GetConnectionString(string connectionSectionName, string configFilePath = "appconfig.json") 
+    {      
+
+        return new ConfigurationBuilder().AddJsonFile(configFilePath)
+                                         .Build()
+                                         .GetConnectionString(connectionSectionName);
     } 
 
     #endregion
