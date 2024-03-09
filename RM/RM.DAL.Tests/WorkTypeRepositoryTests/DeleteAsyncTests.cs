@@ -32,7 +32,7 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     /// <summary>
     /// Тест удаления вида работ для корректных данных из источника данных. MS SQL.
     /// </summary>
-    [Theory]
+    [Theory(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
     [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForCorrectDataMsSql(WorkTypeModel workTypeModel)
@@ -55,7 +55,7 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     /// Тест удаления несуществующего вида работ. MS SQL.
     /// </summary>
     /// <param name="workTypeId">Идентификатор вида работ.</param>
-    [Theory]
+    [Theory(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
     [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncNotExistedWorkTypeTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
 

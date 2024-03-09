@@ -11,24 +11,12 @@ namespace RM.BLL.Tests.WorkUnitServiceTests;
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeService.GetAllAsync"/>.
 /// </summary>
-public class GetAllAsyncTests : IClassFixture<WorkUnitServiceFixture>
+/// <param name="fixture">Настройка контекста для тестирования сервиса единиц работ.</param>
+public class GetAllAsyncTests(WorkUnitServiceFixture fixture) : IClassFixture<WorkUnitServiceFixture>
 {
     #region Поля
 
-    private readonly Mock<IWorkUnitRepository> _repositoryMock;
-
-    #endregion
-
-    #region Конструкторы
-
-    /// <summary>
-    /// Конструктор.
-    /// </summary>
-    /// <param name="fixture"></param>
-    public GetAllAsyncTests(WorkUnitServiceFixture fixture)
-    {
-        _repositoryMock = fixture?.WorkUnitRepositoryMock ?? throw new ArgumentNullException(nameof(fixture));
-    }
+    private readonly Mock<IWorkUnitRepository> _repositoryMock = fixture.WorkUnitRepositoryMock;
 
     #endregion
 

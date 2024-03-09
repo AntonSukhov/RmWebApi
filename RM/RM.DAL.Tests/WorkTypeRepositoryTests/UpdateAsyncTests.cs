@@ -36,7 +36,7 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         /// <param name="workTypeName">Название вида работ.</param>
         /// <param name="workUnitId">ИД единицы работ.</param>
         /// <returns/>
-        [Theory]
+        [Theory(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForCorrectInputDataTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
         public async Task ForCorrectInputDataMsSql(WorkTypeModel workTypeModel, string workTypeName, byte? workUnitId)
@@ -68,7 +68,7 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         /// <param name="workUnitId">ИД единицы работ.</param>
         /// <param name="repository">Репозиторий вида работ.</param>
         /// <returns/>
-        [Theory]
+        [Theory(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
         public async Task ForIncorrectWorkTypeNameOrWorkUnitIdMsSql(WorkTypeModel workTypeModel, string? workTypeName, 

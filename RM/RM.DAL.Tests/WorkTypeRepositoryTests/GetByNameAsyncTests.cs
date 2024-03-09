@@ -30,7 +30,7 @@ public class GetByNameAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixt
     /// <summary>
     /// Тест получения вида работ по его названию для существующего в источнике данных вида работ. MS SQL.
     /// </summary>
-    [Fact]
+    [Fact(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
     public async Task ForExistedWorkTypeMsSql()
     {     
         await ForExistedWorkType(_repositoryMsSql);
@@ -49,7 +49,7 @@ public class GetByNameAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixt
     /// <summary>
     /// Тест получения вида работ по его названию для несуществующего в источнике данных вида работ. MS SQL.
     /// </summary>
-    [Fact]
+    [Fact(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
     public async Task ForNotExistedWorkTypeMsSql()
     {     
         await ForNotExistedWorkType(_repositoryMsSql);

@@ -38,7 +38,7 @@ public class CreateAsyncTests: IClassFixture<WorkTypeRepositoryFixture>
     /// <summary>
     /// Тест создания вида работ для корректных входных данных. MS SQL.
     /// </summary>
-    [Theory]
+    [Theory(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForCorrectDataMsSql(WorkTypeModel workTypeModel)
@@ -60,7 +60,7 @@ public class CreateAsyncTests: IClassFixture<WorkTypeRepositoryFixture>
     /// <summary>
     /// Тест создания вида работ для некорректных входных данных. MS SQL.
     /// </summary>
-    [Theory]
+    [Theory(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForIncorrectDataMsSql(WorkTypeModel? workTypeModel)

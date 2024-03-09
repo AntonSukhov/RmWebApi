@@ -25,7 +25,7 @@ public class PaginationTestData
         return new TheoryData<PageOptionsModel?>
         {
             null,
-            new PageOptionsModel(){ PageNumber = 1, PageSize = 100}
+            new() { PageNumber = 1, PageSize = 100}
         };
     }
     
@@ -37,12 +37,12 @@ public class PaginationTestData
     {
         return new TheoryData<PageOptionsModel>
         {
-            new PageOptionsModel(){ PageNumber = 0, PageSize = 0},
-            new PageOptionsModel(){ PageNumber = 1, PageSize = 0},
-            new PageOptionsModel(){ PageNumber = 0, PageSize = -100},
-            new PageOptionsModel(){ PageNumber = 1, PageSize = -100},
-            new PageOptionsModel(){ PageNumber = -1, PageSize = 100},
-            new PageOptionsModel(){ PageNumber = -1, PageSize = -100},
+            new(){ PageNumber = 0, PageSize = 0},
+            new(){ PageNumber = 1, PageSize = 0},
+            new(){ PageNumber = 0, PageSize = -100},
+            new(){ PageNumber = 1, PageSize = -100},
+            new(){ PageNumber = -1, PageSize = 100},
+            new(){ PageNumber = -1, PageSize = -100},
         };
     }
     #endregion
