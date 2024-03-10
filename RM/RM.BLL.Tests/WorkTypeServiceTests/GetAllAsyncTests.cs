@@ -39,14 +39,10 @@ public class GetAllAsyncTests(WorkTypeServiceFixture fixture) : IClassFixture<Wo
                                 new WorkTypeModel { Id = Guid.NewGuid(), Name = "Вид работ 4", WorkUnitId = 3, WorkUnit = new WorkUnitModel { Id = 3, Name = "Кв.м."} }
                             };
 
-        var repositoryMock = new Mock<IWorkTypeRepository>();
-        var workTypeValidator = new WorkTypeValidator();
-        var pageOptionsValidator = new PageOptionsValidator();
-
-        repositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
+        _repositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
                       .ReturnsAsync(workTypes);
 
-        var workTypeService = new WorkTypeService(repositoryMock.Object, workTypeValidator, pageOptionsValidator);
+        var workTypeService = new WorkTypeService(_repositoryMock.Object, _workTypeValidator, _pageOptionsValidator);
 
         var expected = await workTypeService.GetAllAsync(pageOptionsModel);
 
