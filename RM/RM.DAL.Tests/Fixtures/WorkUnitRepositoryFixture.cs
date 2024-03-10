@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using RM.Common.Helpers;
 using RM.Common.Services;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Repositories;
+using RM.DAL.Tests.TestData;
 
 namespace RM.DAL.Tests.Fixtures;
 
@@ -23,6 +25,11 @@ public class WorkUnitRepositoryFixture
     /// </summary>
     public IWorkUnitRepository WorkUnitRepositoryPostgreSql { get; }
 
+    /// <summary>
+    /// Тестируемый репозиторий, работающий с базой данных SQLite в памяти.
+    /// </summary>
+    public IWorkUnitRepository WorkUnitRepositorySqliteInMemory { get; }
+
     #endregion
 
     #region Конструкторы
@@ -40,9 +47,31 @@ public class WorkUnitRepositoryFixture
         
         var optionsMsSql = optionsBuilderMsSql.Options;
         var optionsPostgreSql = optionsBuilderPostgreSql.Options;
+     
+        var connection = new SqliteConnection("Filename=:memory:");
+        connection.Open();
+
+        var optionsSqliteInMemory = new DbContextOptionsBuilder<ContractGpdDbContextSqliteInMemory>()
+            .UseSqlite(connection)
+            .Options;
+
+        var context = new ContractGpdDbContextSqliteInMemory(optionsSqliteInMemory);
+        using var command = context.Database.GetDbConnection().CreateCommand();
+        command.CommandText = @"CREATE TABLE ""WorkUnits"" (
+                                    ""Id"" INTEGER NOT NULL,
+                                    ""Name"" TEXT NOT NULL,
+                                    PRIMARY KEY(""Id"")
+                                );";
+
+        command.ExecuteNonQuery();
+        
+        context.AddRange(DataBaseTestData.GetWorkUnits());
+        
+        context.SaveChanges();
 
         WorkUnitRepositoryMsSql = new WorkUnitRepository(new MsSql.DbContexts.ContractGpdDbContext(optionsMsSql));
         WorkUnitRepositoryPostgreSql = new WorkUnitRepository(new PostgreSql.DbContexts.ContractGpdDbContext(optionsPostgreSql));
+        WorkUnitRepositorySqliteInMemory = new WorkUnitRepository(new ContractGpdDbContextSqliteInMemory(optionsSqliteInMemory));
     }
 
     #endregion

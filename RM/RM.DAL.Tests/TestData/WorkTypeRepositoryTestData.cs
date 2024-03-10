@@ -1,5 +1,4 @@
 ﻿using RM.DAL.Abstractions.Models;
-using RM.DAL.Tests.WorkTypeRepositoryTests;
 
 namespace RM.DAL.Tests.TestData;
 

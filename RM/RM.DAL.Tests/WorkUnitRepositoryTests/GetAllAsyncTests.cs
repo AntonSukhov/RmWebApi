@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
-using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
+using RM.DAL.Tests.TestData;
 
 namespace RM.DAL.Tests.WorkUnitRepositoryTests;
 
@@ -23,26 +23,40 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     /// </summary>
     private readonly IWorkUnitRepository _repositoryPostgreSql = fixture.WorkUnitRepositoryPostgreSql;
 
+    /// <summary>
+    /// Репозиторий единицы работ, работающий с SQLite в памяти.
+    /// </summary>
+    private readonly IWorkUnitRepository _repositorySqliteInMemory = fixture.WorkUnitRepositorySqliteInMemory;
+    
     #endregion
 
     #region Методы
 
     /// <summary>
-    /// Тест получения всех единиц работ из источника данных. MS SQL.
+    /// Тест получения всех единиц работ из источника данных MS SQL.
     /// </summary>
     [Fact(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
-    public async Task GetAllTestMsSql()
+    public async Task ForMsSql()
     {
         await GetAllTest(_repositoryMsSql);
     }
 
     /// <summary>
-    /// Тест получения всех единиц работ из источника данных. PostgreSQL.
+    /// Тест получения всех единиц работ из источника данных PostgreSQL.
     /// </summary>
     [Fact]
-    public async Task GetAllTestPostgreSql()
+    public async Task ForPostgreSql()
     {
         await GetAllTest(_repositoryPostgreSql);
+    }
+
+    /// <summary>
+    /// Тест получения всех единиц работ из источника данных SQLite в памяти.
+    /// </summary>
+    [Fact]
+    public async Task ForSqliteInMemory()
+    {
+        await GetAllTest(_repositorySqliteInMemory);
     }
 
     #region Закрытые методы
@@ -56,14 +70,9 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     {
         var expected = await repository.GetAllAsync();
 
-        expected.Should().BeEquivalentTo(new[]
-        {
-            new WorkUnitModel { Id = 1, Name = "машина" },
-            new WorkUnitModel { Id = 2, Name = "шт." },
-            new WorkUnitModel { Id = 3, Name = "Кв.м." }
-        });
+        expected.Should().BeEquivalentTo(DataBaseTestData.GetWorkUnits());
     }
-
+    
     #endregion
 
     #endregion
