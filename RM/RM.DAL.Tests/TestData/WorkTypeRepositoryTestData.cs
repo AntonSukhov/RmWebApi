@@ -36,34 +36,6 @@ public class WorkTypeRepositoryTestData : PaginationTestData
         };
     }
 
-
-    /// <summary>
-    /// Данные для теста создания вида работ для корректных входных данных.
-    /// </summary>
-    public static TheoryData<WorkTypeModel> CreateAsyncForCorrectDataTestData2()
-    {
-        return new TheoryData<WorkTypeModel>
-        {
-            new WorkTypeModel()
-            {
-                Id = Guid.NewGuid(),
-                Name = $"Вид работ {Guid.NewGuid()}"
-            },
-            new WorkTypeModel()
-            {
-                Id = Guid.NewGuid(),
-                Name = $"Вид работ {Guid.NewGuid()}",
-                WorkUnitId = 1
-            },
-            new WorkTypeModel()
-            {
-                Id = Guid.NewGuid(),
-                Name = $"Вид работ {Guid.NewGuid()}",
-                WorkUnitId = 2
-            }
-        };
-    }
-
     /// <summary>
     /// Данные для теста создания вида работ для некорректных входных данных.
     /// </summary>
@@ -183,6 +155,33 @@ public class WorkTypeRepositoryTestData : PaginationTestData
                 }, 
                 $"Вид работ {Guid.NewGuid()}",
                 1
+            }
+        };
+    }
+
+
+    /// <summary>
+    /// Данные для теста обновления вида работ для корректных входных данных в 
+    /// источник данных Sqlite в памяти.
+    /// </summary>
+    public static TheoryData<WorkTypeModel, string, byte?> UpdateAsyncForCorrectInputDataInSqliteInMemoryTestData()
+    {
+        return new TheoryData<WorkTypeModel, string, byte?>
+        {
+            {   
+                DataBaseTestData.WorkTypes.First(), 
+                $"Вид работ {Guid.NewGuid()}", 
+                DataBaseTestData.WorkUnits.First().Id
+            },
+            {   
+                DataBaseTestData.WorkTypes.First(),
+                $"Вид работ {Guid.NewGuid()}", 
+                DataBaseTestData.WorkUnits.Last().Id 
+            },
+            {   
+                DataBaseTestData.WorkTypes.Last(), 
+                $"Вид работ {Guid.NewGuid()}",
+                null
             }
         };
     }

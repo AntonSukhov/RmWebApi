@@ -65,7 +65,7 @@ public class WorkUnitRepositoryFixture
 
         command.ExecuteNonQuery();
         
-        context.AddRange(DataBaseTestData.GetWorkUnits());
+        context.AddRange(DataBaseTestData.WorkUnits);
         
         context.SaveChanges();
 

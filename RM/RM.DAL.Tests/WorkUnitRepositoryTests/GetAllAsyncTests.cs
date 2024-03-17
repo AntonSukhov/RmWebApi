@@ -35,8 +35,8 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     /// <summary>
     /// Тест получения всех единиц работ из источника данных MS SQL.
     /// </summary>
-    [Fact(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
-    public async Task ForMsSql()
+    [Fact]
+    public async Task FromMsSql()
     {
         await GetAllTest(_repositoryMsSql);
     }
@@ -45,7 +45,7 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     /// Тест получения всех единиц работ из источника данных PostgreSQL.
     /// </summary>
     [Fact]
-    public async Task ForPostgreSql()
+    public async Task FromPostgreSql()
     {
         await GetAllTest(_repositoryPostgreSql);
     }
@@ -54,7 +54,7 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     /// Тест получения всех единиц работ из источника данных SQLite в памяти.
     /// </summary>
     [Fact]
-    public async Task ForSqliteInMemory()
+    public async Task FromSqliteInMemory()
     {
         await GetAllTest(_repositorySqliteInMemory);
     }
@@ -66,11 +66,11 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     /// </summary>
     /// <param name="repository">Репозиторий единицы работ.</param>
     /// <returns/>
-    private async Task GetAllTest(IWorkUnitRepository repository)
+    private static async Task GetAllTest(IWorkUnitRepository repository)
     {
         var expected = await repository.GetAllAsync();
 
-        expected.Should().BeEquivalentTo(DataBaseTestData.GetWorkUnits());
+        expected.Should().BeEquivalentTo(DataBaseTestData.WorkUnits);
     }
     
     #endregion

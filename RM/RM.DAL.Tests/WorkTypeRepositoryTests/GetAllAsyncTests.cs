@@ -2,6 +2,7 @@
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
+using RM.DAL.Tests.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 
@@ -23,59 +24,25 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     /// </summary>
     private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
 
+    /// <summary>
+    /// Репозиторий вида работ, работающий с SQLite в памяти.
+    /// </summary>
+    private readonly IWorkTypeRepository _repositorySqliteInMemory = fixture.WorkTypeRepositorySqliteInMemory;
+
     #endregion
 
     #region Методы
 
     /// <summary>
-    /// Тест получения видов работ. MS SQL.
-    /// </summary>
-    [Theory(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
-    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), MemberType = typeof(PaginationTestData))]
-    public async Task ForCorrectPageOptionsMsSql(PageOptionsModel? pageOptions)
-    {
-        await ForCorrectPageOptions(pageOptions, _repositoryMsSql);
-    }
-
-    /// <summary>
-    /// Тест получения видов работ. PostgreSQL.
+    /// Тест получения видов работ для корректных настроек страницы из 
+    /// источника данных MS SQL.
     /// </summary>
     [Theory]
-    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), MemberType = typeof(PaginationTestData))]
-    public async Task ForCorrectPageOptionsPostgreSql(PageOptionsModel? pageOptions)
+    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), 
+                MemberType = typeof(PaginationTestData))]
+    public async Task ForCorrectPageOptionsFromMsSql(PageOptionsModel? pageOptions)
     {
-        await ForCorrectPageOptions(pageOptions, _repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест получения видов работ для некорректных настроек страницы. MS SQL.
-    /// </summary>
-    [Fact(Skip = "На Linux нельзя установить MS SQL Server, поэтому отключил тест.")]
-    public async Task ForIncorrectPageOptionsMsSql()
-    {
-        await ForIncorrectPageOptions(_repositoryMsSql);
-    }
-
-    /// <summary>
-    /// Тест получения видов работ для некорректных настроек страницы. PostgreSQL.
-    /// </summary>
-    [Fact]
-    public async Task ForIncorrectPageOptionsPostgreSql()
-    {
-        await ForIncorrectPageOptions(_repositoryPostgreSql);
-    }
-
-    #region Закрытые методы
-
-    /// <summary>
-    /// Тест получения видов работ.
-    /// </summary>
-    /// <param name="pageOptions">Модель настроек стараницы.</param>
-    /// <param name="repository">Репозиторий вида работ.</param>
-    /// <returns/>
-    private async Task ForCorrectPageOptions(PageOptionsModel? pageOptions, IWorkTypeRepository repository)
-    {
-        var expected = await repository.GetAllAsync(pageOptions);
+        var expected = await _repositoryMsSql.GetAllAsync(pageOptions);
 
         expected.Should().NotBeNull()
                          .And
@@ -83,11 +50,84 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     }
 
     /// <summary>
+    /// Тест получения видов работ для корректных настроек страницы из 
+    /// источника данных PostgreSQL.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), 
+                MemberType = typeof(PaginationTestData))]
+    public async Task ForCorrectPageOptionsFromPostgreSql(PageOptionsModel? pageOptions)
+    {
+        var expected = await _repositoryPostgreSql.GetAllAsync(pageOptions);
+
+        expected.Should().NotBeNull()
+                         .And
+                         .HaveCountGreaterThan(0);
+    }
+
+    /// <summary>
+    /// Тест получения видов работ для корректных настроек страницы из 
+    /// источника данных SQLite в памяти.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), 
+                MemberType = typeof(PaginationTestData))]
+    public async Task ForCorrectPageOptionsFromSqliteInMemory(PageOptionsModel? pageOptions)
+    {
+        var expected = await _repositorySqliteInMemory.GetAllAsync(pageOptions);
+
+        expected.Should().NotBeNull()
+                         .And
+                         .HaveCount(DataBaseTestData.WorkTypes.Count());
+    }
+
+    /// <summary>
+    /// Тест получения видов работ для некорректных настроек страницы из 
+    /// источника данных MS SQL.
+    /// </summary>
+    [Fact]
+    public async Task ForIncorrectPageOptionsFromMsSql()
+    {
+        await ForIncorrectPageOptions(_repositoryMsSql);
+    }
+
+    /// <summary>
+    /// Тест получения видов работ для некорректных настроек страницы из 
+    /// источника данных PostgreSQL.
+    /// </summary>
+    [Fact]
+    public async Task ForIncorrectPageOptionsFromPostgreSql()
+    {
+        await ForIncorrectPageOptions(_repositoryPostgreSql);
+    }
+
+    /// <summary>
+    /// Тест получения видов работ для некорректных настроек страницы из 
+    /// источника данных SQLite в памяти.
+    /// </summary>
+    [Fact]
+    public async Task ForIncorrectPageOptionsFromSqliteInMemory()
+    {
+        var expectedRowCount = 0;
+
+        foreach (var pageOptions in PaginationTestData.GetIncorrectPageOptions())
+        {
+            async Task<IEnumerable<WorkTypeModel>> action() => await _repositorySqliteInMemory.GetAllAsync(pageOptions);
+            var expected = await action();
+            expectedRowCount += expected.Count();
+        }
+
+        expectedRowCount.Should().Be(DataBaseTestData.WorkTypes.Count() * 2);
+    }
+
+    #region Закрытые методы
+
+    /// <summary>
     /// Тест получения видов работ для некорректных настроек страницы.
     /// </summary>
     /// <param name="repository">Репозиторий вида работ.</param>
     /// <returns/>
-    private async Task ForIncorrectPageOptions(IWorkTypeRepository repository)
+    private static async Task ForIncorrectPageOptions(IWorkTypeRepository repository)
     {
         var errors = new List<Exception>();
 
@@ -95,8 +135,8 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
         {
             try
             {
-                var action = async () => await repository.GetAllAsync(pageOptions);
-                await action.Invoke();
+                async Task<IEnumerable<WorkTypeModel>> action() => await repository.GetAllAsync(pageOptions);
+                var expected = await action();
             }
             catch (Exception ex)
             {
