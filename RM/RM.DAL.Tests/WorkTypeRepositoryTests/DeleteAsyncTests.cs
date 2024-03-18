@@ -4,6 +4,7 @@ using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
 using RM.DAL.Tests.TestData;
+using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 
@@ -65,7 +66,7 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     [Fact]
     public async Task ForCorrectDataFromSqliteInMemory()
     {      
-        var workTypeId = DataBaseTestData.WorkTypes.First().Id;
+        var workTypeId = DataSourceTestData.WorkTypes.First().Id;
 
         await _repositorySqliteInMemory.DeleteAsync(workTypeId);
 

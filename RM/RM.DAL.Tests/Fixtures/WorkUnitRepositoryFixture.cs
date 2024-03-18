@@ -4,7 +4,7 @@ using RM.Common.Helpers;
 using RM.Common.Services;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Repositories;
-using RM.DAL.Tests.TestData;
+using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.Fixtures;
 
@@ -65,7 +65,7 @@ public class WorkUnitRepositoryFixture
 
         command.ExecuteNonQuery();
         
-        context.AddRange(DataBaseTestData.WorkUnits);
+        context.AddRange(DataSourceTestData.WorkUnits);
         
         context.SaveChanges();
 

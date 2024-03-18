@@ -2,7 +2,7 @@
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
-using RM.DAL.Tests.TestData;
+using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 
@@ -78,7 +78,7 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
 
         expected.Should().NotBeNull()
                          .And
-                         .HaveCount(DataBaseTestData.WorkTypes.Count());
+                         .HaveCount(DataSourceTestData.WorkTypes.Count());
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
             expectedRowCount += expected.Count();
         }
 
-        expectedRowCount.Should().Be(DataBaseTestData.WorkTypes.Count() * 2);
+        expectedRowCount.Should().Be(DataSourceTestData.WorkTypes.Count() * 2);
     }
 
     #region Закрытые методы

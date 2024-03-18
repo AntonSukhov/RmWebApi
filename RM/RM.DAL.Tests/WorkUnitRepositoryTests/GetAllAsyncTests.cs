@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
-using RM.DAL.Tests.TestData;
+using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.WorkUnitRepositoryTests;
 
@@ -70,7 +70,7 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     {
         var expected = await repository.GetAllAsync();
 
-        expected.Should().BeEquivalentTo(DataBaseTestData.WorkUnits);
+        expected.Should().BeEquivalentTo(DataSourceTestData.WorkUnits);
     }
     
     #endregion

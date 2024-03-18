@@ -2,7 +2,7 @@
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
-using RM.DAL.Tests.TestData;
+using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 
@@ -60,16 +60,12 @@ public class GetByNameAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixt
     [Fact]
     public async Task ForExistedWorkTypeInSqliteInMemory()
     {     
-        var workType = DataBaseTestData.WorkTypes.FirstOrDefault()?? 
+        var workType = DataSourceTestData.WorkTypes.FirstOrDefault()?? 
                        new WorkTypeModel();
 
         var expected = await _repositorySqliteInMemory.GetByNameAsync(workType.Name);
 
-        expected.Should().NotBeNull()
-                         .And
-                         .Match<WorkTypeModel>(p => p.Id == workType.Id && 
-                                                    p.Name == workType.Name && 
-                                                    p.WorkUnitId == workType.WorkUnitId);
+        expected.Should().BeEquivalentTo(workType);
     }
 
 
@@ -116,9 +112,7 @@ public class GetByNameAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixt
 
         var expected = await repository.GetByNameAsync(workType.Name);
 
-        expected.Should().NotBeNull()
-                         .And
-                         .Match<WorkTypeModel>(p => p.Id == workType.Id && p.Name == workType.Name && p.WorkUnitId == workType.WorkUnitId);
+        expected.Should().BeEquivalentTo(workType);
     }
 
     /// <summary>

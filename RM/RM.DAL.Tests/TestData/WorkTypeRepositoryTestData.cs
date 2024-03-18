@@ -1,4 +1,5 @@
 ﻿using RM.DAL.Abstractions.Models;
+using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.TestData;
 
@@ -169,17 +170,17 @@ public class WorkTypeRepositoryTestData : PaginationTestData
         return new TheoryData<WorkTypeModel, string, byte?>
         {
             {   
-                DataBaseTestData.WorkTypes.First(), 
+                DataSourceTestData.WorkTypes.First(), 
                 $"Вид работ {Guid.NewGuid()}", 
-                DataBaseTestData.WorkUnits.First().Id
+                DataSourceTestData.WorkUnits.First().Id
             },
             {   
-                DataBaseTestData.WorkTypes.First(),
+                DataSourceTestData.WorkTypes.First(),
                 $"Вид работ {Guid.NewGuid()}", 
-                DataBaseTestData.WorkUnits.Last().Id 
+                DataSourceTestData.WorkUnits.Last().Id 
             },
             {   
-                DataBaseTestData.WorkTypes.Last(), 
+                DataSourceTestData.WorkTypes.Last(), 
                 $"Вид работ {Guid.NewGuid()}",
                 null
             }
