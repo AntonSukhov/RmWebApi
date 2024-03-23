@@ -8,7 +8,7 @@ namespace RM.DAL.Tests.TestData;
 /// </summary>
 public class WorkTypeRepositoryTestData : PaginationTestData
 {
-    #region Свойства
+    #region Методы
 
     /// <summary>
     /// Данные для теста создания вида работ для корректных входных данных.
@@ -67,6 +67,35 @@ public class WorkTypeRepositoryTestData : PaginationTestData
             {
                 Id = Guid.NewGuid(), 
                 Name = new string('n', 201),
+                WorkUnitId = 2
+            }
+        };
+    }
+
+    /// <summary>
+    /// Данные для теста создания вида работ для некорректных входных данных. Второй набор данных.
+    /// </summary>
+    public static TheoryData<WorkTypeModel?> CreateAsyncForIncorrectDataTestDataSecond()
+    {
+        return new TheoryData<WorkTypeModel?>
+        {
+            null,
+            new WorkTypeModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Вид работ {Guid.NewGuid()}",
+                WorkUnitId = byte.MaxValue
+            },
+            new WorkTypeModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Вид работ {Guid.NewGuid()}",
+                WorkUnitId = byte.MinValue
+            },
+            new WorkTypeModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = null,
                 WorkUnitId = 2
             }
         };

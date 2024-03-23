@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RM.BLL;
 using RM.BLL.Abstractions.Services;
+using RM.BLL.Abstractions.Validators;
 using RM.BLL.Services;
 using RM.BLL.Validators;
 using RM.Common.Services;
@@ -64,8 +65,8 @@ public static class ServiceCollectionExtensions
     /// <param name="services">Коллекция сервисов.</param>
     public static void RegisterValidators(this IServiceCollection services)
     {
-        services.AddSingleton<PageOptionsValidator>();
-        services.AddSingleton<WorkTypeValidator>();
+        services.AddSingleton<IPageOptionsValidator, PageOptionsValidator>();
+        services.AddSingleton<IWorkTypeValidator, WorkTypeValidator>();
     }
 
     #endregion

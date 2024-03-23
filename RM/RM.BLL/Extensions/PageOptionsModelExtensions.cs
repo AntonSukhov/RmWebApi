@@ -1,11 +1,11 @@
-﻿using RM.BLL.Abstractions.Models;
+﻿using RM.DAL.Abstractions.Models;
 
-namespace RM.BLL.Converters;
+namespace RM.BLL.Extensions;
 
 /// <summary>
-/// Преобразователь настроек страницы из DAL в BLL и обратно.
+/// Расширения класса <see cref="PageOptionsModel"/> и <see cref="Abstractions.Models.PageOptionsModel"/>.
 /// </summary>
-public static class PageOptionsConverter
+public static class PageOptionsModelExtensions
 {
     #region Методы
 
@@ -14,18 +14,13 @@ public static class PageOptionsConverter
     /// </summary>
     /// <param name="pageOptionsModel">Настройки страницы DAL.</param>
     /// <returns>Настройки страницы BLL.</returns>
-    public static PageOptionsModel ConvertDalToBllModel(DAL.Abstractions.Models.PageOptionsModel pageOptionsModel)
+    public static Abstractions.Models.PageOptionsModel ToBll(this PageOptionsModel pageOptionsModel)
     {
-        if (pageOptionsModel == null)
-        {
-            return null;
-        }
-
-        return new PageOptionsModel
+        return pageOptionsModel != null ? new Abstractions.Models.PageOptionsModel
         {
             PageNumber = pageOptionsModel.PageNumber,
             PageSize = pageOptionsModel.PageSize
-        };
+        }: null;
     }
 
     /// <summary>
@@ -33,18 +28,13 @@ public static class PageOptionsConverter
     /// </summary>
     /// <param name="pageOptionsModel">Настройки страницы BLL.</param>
     /// <returns>Настройки страницы DAL.</returns>
-    public static DAL.Abstractions.Models.PageOptionsModel ConvertBllToDalModel(PageOptionsModel pageOptionsModel)
+    public static PageOptionsModel ToDal(this Abstractions.Models.PageOptionsModel pageOptionsModel)
     {
-        if (pageOptionsModel == null)
-        {
-            return null;
-        }
-
-        return new DAL.Abstractions.Models.PageOptionsModel
+        return pageOptionsModel != null ? new PageOptionsModel
         {
             PageNumber = pageOptionsModel.PageNumber,
             PageSize = pageOptionsModel.PageSize
-        };
+        } : null;
     }
 
     #endregion

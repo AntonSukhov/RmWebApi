@@ -1,13 +1,12 @@
-﻿using RM.BLL.Abstractions.Models;
+﻿using RM.DAL.Abstractions.Models;
 
-namespace RM.BLL.Converters;
+namespace RM.BLL.Extensions;
 
 /// <summary>
-/// Преобразователь единицы работ из DAL в BLL и обратно.
+/// Расширения класса <see cref="WorkUnitModel"/>.
 /// </summary>
-public static class WorkUnitConverter
+public static class WorkUnitModelExtensions
 {
- 
     #region Методы
 
     /// <summary>
@@ -15,18 +14,13 @@ public static class WorkUnitConverter
     /// </summary>
     /// <param name="workUnitModel">Единица работ DAL.</param>
     /// <returns>Единица работ BLL.</returns>
-    public static WorkUnitModel ConvertDalToBllModel(DAL.Abstractions.Models.WorkUnitModel workUnitModel)
+    public static Abstractions.Models.WorkUnitModel ToBll(this WorkUnitModel workUnitModel)
     {
-        if (workUnitModel == null)
-        {
-            return null;
-        }
-
-        return new WorkUnitModel
+        return workUnitModel != null ? new Abstractions.Models.WorkUnitModel
         {
             Id = workUnitModel.Id,
             Name = workUnitModel.Name
-        };
+        }: null;
     }
 
     #endregion

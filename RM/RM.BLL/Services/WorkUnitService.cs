@@ -1,6 +1,6 @@
 ﻿using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Converters;
+using RM.BLL.Extensions;
 using RM.DAL.Abstractions.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,7 @@ public class WorkUnitService(IWorkUnitRepository repository) : IWorkUnitService
     {
         var result = await _repository.GetAllAsync();
 
-        return result.Select(WorkUnitConverter.ConvertDalToBllModel);
+        return result.Select(p => p.ToBll());
     }
 
     #endregion

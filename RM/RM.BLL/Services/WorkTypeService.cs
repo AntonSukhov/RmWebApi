@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentValidation;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Converters;
-using RM.BLL.Validators;
+using RM.BLL.Abstractions.Validators;
+using RM.BLL.Extensions;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL;
@@ -17,8 +16,9 @@ namespace RM.BLL;
 /// <param name="repository">Репозиторий видов работ.</param>
 /// <param name="workTypeValidator">Валидатор вида работ.</param>
 /// <param name="pageOptionsValidator">Валидатор настроек страницы.</param>
-public class WorkTypeService(IWorkTypeRepository repository, WorkTypeValidator workTypeValidator, 
-                             PageOptionsValidator pageOptionsValidator) : IWorkTypeService
+public class WorkTypeService(IWorkTypeRepository repository, 
+                             IWorkTypeValidator workTypeValidator,
+                             IPageOptionsValidator pageOptionsValidator) : IWorkTypeService
 {
 
     #region Поля
@@ -31,12 +31,12 @@ public class WorkTypeService(IWorkTypeRepository repository, WorkTypeValidator w
     /// <summary>
     /// Валидатор вида работ.
     /// </summary>
-    private readonly WorkTypeValidator _workTypeValidator = workTypeValidator;
+    private readonly IWorkTypeValidator _workTypeValidator = workTypeValidator;
 
     /// <summary>
     /// Валидатор настроек страницы.
     /// </summary>
-    private readonly PageOptionsValidator _pageOptionsValidator = pageOptionsValidator;
+    private readonly IPageOptionsValidator _pageOptionsValidator = pageOptionsValidator;
 
     #endregion
 
@@ -62,9 +62,9 @@ public class WorkTypeService(IWorkTypeRepository repository, WorkTypeValidator w
              await _pageOptionsValidator.ValidateAndThrowAsync(pageOptions);
         }
 
-        var results = await _repository.GetAllAsync(PageOptionsConverter.ConvertBllToDalModel(pageOptions));
+        var results = await _repository.GetAllAsync(pageOptions.ToDal());
 
-        return results.Select(WorkTypeConverter.ConvertDalToBllModel);
+        return results.Select(p => p.ToBll());
     }
 
     /// <inheritdoc/>

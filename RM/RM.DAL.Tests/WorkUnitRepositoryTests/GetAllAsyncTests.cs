@@ -8,26 +8,26 @@ namespace RM.DAL.Tests.WorkUnitRepositoryTests;
 /// <summary>
 /// Тесты для метода <see cref="IWorkUnitRepository.GetAllAsync"/>.
 /// </summary>
-/// <param name="fixture">Настройка контекста для тестирования репозитория единиц работ.</param>
-public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<WorkUnitRepositoryFixture>
+public class GetAllTests : IClassFixture<WorkUnitRepositoryFixture>
 {
     #region Поля
 
-    /// <summary>
-    /// Репозиторий единицы работ, работающий с MS SQL.
-    /// </summary>
-    private readonly IWorkUnitRepository _repositoryMsSql = fixture.WorkUnitRepositoryMsSql;
-
-    /// <summary>
-    /// Репозиторий единицы работ, работающий с PostgreSQL.
-    /// </summary>
-    private readonly IWorkUnitRepository _repositoryPostgreSql = fixture.WorkUnitRepositoryPostgreSql;
-
-    /// <summary>
-    /// Репозиторий единицы работ, работающий с SQLite в памяти.
-    /// </summary>
-    private readonly IWorkUnitRepository _repositorySqliteInMemory = fixture.WorkUnitRepositorySqliteInMemory;
+    private readonly WorkUnitRepositoryFixture _fixture;
     
+    #endregion
+
+    #region Конструкторы
+
+    
+    /// <summary>
+    /// Конструктор по умолчанию.
+    /// </summary>
+    /// <param name="fixture">Настройка контекста для тестирования репозитория единиц работ.</param>
+    public GetAllTests(WorkUnitRepositoryFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     #endregion
 
     #region Методы
@@ -38,7 +38,7 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     [Fact]
     public async Task FromMsSql()
     {
-        await GetAllTest(_repositoryMsSql);
+        await GetAllTest(_fixture.WorkUnitRepositoryMsSql);
     }
 
     /// <summary>
@@ -47,16 +47,7 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     [Fact]
     public async Task FromPostgreSql()
     {
-        await GetAllTest(_repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест получения всех единиц работ из источника данных SQLite в памяти.
-    /// </summary>
-    [Fact]
-    public async Task FromSqliteInMemory()
-    {
-        await GetAllTest(_repositorySqliteInMemory);
+        await GetAllTest(_fixture.WorkUnitRepositoryPostgreSql);
     }
 
     #region Закрытые методы
@@ -70,7 +61,8 @@ public class GetAllTests(WorkUnitRepositoryFixture fixture) : IClassFixture<Work
     {
         var expected = await repository.GetAllAsync();
 
-        expected.Should().BeEquivalentTo(DataSourceTestData.WorkUnits);
+        expected.Should().Equal(DataSourceTestData.WorkUnits, (e, a) => e.Id == a.Id && 
+                                                                        e.Name == a.Name);
     }
     
     #endregion

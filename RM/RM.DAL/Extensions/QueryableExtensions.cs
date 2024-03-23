@@ -13,7 +13,7 @@ namespace RM.DAL.Extensions
     /// <summary>
     /// Расширения интерфейса <see cref="IQueryable{T}"/>.
     /// </summary>
-    internal static class QueryableExtentions
+    internal static class QueryableExtensions
     {
         #region Поля
 

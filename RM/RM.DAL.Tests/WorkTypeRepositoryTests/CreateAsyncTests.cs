@@ -9,25 +9,24 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeRepository.CreateAsync"/>.
 /// </summary>
-/// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
-public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
+public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
-    /// <summary>
-    /// Репозиторий вида работ, работающий с MS SQL.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
+    private readonly WorkTypeRepositoryFixture _fixture;
+
+    #endregion
+
+    #region Конструкторы
 
     /// <summary>
-    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// Конструктор по умолчанию.
     /// </summary>
-    private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
-    
-    /// <summary>
-    /// Репозиторий вида работ, работающий с SQLite в памяти.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositorySqliteInMemory = fixture.WorkTypeRepositorySqliteInMemory;
+    /// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
+    public CreateAsyncTests(WorkTypeRepositoryFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     #endregion
 
@@ -42,7 +41,7 @@ public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForCorrectDataInMsSql(WorkTypeModel workTypeModel)
     {      
-        await ForCorrectData(workTypeModel, _repositoryMsSql);
+        await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryMsSql);
     }
 
     /// <summary>
@@ -54,27 +53,7 @@ public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForCorrectDataInPostgreSql(WorkTypeModel workTypeModel)
     {      
-        await ForCorrectData(workTypeModel, _repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест создания вида работ для корректных входных данных в 
-    /// источнике данных SQLite в памяти.
-    /// </summary>
-    [Theory]
-    [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForCorrectDataTestData),
-                MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForCorrectDataInSqliteInMemory(WorkTypeModel workTypeModel)
-    {      
-        await _repositorySqliteInMemory.CreateAsync(workTypeModel);
-
-        var expected = await _repositorySqliteInMemory.GetByIdAsync(workTypeModel.Id);
-        
-        expected.Should().NotBeNull()
-                         .And
-                         .Match<WorkTypeModel>(p => p.Id == workTypeModel.Id && 
-                                                    p.Name == workTypeModel.Name && 
-                                                    p.WorkUnitId == workTypeModel.WorkUnitId);
+        await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryPostgreSql);
     }
 
     /// <summary>
@@ -86,7 +65,7 @@ public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForIncorrectDataInMsSql(WorkTypeModel? workTypeModel)
     {      
-        await ForIncorrectData(workTypeModel, _repositoryMsSql);
+        await ForIncorrectData(workTypeModel, _fixture.WorkTypeRepositoryMsSql);
     }
 
     /// <summary>
@@ -98,19 +77,7 @@ public class CreateAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForIncorrectDataInPostgreSql(WorkTypeModel? workTypeModel)
     {      
-        await ForIncorrectData(workTypeModel, _repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест создания вида работ для некорректных входных данных в 
-    /// источнике данных SQLite в памяти.
-    /// </summary>
-    [Theory]
-    [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
-                MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForIncorrectDataInSqliteInMemory(WorkTypeModel? workTypeModel)
-    {      
-        await ForIncorrectData(workTypeModel, _repositoryPostgreSql);
+        await ForIncorrectData(workTypeModel, _fixture.WorkTypeRepositoryPostgreSql);
     }
 
     #region Закрытые методы

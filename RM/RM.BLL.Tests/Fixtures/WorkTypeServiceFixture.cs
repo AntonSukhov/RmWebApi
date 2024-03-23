@@ -1,5 +1,6 @@
 ﻿using Moq;
 using RM.BLL.Abstractions.Services;
+using RM.BLL.Abstractions.Validators;
 using RM.BLL.Validators;
 using RM.DAL.Abstractions.Repositories;
 
@@ -20,12 +21,12 @@ public class WorkTypeServiceFixture
     /// <summary>
     /// Валидатор вида работ.
     /// </summary>
-    public WorkTypeValidator WorkTypeValidator { get; }
+    public IWorkTypeValidator WorkTypeValidator { get; }
 
     /// <summary>
     /// Валидатор настроект страницы.
     /// </summary>
-    public PageOptionsValidator PageOptionsValidator { get; }
+    public IPageOptionsValidator PageOptionsValidator { get; }
 
     #endregion
 

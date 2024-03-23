@@ -74,5 +74,11 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
         await _dbContext.RemoveEntityAsync(workTypeModel);
     }
 
+    ///<inheritdoc/>
+    public void Dispose()
+    {
+        _dbContext?.Dispose();
+    }
+
     #endregion
 }

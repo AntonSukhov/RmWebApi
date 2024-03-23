@@ -1,12 +1,15 @@
-﻿using FluentValidation;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
 using RM.BLL.Abstractions.Models;
+using RM.BLL.Abstractions.Validators;
 
 namespace RM.BLL.Validators;
 
 /// <summary>
 /// Проверяет вид работ.
 /// </summary>
-public class WorkTypeValidator: AbstractValidator<WorkTypeModel>
+public class WorkTypeValidator:  AbstractValidator<WorkTypeModel>, IWorkTypeValidator
 {
     #region Конструкторы
  
@@ -15,19 +18,9 @@ public class WorkTypeValidator: AbstractValidator<WorkTypeModel>
     /// </summary>
     public WorkTypeValidator()
     {
-        #region ИД вида работ
-
-        var propertyName = "ИД вида работ";
-
-        RuleFor(p => p.Id).NotEmpty()
-                            .WithMessage("Значение поля '{PropertyName}' не должно быть пустым.")
-                            .WithName(propertyName);
-
-        #endregion
-
         #region Название вида работ
 
-        propertyName = "Название вида работ";
+        var propertyName = "Название вида работ";
 
         RuleFor(p => p.Name).NotEmpty()
                             .WithMessage("Значение поля '{PropertyName}' не должно быть пустым.")
@@ -39,6 +32,18 @@ public class WorkTypeValidator: AbstractValidator<WorkTypeModel>
                             .WithName(propertyName);
 
         #endregion
+    }
+
+    #endregion
+
+    #region Методы
+
+    /// <inheritdoc/>
+    public async Task ValidateAndThrowAsync<WorkTypeModel>(WorkTypeModel model, CancellationToken cancellationToken = default)
+    {
+        var validator = (IValidator<WorkTypeModel>)this;
+
+        await validator.ValidateAndThrowAsync(model, cancellationToken);
     }
 
     #endregion

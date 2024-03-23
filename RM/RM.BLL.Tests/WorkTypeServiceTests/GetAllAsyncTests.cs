@@ -1,11 +1,12 @@
 ﻿using FluentAssertions;
 using Moq;
-using RM.BLL.Converters;
+using RM.BLL.Extensions;
 using RM.BLL.Tests.TestData;
-using RM.BLL.Validators;
-using RM.DAL.Abstractions.Models;
+using RM.BLL.Abstractions.Services;
 using RM.DAL.Abstractions.Repositories;
+using RM.Tests.Common.TestData;
 using PageOptionsModel = RM.BLL.Abstractions.Models.PageOptionsModel;
+using RM.BLL.Abstractions.Validators;
 
 namespace RM.BLL.Tests.WorkTypeServiceTests;
 
@@ -18,8 +19,8 @@ public class GetAllAsyncTests(WorkTypeServiceFixture fixture) : IClassFixture<Wo
     #region Поля
 
     private readonly Mock<IWorkTypeRepository> _repositoryMock = fixture.WorkTypeRepositoryMock;
-    private readonly WorkTypeValidator _workTypeValidator = fixture.WorkTypeValidator;
-    private readonly PageOptionsValidator _pageOptionsValidator = fixture.PageOptionsValidator;
+    private readonly IWorkTypeValidator _workTypeValidator = fixture.WorkTypeValidator;
+    private readonly IPageOptionsValidator _pageOptionsValidator = fixture.PageOptionsValidator;
 
     #endregion
 
@@ -31,22 +32,16 @@ public class GetAllAsyncTests(WorkTypeServiceFixture fixture) : IClassFixture<Wo
     [Theory]
     [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), 
                 MemberType = typeof(PaginationTestData))]
-    public async Task GetAllAsyncForCorrectDataTest(PageOptionsModel? pageOptionsModel)
+    public async Task ForCorrectDataTest(PageOptionsModel? pageOptionsModel)
     {
-        var workTypes = new []{ new WorkTypeModel { Id = Guid.NewGuid(), Name = "Вид работ 1" },
-                                new WorkTypeModel { Id = Guid.NewGuid(), Name = "Вид работ 2", WorkUnitId = 1, WorkUnit = new WorkUnitModel { Id = 1, Name = "машина"} },
-                                new WorkTypeModel { Id = Guid.NewGuid(), Name = "Вид работ 3", WorkUnitId = 2, WorkUnit = new WorkUnitModel { Id = 2, Name = "шт."} },
-                                new WorkTypeModel { Id = Guid.NewGuid(), Name = "Вид работ 4", WorkUnitId = 3, WorkUnit = new WorkUnitModel { Id = 3, Name = "Кв.м."} }
-                            };
-
         _repositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
-                      .ReturnsAsync(workTypes);
+                       .ReturnsAsync(DataSourceTestData.WorkTypes);
 
         var workTypeService = new WorkTypeService(_repositoryMock.Object, _workTypeValidator, _pageOptionsValidator);
 
         var expected = await workTypeService.GetAllAsync(pageOptionsModel);
 
-        expected.Should().BeEquivalentTo(workTypes.Select(WorkTypeConverter.ConvertDalToBllModel));
+        expected.Should().BeEquivalentTo(DataSourceTestData.WorkTypes.Select(p => p.ToBll()));
     }
 
      /// <summary>
@@ -55,7 +50,7 @@ public class GetAllAsyncTests(WorkTypeServiceFixture fixture) : IClassFixture<Wo
     [Theory]
     [MemberData(nameof(PaginationTestData.GetIncorrectPageOptions),
                 MemberType = typeof(PaginationTestData))]
-    public async Task GetAllAsyncForIncorrectDataTest(PageOptionsModel pageOptionsModel)
+    public async Task ForIncorrectDataTest(PageOptionsModel pageOptionsModel)
     {
         _repositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
                        .Throws(() => new Exception("Repository Exception"));

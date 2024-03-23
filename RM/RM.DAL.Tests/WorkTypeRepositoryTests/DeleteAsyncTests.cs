@@ -4,32 +4,31 @@ using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
 using RM.DAL.Tests.TestData;
-using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeRepository.Delete"/>.
 /// </summary>
-/// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
-public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
+public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
-    /// <summary>
-    /// Репозиторий вида работ, работающий с MS SQL.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
+    private readonly WorkTypeRepositoryFixture _fixture;
+
+    #endregion
+
+    #region Конструкторы
 
     /// <summary>
-    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// Конструктор по умолчанию.
     /// </summary>
-    private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
+    /// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
 
-    /// <summary>
-    /// Репозиторий вида работ, работающий с SQLite в памяти.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositorySqliteInMemory = fixture.WorkTypeRepositorySqliteInMemory;
+    public DeleteAsyncTests(WorkTypeRepositoryFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     #endregion
 
@@ -44,7 +43,7 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForCorrectDataFromMsSql(WorkTypeModel workTypeModel)
     {      
-        await ForCorrectData(workTypeModel, _repositoryMsSql);
+        await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryMsSql);
     }
 
     /// <summary>
@@ -56,23 +55,7 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task ForCorrectDataFromPostgreSql(WorkTypeModel workTypeModel)
     {      
-        await ForCorrectData(workTypeModel, _repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест удаления вида работ для корректных данных из 
-    /// источника данных SQLite в памяти.
-    /// </summary>
-    [Fact]
-    public async Task ForCorrectDataFromSqliteInMemory()
-    {      
-        var workTypeId = DataSourceTestData.WorkTypes.First().Id;
-
-        await _repositorySqliteInMemory.DeleteAsync(workTypeId);
-
-        var expected = await _repositorySqliteInMemory.GetByIdAsync(workTypeId);
-        
-        expected.Should().BeNull();
+        await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryPostgreSql);
     }
 
     /// <summary>
@@ -84,7 +67,7 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task NotExistedWorkTypeFromMsSql(Guid workTypeId)
     {
-        await NotExistedWorkType(workTypeId, _repositoryMsSql);  
+        await NotExistedWorkType(workTypeId, _fixture.WorkTypeRepositoryMsSql);  
     }
 
     /// <summary>
@@ -96,19 +79,7 @@ public class DeleteAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(WorkTypeRepositoryTestData))]
     public async Task NotExistedWorkTypeFromPostgreSql(Guid workTypeId)
     {
-        await NotExistedWorkType(workTypeId, _repositoryPostgreSql);  
-    }
-
-    /// <summary>
-    /// Тест удаления несуществующего вида работ из 
-    /// источника данных SQLite в памяти.
-    /// </summary>
-    [Theory]
-    [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncNotExistedWorkTypeTestData),
-                MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task NotExistedWorkTypeFromSqliteInMemory(Guid workTypeId)
-    {
-        await NotExistedWorkType(workTypeId, _repositoryPostgreSql);  
+        await NotExistedWorkType(workTypeId, _fixture.WorkTypeRepositoryPostgreSql);  
     }
 
     #region Закрытые методы

@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using Moq;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Converters;
+using RM.BLL.Extensions;
 using RM.BLL.Services;
-using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
+using RM.Tests.Common.TestData;
 
 namespace RM.BLL.Tests.WorkUnitServiceTests;
 
@@ -28,18 +28,14 @@ public class GetAllAsyncTests(WorkUnitServiceFixture fixture) : IClassFixture<Wo
     [Fact]
     public async Task GetAllAsyncForCorrectDataTest()
     {
-        var workUnits = new []{ new WorkUnitModel { Id = 1, Name = "машина" },
-                                new WorkUnitModel { Id = 2, Name = "шт." },
-                                new WorkUnitModel { Id = 3, Name = "Кв.м." }};
-
         _repositoryMock.Setup(p => p.GetAllAsync())
-                       .ReturnsAsync(workUnits);
+                       .ReturnsAsync(DataSourceTestData.WorkUnits);
 
         var workUnitService = new WorkUnitService(_repositoryMock.Object);
 
         var expected = await workUnitService.GetAllAsync();
 
-        expected.Should().BeEquivalentTo(workUnits.Select(WorkUnitConverter.ConvertDalToBllModel));
+        expected.Should().BeEquivalentTo(DataSourceTestData.WorkUnits.Select(p => p.ToBll()));
     }
 
     #endregion

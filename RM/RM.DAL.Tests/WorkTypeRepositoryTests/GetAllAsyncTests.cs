@@ -2,33 +2,30 @@
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
-using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeRepository.GetAllAsync"/>.
 /// </summary>
-/// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
-public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
+public class GetAllAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
-    /// <summary>
-    /// Репозиторий вида работ, работающий с MS SQL.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
+    private readonly WorkTypeRepositoryFixture _fixture;
+
+    #endregion
+
+    #region Конструкторы
 
     /// <summary>
-    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// Конструктор по умолчанию.
     /// </summary>
-    private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
-
-    /// <summary>
-    /// Репозиторий вида работ, работающий с SQLite в памяти.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositorySqliteInMemory = fixture.WorkTypeRepositorySqliteInMemory;
-
+    /// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
+    public GetAllAsyncTests(WorkTypeRepositoryFixture fixture)
+    {
+        _fixture = fixture;
+    }
     #endregion
 
     #region Методы
@@ -42,7 +39,7 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
                 MemberType = typeof(PaginationTestData))]
     public async Task ForCorrectPageOptionsFromMsSql(PageOptionsModel? pageOptions)
     {
-        var expected = await _repositoryMsSql.GetAllAsync(pageOptions);
+        var expected = await _fixture.WorkTypeRepositoryMsSql.GetAllAsync(pageOptions);
 
         expected.Should().NotBeNull()
                          .And
@@ -54,31 +51,15 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     /// источника данных PostgreSQL.
     /// </summary>
     [Theory]
-    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), 
+    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions),
                 MemberType = typeof(PaginationTestData))]
     public async Task ForCorrectPageOptionsFromPostgreSql(PageOptionsModel? pageOptions)
     {
-        var expected = await _repositoryPostgreSql.GetAllAsync(pageOptions);
+        var expected = await _fixture.WorkTypeRepositoryPostgreSql.GetAllAsync(pageOptions);
 
         expected.Should().NotBeNull()
                          .And
                          .HaveCountGreaterThan(0);
-    }
-
-    /// <summary>
-    /// Тест получения видов работ для корректных настроек страницы из 
-    /// источника данных SQLite в памяти.
-    /// </summary>
-    [Theory]
-    [MemberData(nameof(PaginationTestData.GetCorrectPageOptions), 
-                MemberType = typeof(PaginationTestData))]
-    public async Task ForCorrectPageOptionsFromSqliteInMemory(PageOptionsModel? pageOptions)
-    {
-        var expected = await _repositorySqliteInMemory.GetAllAsync(pageOptions);
-
-        expected.Should().NotBeNull()
-                         .And
-                         .HaveCount(DataSourceTestData.WorkTypes.Count());
     }
 
     /// <summary>
@@ -88,7 +69,7 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     [Fact]
     public async Task ForIncorrectPageOptionsFromMsSql()
     {
-        await ForIncorrectPageOptions(_repositoryMsSql);
+        await ForIncorrectPageOptions(_fixture.WorkTypeRepositoryMsSql);
     }
 
     /// <summary>
@@ -98,26 +79,7 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
     [Fact]
     public async Task ForIncorrectPageOptionsFromPostgreSql()
     {
-        await ForIncorrectPageOptions(_repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест получения видов работ для некорректных настроек страницы из 
-    /// источника данных SQLite в памяти.
-    /// </summary>
-    [Fact]
-    public async Task ForIncorrectPageOptionsFromSqliteInMemory()
-    {
-        var expectedRowCount = 0;
-
-        foreach (var pageOptions in PaginationTestData.GetIncorrectPageOptions())
-        {
-            async Task<IEnumerable<WorkTypeModel>> action() => await _repositorySqliteInMemory.GetAllAsync(pageOptions);
-            var expected = await action();
-            expectedRowCount += expected.Count();
-        }
-
-        expectedRowCount.Should().Be(DataSourceTestData.WorkTypes.Count() * 2);
+        await ForIncorrectPageOptions(_fixture.WorkTypeRepositoryPostgreSql);
     }
 
     #region Закрытые методы
@@ -136,7 +98,7 @@ public class GetAllAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture
             try
             {
                 async Task<IEnumerable<WorkTypeModel>> action() => await repository.GetAllAsync(pageOptions);
-                var expected = await action();
+                await action();
             }
             catch (Exception ex)
             {

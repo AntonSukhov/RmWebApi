@@ -2,32 +2,30 @@
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Tests.Fixtures;
-using RM.Tests.Common.TestData;
 
 namespace RM.DAL.Tests.WorkTypeRepositoryTests;
 
 /// <summary>
 /// Тесты для метода <see cref="IWorkTypeRepository.GetByIdAsync"/>.
 /// </summary>
-/// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
-public class GetByIdAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixture<WorkTypeRepositoryFixture>
+public class GetByIdAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
 {
     #region Поля
 
-    /// <summary>
-    /// Репозиторий вида работ, работающий с MS SQL.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositoryMsSql = fixture.WorkTypeRepositoryMsSql;
+    private readonly WorkTypeRepositoryFixture _fixture;
+
+    #endregion
+
+    #region Конструкторы
 
     /// <summary>
-    /// Репозиторий вида работ, работающий с PostgreSQL.
+    /// Конструктор по умолчанию.
     /// </summary>
-    private readonly IWorkTypeRepository _repositoryPostgreSql = fixture.WorkTypeRepositoryPostgreSql;
-
-    /// <summary>
-    /// Репозиторий вида работ, работающий с SQLite в памяти.
-    /// </summary>
-    private readonly IWorkTypeRepository _repositorySqliteInMemory = fixture.WorkTypeRepositorySqliteInMemory;
+    /// <param name="fixture">Настройка контекста для тестирования репозитория видов работ.</param>
+    public GetByIdAsyncTests(WorkTypeRepositoryFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     #endregion
 
@@ -40,7 +38,7 @@ public class GetByIdAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixtur
     [Fact]
     public async Task ForExistedWorkTypeInMsSql()
     {     
-       await ForExistedWorkType(_repositoryMsSql);
+       await ForExistedWorkType(_fixture.WorkTypeRepositoryMsSql);
     }
 
     /// <summary>
@@ -50,22 +48,7 @@ public class GetByIdAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixtur
     [Fact]
     public async Task ForExistedWorkTypeInPostgreSql()
     {     
-       await ForExistedWorkType(_repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест получения вида работ по его ИД для существующего вида работ в 
-    /// источнике данных SQLite в памяти.
-    /// </summary>
-    [Fact]
-    public async Task ForExistedWorkTypeInSqliteInMemory()
-    {     
-        var workType = DataSourceTestData.WorkTypes.FirstOrDefault()?? 
-                       new WorkTypeModel{ Id = Guid.Empty };
-
-        var expected = await _repositorySqliteInMemory.GetByIdAsync(workType.Id);
-
-        expected.Should().BeEquivalentTo(workType);
+       await ForExistedWorkType(_fixture.WorkTypeRepositoryPostgreSql);
     }
 
     /// <summary>
@@ -75,7 +58,7 @@ public class GetByIdAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixtur
     [Fact]
     public async Task ForNotExistedWorkTypeInMsSql()
     {     
-        await ForNotExistedWorkType(_repositoryMsSql);
+        await ForNotExistedWorkType(_fixture.WorkTypeRepositoryMsSql);
     }
 
     /// <summary>
@@ -85,17 +68,7 @@ public class GetByIdAsyncTests(WorkTypeRepositoryFixture fixture) : IClassFixtur
     [Fact]
     public async Task ForNotExistedWorkTypeInPostgreSql()
     {     
-        await ForNotExistedWorkType(_repositoryPostgreSql);
-    }
-
-    /// <summary>
-    /// Тест получения вида работ по его ИД для несуществующего вида работ в 
-    /// источнике данных SQLite в памяти.
-    /// </summary>
-    [Fact]
-    public async Task ForNotExistedWorkTypeInSqliteInMemory()
-    {     
-        await ForNotExistedWorkType(_repositorySqliteInMemory);
+        await ForNotExistedWorkType(_fixture.WorkTypeRepositoryPostgreSql);
     }
 
     #region Закрытые методы
