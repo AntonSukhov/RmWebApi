@@ -8,7 +8,7 @@ public class WorkUnitModel
     #region Свойства
 
     /// <summary>
-    /// ИД единицы работ.
+    /// Идентификатор единицы работ.
     /// </summary>
     public byte Id { get; set; }
 

@@ -30,6 +30,14 @@ namespace RM.DAL.Repositories
                                              .ToListAsync();
         }
 
+        /// <inheritdoc/>
+        #nullable enable
+        public async Task<WorkUnitModel?> GetByIdAsync(byte workUnitId)
+        {
+            return await _dbContext.WorkUnits.AsNoTracking()
+                                             .SingleOrDefaultAsync(p => p.Id == workUnitId);
+        }
+
         #endregion
     }
 }

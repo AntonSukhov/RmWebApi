@@ -8,7 +8,7 @@ namespace RM.DAL.Abstractions.Repositories;
 /// <summary>
 /// Репозиторий видов работ.
 /// </summary>
-public interface IWorkTypeRepository: IDisposable
+public interface IWorkTypeRepository
 {
     #region Методы
 
@@ -20,37 +20,38 @@ public interface IWorkTypeRepository: IDisposable
     Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null);
 
     /// <summary>
-    /// Предоставляет вид работ по его ИД.
+    /// Предоставляет вид работ по его Идентификатор.
     /// </summary>
-    /// <param name="workTypeId">ИД вида работ.</param>
+    /// <param name="workTypeId">Идентификатор вида работ.</param>
     /// <returns>Вид работ.</returns>
-    Task<WorkTypeModel> GetByIdAsync(Guid workTypeId);
+    #nullable enable
+    Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId);
 
     /// <summary>
     /// Предоставляет вид работ по его названию.
     /// </summary>
     /// <param name="workTypeId">Название вида работ.</param>
     /// <returns>Вид работ.</returns>
-    Task<WorkTypeModel> GetByNameAsync(string workTypeName);
+    Task<WorkTypeModel?> GetByNameAsync(string workTypeName);
 
     /// <summary>
     /// Создаёт вид работ.
     /// </summary>
     /// <param name="workTypeModel">Модель создаваемого вида работ.</param>
     /// <returns/>
-    Task CreateAsync(WorkTypeModel workTypeModel);
+    Task CreateAsync(WorkTypeShortModel workTypeModel);
 
     /// <summary>
     /// Обновляет вид работ.
     /// </summary>
     /// <param name="workTypeModel">Модель обновляемого вида работ.</param>
     /// <returns/>
-    Task UpdateAsync(WorkTypeModel workTypeModel);
+    Task UpdateAsync(WorkTypeShortModel workTypeModel);
 
     /// <summary>
     /// Удаление вида работ
     /// </summary>
-    /// <param name="workTypeId">ИД удаляемого вида работ.</param>
+    /// <param name="workTypeId">Идентификатор удаляемого вида работ.</param>
     /// <returns/>
     Task DeleteAsync(Guid workTypeId);
 

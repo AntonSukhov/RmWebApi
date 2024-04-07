@@ -4,20 +4,20 @@ using System.Threading.Tasks;
 namespace RM.BLL.Abstractions.Validators;
 
 /// <summary>
-/// Абстрактный валидатор модели.
+/// Валидатор абстрактной модели.
 /// </summary>
-public interface IAbstractModelValidator
+/// <typeparam name="TModel">Тип данных проверяемой модели.</typeparam>
+public interface IAbstractModelValidator<in TModel>
 {
     #region Методы
-
+      
     /// <summary>
     /// Проверяет модель и выбрасывает исключение в случае ошибки.
     /// </summary>
-    /// <typeparam name="TModel">Тип данных проверяемой модели.</typeparam>
     /// <param name="model">Проверяемая модель.</param>
     /// <param name="cancellationToken">Токен отмены выполнения проверки модели.</param>
     /// <returns/>
-    public Task ValidateAndThrowAsync<TModel>(TModel model, CancellationToken cancellationToken = default);
+    public Task ValidateAndThrowAsync(TModel model, CancellationToken cancellationToken = default);
 
     #endregion
 }

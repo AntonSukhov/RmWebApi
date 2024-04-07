@@ -19,9 +19,19 @@ public class WorkTypeServiceFixture
     public Mock<IWorkTypeRepository> WorkTypeRepositoryMock { get; }
 
     /// <summary>
-    /// Валидатор вида работ.
+    /// Мок репозиторий единиц работ.
     /// </summary>
-    public IWorkTypeValidator WorkTypeValidator { get; }
+    public Mock<IWorkUnitRepository> WorkUnitRepositoryMock { get; }
+
+    /// <summary>
+    /// Валидатор названия вида работ.
+    /// </summary>
+    public IWorkTypeNameValidator WorkTypeNameValidator { get; }
+
+    /// <summary>
+    /// Валидатор модели обновления вида работ.
+    /// </summary>
+    public IWorkTypeUpdationModelValidator WorkTypeUpdationModelValidator { get; }
 
     /// <summary>
     /// Валидатор настроект страницы.
@@ -38,7 +48,9 @@ public class WorkTypeServiceFixture
     public WorkTypeServiceFixture()
     {
         WorkTypeRepositoryMock = new Mock<IWorkTypeRepository>();
-        WorkTypeValidator = new WorkTypeValidator();
+        WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
+        WorkTypeNameValidator = new WorkTypeNameValidator();
+        WorkTypeUpdationModelValidator = new WorkTypeUpdationModelValidator();
         PageOptionsValidator = new PageOptionsValidator();
     }
 

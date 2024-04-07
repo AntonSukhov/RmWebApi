@@ -39,7 +39,7 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForCorrectDataInMsSql(WorkTypeModel workTypeModel)
+    public async Task ForCorrectDataInMsSql(WorkTypeShortModel workTypeModel)
     {      
         await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryMsSql);
     }
@@ -51,7 +51,7 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForCorrectDataInPostgreSql(WorkTypeModel workTypeModel)
+    public async Task ForCorrectDataInPostgreSql(WorkTypeShortModel workTypeModel)
     {      
         await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryPostgreSql);
     }
@@ -63,7 +63,7 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForIncorrectDataInMsSql(WorkTypeModel? workTypeModel)
+    public async Task ForIncorrectDataInMsSql(WorkTypeShortModel? workTypeModel)
     {      
         await ForIncorrectData(workTypeModel, _fixture.WorkTypeRepositoryMsSql);
     }
@@ -75,7 +75,7 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.CreateAsyncForIncorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForIncorrectDataInPostgreSql(WorkTypeModel? workTypeModel)
+    public async Task ForIncorrectDataInPostgreSql(WorkTypeShortModel? workTypeModel)
     {      
         await ForIncorrectData(workTypeModel, _fixture.WorkTypeRepositoryPostgreSql);
     }
@@ -88,7 +88,8 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     /// <param name="workTypeModel">Модель вида работ.</param>
     /// <param name="repository">Репозиторий вида работ.</param>
     /// <returns/>
-    private static async Task ForCorrectData(WorkTypeModel workTypeModel, IWorkTypeRepository repository)
+    private static async Task ForCorrectData(WorkTypeShortModel workTypeModel, 
+                                             IWorkTypeRepository repository)
     {      
         await repository.CreateAsync(workTypeModel);
 
@@ -108,11 +109,12 @@ public class CreateAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     /// <param name="workTypeModel">Модель вида работ.</param>
     /// <param name="repository">Репозиторий вида работ.</param>
     /// <returns/>
-    private static async Task ForIncorrectData(WorkTypeModel? workTypeModel, IWorkTypeRepository repository)
+    private static async Task ForIncorrectData(WorkTypeShortModel? workTypeModel, 
+                                               IWorkTypeRepository repository)
     {      
-        var action = async () => await repository.CreateAsync(workTypeModel);
+        var expected = async () => await repository.CreateAsync(workTypeModel);
 
-        await action.Should().ThrowAsync<Exception>();
+        await expected.Should().ThrowAsync<Exception>();
     }
 
     #endregion 

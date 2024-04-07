@@ -10,7 +10,7 @@ public class WorkTypeModel
     #region Свойства
 
     /// <summary>
-    /// ИД вида работ.
+    /// Идентификатор вида работ.
     /// </summary>
     public Guid Id { get; set; }
 

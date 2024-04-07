@@ -41,7 +41,7 @@ public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForCorrectDataFromMsSql(WorkTypeModel workTypeModel)
+    public async Task ForCorrectDataFromMsSql(WorkTypeShortModel workTypeModel)
     {      
         await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryMsSql);
     }
@@ -53,7 +53,7 @@ public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     [Theory]
     [MemberData(nameof(WorkTypeRepositoryTestData.DeleteAsyncForCorrectDataTestData),
                 MemberType = typeof(WorkTypeRepositoryTestData))]
-    public async Task ForCorrectDataFromPostgreSql(WorkTypeModel workTypeModel)
+    public async Task ForCorrectDataFromPostgreSql(WorkTypeShortModel workTypeModel)
     {      
         await ForCorrectData(workTypeModel, _fixture.WorkTypeRepositoryPostgreSql);
     }
@@ -90,7 +90,7 @@ public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     /// <param name="workTypeModel">Модель вида работ.</param>
     /// <param name="repository">Репозиторий вида работ.</param>
     /// <returns/>
-    private static async Task ForCorrectData(WorkTypeModel workTypeModel, 
+    private static async Task ForCorrectData(WorkTypeShortModel workTypeModel, 
                                              IWorkTypeRepository repository)
     {      
         await repository.CreateAsync(workTypeModel);
@@ -111,9 +111,9 @@ public class DeleteAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     private static async Task NotExistedWorkType(Guid workTypeId, 
                                                  IWorkTypeRepository repository)
     {
-        var action = async () => await repository.DeleteAsync(workTypeId);
+        var expected = async () => await repository.DeleteAsync(workTypeId);
 
-        await action.Should().ThrowAsync<DbUpdateConcurrencyException>();    
+        await expected.Should().ThrowAsync<DbUpdateConcurrencyException>();    
     }
 
     #endregion

@@ -3,7 +3,7 @@
 namespace RM.BLL.Extensions;
 
 /// <summary>
-/// Расширения класса <see cref="PageOptionsModel"/> и <see cref="Abstractions.Models.PageOptionsModel"/>.
+/// Расширения модели настройки страницы BLL и DAL.
 /// </summary>
 public static class PageOptionsModelExtensions
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RM.DAL.Abstractions.Extensions;
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Extensions;
@@ -36,7 +37,8 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
     }
 
     /// <inheritdoc/>
-    public async Task<WorkTypeModel> GetByIdAsync(Guid workTypeId)
+    #nullable enable
+    public async Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
                                          .Include(p => p.WorkUnit)
@@ -44,7 +46,7 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
     }
 
     /// <inheritdoc/>
-    public async Task<WorkTypeModel> GetByNameAsync(string workTypeName)
+    public async Task<WorkTypeModel?> GetByNameAsync(string workTypeName)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
                                          .Include(p => p.WorkUnit)
@@ -52,15 +54,22 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
     }
 
     /// <inheritdoc/>
-    public async Task CreateAsync(WorkTypeModel workTypeModel)
+    public async Task CreateAsync(WorkTypeShortModel workTypeModel)
     {
-        await _dbContext.AddEntityAsync(workTypeModel);
+        await _dbContext.AddEntityAsync(workTypeModel.ToDal());
     }
 
     /// <inheritdoc/>
-    public async Task UpdateAsync(WorkTypeModel workTypeModel)
+    public async Task UpdateAsync(WorkTypeShortModel workTypeModel)
     {
-        await _dbContext.UpdateEntityAsync(workTypeModel);
+        IEnumerable<string> updatedProperties = [nameof(WorkTypeModel.WorkUnitId)];
+
+        if (workTypeModel.Name != null)
+        {
+            updatedProperties = updatedProperties.Append(nameof(WorkTypeModel.Name));
+        }
+
+        await _dbContext.UpdateEntityAsync(workTypeModel.ToDal(), updatedProperties);
     }
 
     /// <inheritdoc/>
@@ -72,12 +81,6 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
         };
 
         await _dbContext.RemoveEntityAsync(workTypeModel);
-    }
-
-    ///<inheritdoc/>
-    public void Dispose()
-    {
-        _dbContext?.Dispose();
     }
 
     #endregion

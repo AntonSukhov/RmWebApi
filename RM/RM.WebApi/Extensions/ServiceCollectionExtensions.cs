@@ -66,7 +66,8 @@ public static class ServiceCollectionExtensions
     public static void RegisterValidators(this IServiceCollection services)
     {
         services.AddSingleton<IPageOptionsValidator, PageOptionsValidator>();
-        services.AddSingleton<IWorkTypeValidator, WorkTypeValidator>();
+        services.AddSingleton<IWorkTypeNameValidator, WorkTypeNameValidator>();
+        services.AddSingleton<IWorkTypeUpdationModelValidator, WorkTypeUpdationModelValidator>();
     }
 
     #endregion

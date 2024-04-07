@@ -40,9 +40,9 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         [Theory]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForCorrectInputDataTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
-        public async Task ForCorrectInputDataInMsSql(WorkTypeModel workTypeModel, 
-                                                        string workTypeName, 
-                                                        byte? workUnitId)
+        public async Task ForCorrectInputDataInMsSql(WorkTypeShortModel workTypeModel, 
+                                                     string workTypeName, 
+                                                     byte? workUnitId)
         {
             await ForCorrectInputData(workTypeModel, workTypeName, workUnitId, 
                                      _fixture.WorkTypeRepositoryMsSql);
@@ -55,9 +55,9 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         [Theory]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForCorrectInputDataTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
-        public async Task ForCorrectInputDataInPostgreSql(WorkTypeModel workTypeModel, 
-                                                            string workTypeName, 
-                                                            byte? workUnitId)
+        public async Task ForCorrectInputDataInPostgreSql(WorkTypeShortModel workTypeModel, 
+                                                          string workTypeName, 
+                                                          byte? workUnitId)
         {
             await ForCorrectInputData(workTypeModel, workTypeName, workUnitId,
                                       _fixture.WorkTypeRepositoryPostgreSql);
@@ -70,12 +70,12 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         [Theory]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
-        public async Task ForIncorrectWorkTypeNameOrWorkUnitIdInMsSql(WorkTypeModel workTypeModel, 
-                                                                        string? workTypeName, 
-                                                                        byte? workUnitId)
+        public async Task ForIncorrectWorkTypeNameOrWorkUnitIdInMsSql(WorkTypeShortModel workTypeModel, 
+                                                                      string? workTypeName, 
+                                                                      byte? workUnitId)
         {
             await ForIncorrectWorkTypeNameOrWorkUnitId(workTypeModel, workTypeName, 
-                                                        workUnitId, _fixture.WorkTypeRepositoryMsSql);
+                                                      workUnitId, _fixture.WorkTypeRepositoryMsSql);
         }
 
         /// <summary>
@@ -85,9 +85,9 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         [Theory]
         [MemberData(nameof(WorkTypeRepositoryTestData.UpdateAsyncForIncorrectWorkTypeNameOrWorkUnitIdTestData),
                     MemberType = typeof(WorkTypeRepositoryTestData))]
-        public async Task ForIncorrectWorkTypeNameOrWorkUnitIdInPostgreSql(WorkTypeModel workTypeModel, 
-                                                                            string? workTypeName, 
-                                                                            byte? workUnitId)
+        public async Task ForIncorrectWorkTypeNameOrWorkUnitIdInPostgreSql(WorkTypeShortModel workTypeModel, 
+                                                                           string? workTypeName, 
+                                                                           byte? workUnitId)
         {
             await ForIncorrectWorkTypeNameOrWorkUnitId(workTypeModel, workTypeName, 
                                                         workUnitId, _fixture.WorkTypeRepositoryPostgreSql);
@@ -100,13 +100,13 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         /// </summary>
         /// <param name="workTypeModel">Создаваемый вид работ.</param>
         /// <param name="workTypeName">Название вида работ.</param>
-        /// <param name="workUnitId">ИД единицы работ.</param>
+        /// <param name="workUnitId">Идентификатор единицы работ.</param>
         /// <param name="repository">Репозиторий вида работ.</param>
         /// <returns/>
-        private static async Task ForCorrectInputData(WorkTypeModel workTypeModel, 
-                                                        string workTypeName, 
-                                                        byte? workUnitId, 
-                                                        IWorkTypeRepository repository)
+        private static async Task ForCorrectInputData(WorkTypeShortModel workTypeModel, 
+                                                      string workTypeName, 
+                                                      byte? workUnitId, 
+                                                      IWorkTypeRepository repository)
         {
             await repository.CreateAsync(workTypeModel);
 
@@ -117,11 +117,11 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
 
             var expected = await repository.GetByIdAsync(workTypeModel.Id);
 
-            await repository.DeleteAsync(expected.Id);
+            await repository.DeleteAsync(expected?.Id?? Guid.NewGuid());
 
             expected.Should().NotBeNull()
-                                .And
-                                .Match<WorkTypeModel>(p => p.Id == workTypeModel.Id && 
+                             .And
+                             .Match<WorkTypeModel>(p => p.Id == workTypeModel.Id && 
                                                         p.Name == workTypeModel.Name && 
                                                         p.WorkUnitId == workTypeModel.WorkUnitId &&  
                                                         p.WorkUnitId != null ? p.WorkUnitId == p.WorkUnit.Id: p.WorkUnit == null);
@@ -133,13 +133,13 @@ namespace RM.DAL.Tests.WorkTypeRepositoryTests
         /// </summary>
         /// <param name="workTypeModel">Создаваемый вид работ.</param>
         /// <param name="workTypeName">Название вида работ.</param>
-        /// <param name="workUnitId">ИД единицы работ.</param>
+        /// <param name="workUnitId">Идентификатор единицы работ.</param>
         /// <param name="repository">Репозиторий вида работ.</param>
         /// <returns/>
-        private static async Task ForIncorrectWorkTypeNameOrWorkUnitId(WorkTypeModel workTypeModel, 
-                                                                        string? workTypeName, 
-                                                                        byte? workUnitId, 
-                                                                        IWorkTypeRepository repository)
+        private static async Task ForIncorrectWorkTypeNameOrWorkUnitId(WorkTypeShortModel workTypeModel, 
+                                                                       string? workTypeName, 
+                                                                       byte? workUnitId, 
+                                                                       IWorkTypeRepository repository)
         {
             await repository.CreateAsync(workTypeModel);
 

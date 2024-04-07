@@ -80,12 +80,12 @@ public class GetByIdAsyncTests : IClassFixture<WorkTypeRepositoryFixture>
     /// <returns/>
     private static async Task ForExistedWorkType(IWorkTypeRepository repository)
     {     
-        var workType = (await repository.GetAllAsync()).FirstOrDefault()??
+        var actual = (await repository.GetAllAsync()).FirstOrDefault()??
                        new WorkTypeModel{ Id = Guid.Empty };
 
-        var expected = await repository.GetByIdAsync(workType.Id);
+        var expected = await repository.GetByIdAsync(actual.Id);
 
-        expected.Should().BeEquivalentTo(workType);
+        expected.Should().BeEquivalentTo(actual);
     }
 
     /// <summary>

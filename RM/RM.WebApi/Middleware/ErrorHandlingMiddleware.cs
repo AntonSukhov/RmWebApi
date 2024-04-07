@@ -4,6 +4,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using RM.Common.Services;
 
 namespace RM.WebApi.Middleware;
@@ -49,6 +50,11 @@ public class ErrorHandlingMiddleware : MiddlewareBase
             try
             {
                 await _next(context);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                var exceptionNew = new Exception("Данные сущности были ранее изменены или удалены.");
+                await HandleExceptionAsync(context, exceptionNew);
             }
             catch (Exception exception)
             {

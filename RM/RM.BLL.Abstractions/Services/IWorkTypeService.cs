@@ -20,28 +20,32 @@ public interface IWorkTypeService
     Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null);
 
     /// <summary>
-    /// Создаёт вид работ
+    /// Предоставляет вид работ по его идентификатору.
     /// </summary>
-    /// <param name="workTypeName">Название создаваемого вида работ.</param>
-    /// <param name="workUnitId">ИД единицы работ создаваемого вида работ.</param>
-    /// <returns>ИД созданного вида работ.</returns>
-    Task<Guid> CreateAsync(string workTypeName, byte? workUnitId = null);
+    /// <param name="workTypeGettingByIdModel">Модела получения вида работ по его идентификатору.</param>
+    /// <returns>Вид работ.</returns>
+    Task<WorkTypeModel> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel);
+
+    /// <summary>
+    /// Создаёт вид работ.
+    /// </summary>
+    /// <param name="workTypeCreationModel">Модель создания вида работ.</param>
+    /// <returns>Идентификатор созданного вида работ.</returns>
+    Task<Guid> CreateAsync(WorkTypeCreationModel workTypeCreationModel);
 
     /// <summary>
     /// Обновляет вид работ.
     /// </summary>
-    /// <param name="workTypeId">ИД обновляемого вида работ.</param>
-    /// <param name="workTypeName">Название обновляемого вида работ.</param>
-    /// <param name="workUnitId">ИД единицы работ обновляемого вида работ./param>
+    /// <param name="workTypeUpdationModel">Модель обновления вида работ.</param>
     /// <returns/>
-    Task UpdateAsync(Guid workTypeId, string workTypeName, byte? workUnitId = null);
+    Task UpdateAsync(WorkTypeUpdationModel workTypeUpdationModel);
 
     /// <summary>
     /// Удаление вида работ.
     /// </summary>
-    /// <param name="workTypeId">ИД удаляемого вида работ.</param>
+    /// <param name="workTypeDeletionModel">Модель удаления вида работ.</param>
     /// <returns/>
-    Task DeleteAsync(Guid workTypeId);
+    Task DeleteAsync(WorkTypeDeletionModel workTypeDeletionModel);
 
     #endregion
 }

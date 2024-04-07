@@ -3,7 +3,7 @@
 namespace RM.BLL.Extensions;
 
 /// <summary>
-/// Расширения класса <see cref="WorkTypeModel"/>.
+/// Расширения модели вида работ.
 /// </summary>
 public static class WorkTypeModelExtensions
 {

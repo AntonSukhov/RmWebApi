@@ -3,10 +3,8 @@ using Moq;
 using RM.BLL.Extensions;
 using RM.BLL.Tests.TestData;
 using RM.BLL.Abstractions.Services;
-using RM.DAL.Abstractions.Repositories;
 using RM.Tests.Common.TestData;
-using PageOptionsModel = RM.BLL.Abstractions.Models.PageOptionsModel;
-using RM.BLL.Abstractions.Validators;
+using RM.BLL.Abstractions.Models;
 
 namespace RM.BLL.Tests.WorkTypeServiceTests;
 
@@ -18,9 +16,7 @@ public class GetAllAsyncTests(WorkTypeServiceFixture fixture) : IClassFixture<Wo
 {
     #region Поля
 
-    private readonly Mock<IWorkTypeRepository> _repositoryMock = fixture.WorkTypeRepositoryMock;
-    private readonly IWorkTypeValidator _workTypeValidator = fixture.WorkTypeValidator;
-    private readonly IPageOptionsValidator _pageOptionsValidator = fixture.PageOptionsValidator;
+    private readonly WorkTypeServiceFixture _fixture = fixture;
 
     #endregion
 
@@ -34,10 +30,14 @@ public class GetAllAsyncTests(WorkTypeServiceFixture fixture) : IClassFixture<Wo
                 MemberType = typeof(PaginationTestData))]
     public async Task ForCorrectDataTest(PageOptionsModel? pageOptionsModel)
     {
-        _repositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
-                       .ReturnsAsync(DataSourceTestData.WorkTypes);
+        _fixture.WorkTypeRepositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
+                                       .ReturnsAsync(DataSourceTestData.WorkTypes);
 
-        var workTypeService = new WorkTypeService(_repositoryMock.Object, _workTypeValidator, _pageOptionsValidator);
+        var workTypeService = new WorkTypeService(_fixture.WorkTypeRepositoryMock.Object, 
+                                                  _fixture.WorkUnitRepositoryMock.Object,
+                                                  _fixture.WorkTypeNameValidator,
+                                                  _fixture.WorkTypeUpdationModelValidator, 
+                                                  _fixture.PageOptionsValidator);
 
         var expected = await workTypeService.GetAllAsync(pageOptionsModel);
 
@@ -52,14 +52,18 @@ public class GetAllAsyncTests(WorkTypeServiceFixture fixture) : IClassFixture<Wo
                 MemberType = typeof(PaginationTestData))]
     public async Task ForIncorrectDataTest(PageOptionsModel pageOptionsModel)
     {
-        _repositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
-                       .Throws(() => new Exception("Repository Exception"));
+        _fixture.WorkTypeRepositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
+                                       .Throws(() => new Exception("Repository Exception"));
 
-        var workTypeService = new WorkTypeService(_repositoryMock.Object, _workTypeValidator, _pageOptionsValidator);
+        var workTypeService = new WorkTypeService(_fixture.WorkTypeRepositoryMock.Object, 
+                                                  _fixture.WorkUnitRepositoryMock.Object,
+                                                  _fixture.WorkTypeNameValidator,
+                                                  _fixture.WorkTypeUpdationModelValidator,
+                                                  _fixture.PageOptionsValidator);
 
-        var action = async () => await workTypeService.GetAllAsync(pageOptionsModel);
+        var expected = async () => await workTypeService.GetAllAsync(pageOptionsModel);
 
-        await action.Should().ThrowAsync<Exception>();
+        await expected.Should().ThrowAsync<Exception>();
     }
 
     #endregion

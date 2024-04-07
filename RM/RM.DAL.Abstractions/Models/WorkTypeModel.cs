@@ -10,7 +10,7 @@ public class WorkTypeModel
     #region Свойства
 
     /// <summary>
-    /// ИД вида работ.
+    /// Идентификатор вида работ.
     /// </summary>
     public Guid Id { get; set; }
 
@@ -20,7 +20,7 @@ public class WorkTypeModel
     public string Name { get; set; }
 
     /// <summary>
-    /// ИД единицы работ для вида работ.
+    /// Идентификатор единицы работ для вида работ.
     /// </summary>
     public byte? WorkUnitId { get; set; }
 

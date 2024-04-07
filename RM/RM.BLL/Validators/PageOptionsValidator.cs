@@ -45,8 +45,8 @@ public class PageOptionsValidator: AbstractValidator<PageOptionsModel>, IPageOpt
     #region Методы
 
     /// <inheritdoc/>
-    public async Task ValidateAndThrowAsync<PageOptionsModel>(PageOptionsModel model, 
-                                                              CancellationToken cancellationToken = default)
+    public async Task ValidateAndThrowAsync(PageOptionsModel model, 
+                                            CancellationToken cancellationToken = default)
     {
         var validator = (IValidator<PageOptionsModel>)this;
 

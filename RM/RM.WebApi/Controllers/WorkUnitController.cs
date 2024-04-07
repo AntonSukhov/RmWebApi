@@ -29,7 +29,7 @@ public class WorkUnitApiController(IWorkUnitService workUnitService) : Controlle
     /// Предоставляет все единицы работ.
     /// </summary>
     /// <returns>Единицы работ.</returns>
-    [Route("all")]
+    [Route("get-all")]
     [HttpGet]
     public async Task<IEnumerable<WorkUnitModel>> GetAllAsync()
     {
