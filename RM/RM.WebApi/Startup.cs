@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +34,18 @@ namespace RM.WebApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RM.WebApi", Version = "v1" });
+
+                // Укажите пути к XML-файлам с комментариями
+                var xmlFiles = new[]
+                {
+                    $"{Assembly.GetExecutingAssembly().GetName().Name}.xml", // XML текущего проекта
+                    "RM.BLL.Abstractions.xml",                               // XML первого связанного проекта
+                };
+                foreach (var xmlFile in xmlFiles.Select(file => Path.Combine(AppContext.BaseDirectory, file))
+                                                .Where(xmlFile => File.Exists(xmlFile)))
+                {
+                    c.IncludeXmlComments(xmlFile);
+                }
             });
         }
 
