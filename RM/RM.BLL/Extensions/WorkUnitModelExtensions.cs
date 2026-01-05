@@ -7,8 +7,6 @@ namespace RM.BLL.Extensions;
 /// </summary>
 public static class WorkUnitModelExtensions
 {
-    #region Методы
-
     /// <summary>
     /// Преобразует единицу работ DAL в единицу работ BLL.
     /// </summary>
@@ -22,6 +20,4 @@ public static class WorkUnitModelExtensions
             Name = workUnitModel.Name
         }: null;
     }
-
-    #endregion
 }

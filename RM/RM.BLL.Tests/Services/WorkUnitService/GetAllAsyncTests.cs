@@ -12,13 +12,7 @@ namespace RM.BLL.Tests.Services.WorkUnitService;
 /// <param name="fixture">Настройка контекста для тестирования сервиса единиц работ.</param>
 public class GetAllAsyncTests : BaseTest<WorkUnitServiceFixture>
 {
-    #region Конструкторы
-
     public GetAllAsyncTests(WorkUnitServiceFixture fixture): base(fixture){ }
-
-    #endregion
-
-    #region Методы
 
     /// <summary>
     /// Тест получения всех единиц работ для корректных данных из источника данных.
@@ -33,7 +27,8 @@ public class GetAllAsyncTests : BaseTest<WorkUnitServiceFixture>
         var stubOutputData = stubOutput.GetOutputData<List<DAL.Abstractions.Models.WorkUnitModel>>();
 
         _fixture.WorkUnitRepositoryMock.Setup(p => p.GetAllAsync())
-                                       .Returns(Task.FromResult<IEnumerable<DAL.Abstractions.Models.WorkUnitModel>>(stubOutputData));
+                                       .Returns(Task.FromResult<
+                                            IReadOnlyCollection<DAL.Abstractions.Models.WorkUnitModel>>(stubOutputData));
 
         // Act:
         var result = await _fixture.WorkUnitService.GetAllAsync();
@@ -42,5 +37,4 @@ public class GetAllAsyncTests : BaseTest<WorkUnitServiceFixture>
         Assert.Equal(result, testCase.OutputData, _fixture.WorkUnitModelEqualityComparer);
     }
 
-    #endregion
 }

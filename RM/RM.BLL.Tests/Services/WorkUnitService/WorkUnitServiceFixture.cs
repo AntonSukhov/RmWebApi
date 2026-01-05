@@ -10,8 +10,6 @@ namespace RM.BLL.Tests.Services.WorkUnitService;
 /// </summary>
 public class WorkUnitServiceFixture
 {
-   #region Свойства
-
     /// <summary>
     /// Получает мок-объект репозитория единицы работ.
     /// </summary>
@@ -27,10 +25,6 @@ public class WorkUnitServiceFixture
     /// </summary>
     public IEqualityComparer<WorkUnitModel?> WorkUnitModelEqualityComparer { get; }
 
-    #endregion
-
-    #region Конструкторы
-
     /// <summary>
     /// Конструктор.
     /// </summary>
@@ -41,5 +35,4 @@ public class WorkUnitServiceFixture
         WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object);
     }
 
-    #endregion
 }

@@ -2,6 +2,7 @@
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Extensions;
 using RM.DAL.Abstractions.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,27 +12,32 @@ namespace RM.BLL.Services;
 /// <summary>
 /// Сервис единицы работ.
 /// </summary>
-/// <param name="repository">Репозиторий единицы работ.</param>
-public class WorkUnitService(IWorkUnitRepository repository) : IWorkUnitService
+public class WorkUnitService : IWorkUnitService
 {
-    #region Поля
-
     /// <summary>
     /// Репозиторий единицы работ.
     /// </summary>
-    private readonly IWorkUnitRepository _repository = repository;
-
-    #endregion
-
-    #region Методы
-
-    /// <inheritdoc/>
-    public async Task<IEnumerable<WorkUnitModel>> GetAllAsync()
+    private readonly IWorkUnitRepository _workUnitRepository;
+ 
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="WorkUnitRepository"/>.
+    /// </summary>
+    /// <param name="workUnitRepository">Репозиторий единицы работ.</param>
+    public WorkUnitService(IWorkUnitRepository workUnitRepository)
     {
-        var result = await _repository.GetAllAsync();
+        ArgumentNullException.ThrowIfNull(workUnitRepository);
 
-        return result.Select(p => p.ToBll());
+        _workUnitRepository = workUnitRepository;
     }
 
-    #endregion
+    /// <inheritdoc/>
+    public async Task<IReadOnlyCollection<WorkUnitModel>> GetAllAsync()
+    {
+        var workUnits = await _workUnitRepository.GetAllAsync();
+        
+        var result = workUnits.Select(p => p.ToBll())
+                              .ToList();
+        return result;
+    }
+
 }

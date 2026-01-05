@@ -7,8 +7,6 @@ namespace RM.BLL.Tests.Services.WorkUnitService;
 /// </summary>
 public class WorkUnitModelEqualityComparer : IEqualityComparer<WorkUnitModel?>
 {
-    #region Методы
-
     /// <inheritdoc/>
     public bool Equals(WorkUnitModel? workUnit1, WorkUnitModel? workUnit2)
     {
@@ -30,6 +28,4 @@ public class WorkUnitModelEqualityComparer : IEqualityComparer<WorkUnitModel?>
 
         return HashCode.Combine(workUnit.Id, workUnit.Name);
     }
-
-    #endregion
 }

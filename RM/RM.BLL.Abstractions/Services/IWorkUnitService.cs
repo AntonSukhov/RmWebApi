@@ -9,13 +9,9 @@ namespace RM.BLL.Abstractions.Services;
 /// </summary>
 public interface IWorkUnitService
 {
-    #region Методы
-
     /// <summary>
     /// Предоставляет все единицы работ.
     /// </summary>
     /// <returns>Единицы работ.</returns>
-    Task<IEnumerable<WorkUnitModel>> GetAllAsync();
-
-    #endregion
+    Task<IReadOnlyCollection<WorkUnitModel>> GetAllAsync();
 }

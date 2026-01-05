@@ -5,17 +5,13 @@
 /// </summary>
 public class WorkUnitModel
 {
-    #region Свойства
-
     /// <summary>
-    /// Идентификатор единицы работ.
+    /// Получает или задает идентификатор единицы работ.
     /// </summary>
     public byte Id { get; set; }
 
     /// <summary>
-    /// Название единицы работ.
+    /// Получает или задает название единицы работ.
     /// </summary>
     public string Name { get; set; }
-
-    #endregion
 }

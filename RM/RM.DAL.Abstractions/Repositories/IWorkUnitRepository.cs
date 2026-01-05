@@ -1,5 +1,4 @@
 ﻿using RM.DAL.Abstractions.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ public interface IWorkUnitRepository
     /// Предоставляет все единицы работ.
     /// </summary>
     /// <returns>Единицы работ.</returns>
-    Task<IEnumerable<WorkUnitModel>> GetAllAsync();
+    Task<IReadOnlyCollection<WorkUnitModel>> GetAllAsync();
 
     /// <summary>
     /// Предоставляет единицу работ по его идентификатору.
