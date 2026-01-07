@@ -9,8 +9,6 @@ namespace RM.DAL.Abstractions.Repositories;
 /// </summary>
 public interface IWorkUnitRepository
 {
-    #region Методы
-
     /// <summary>
     /// Предоставляет все единицы работ.
     /// </summary>
@@ -25,6 +23,5 @@ public interface IWorkUnitRepository
     #nullable enable
     Task<WorkUnitModel?> GetByIdAsync(byte workUnitId);
 
-    #endregion
 }
 

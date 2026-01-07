@@ -5,8 +5,6 @@
 /// </summary>
 public class WorkUnitModel
 {
-    #region Свойства
-
     /// <summary>
     /// Идентификатор единицы работ.
     /// </summary>
@@ -17,6 +15,5 @@ public class WorkUnitModel
     /// </summary>
     public string Name { get; set; }
 
-    #endregion
 }
 
