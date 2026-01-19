@@ -12,24 +12,17 @@ namespace RM.BLL.Validators;
 public class WorkTypeUpdationModelValidator: AbstractValidator<WorkTypeUpdationModel>, 
                                              IWorkTypeUpdationModelValidator
 {
-   #region Конструкторы
- 
     /// <summary>
-    /// Конструктор по умолчанию.
+    /// Инициализирует экземпляр <see cref="WorkTypeUpdationModelValidator"/>.
     /// </summary>
     public WorkTypeUpdationModelValidator()
     {
-        #region Идентификатор вида работ
 
         var propertyName = "Идентификатор вида работ";
 
         RuleFor(p => p.Id).NotEmpty()
                           .WithMessage("Значение поля '{PropertyName}' не должно быть пустым.")
                           .WithName(propertyName);
-
-        #endregion
-        
-        #region Название вида работ и идентификатор единицы работ
 
         propertyName = "Название вида работ";
 
@@ -51,12 +44,7 @@ public class WorkTypeUpdationModelValidator: AbstractValidator<WorkTypeUpdationM
             }   
         });
 
-        #endregion
     }
-
-    #endregion
-
-    #region Методы
 
     /// <inheritdoc/>
     public async Task ValidateAndThrowAsync(WorkTypeUpdationModel model, 
@@ -66,6 +54,4 @@ public class WorkTypeUpdationModelValidator: AbstractValidator<WorkTypeUpdationM
 
         await validator.ValidateAndThrowAsync(model, cancellationToken);
     }
-
-    #endregion
 }

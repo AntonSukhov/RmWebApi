@@ -10,14 +10,12 @@ namespace RM.BLL.Abstractions.Services;
 /// </summary>
 public interface IWorkTypeService
 {
-    #region Методы
-
     /// <summary>
     /// Предоставляет все виды работ.
     /// </summary>
     /// <param name="pageOptions">Настройки страницы.</param>
     /// <returns>Виды работ.</returns>
-    Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null);
+    Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null);
 
     /// <summary>
     /// Предоставляет вид работ по его идентификатору.
@@ -47,5 +45,4 @@ public interface IWorkTypeService
     /// <returns/>
     Task DeleteAsync(WorkTypeDeletionModel workTypeDeletionModel);
 
-    #endregion
 }

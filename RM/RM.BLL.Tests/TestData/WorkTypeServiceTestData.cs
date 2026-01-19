@@ -42,43 +42,6 @@ public class WorkTypeServiceTestData
     }
 
     /// <summary>
-    /// Данные для теста создания вида работ для корректных входных данных.
-    /// </summary>
-    public static TheoryData<WorkTypeCreationModel> CreateAsyncForCorrectDataTestData()
-    {
-        return new TheoryData<WorkTypeCreationModel>
-        {
-            new() { Name = $"Вид работ {Guid.NewGuid()}"},
-            new() { Name = new string('n', 200) },
-            new() { Name = $"Вид работ {Guid.NewGuid()}", 
-                    WorkUnitId = DataSourceTestData.WorkUnits.FirstOrDefault()?.Id },
-            new() { Name = $"Вид работ {Guid.NewGuid()}", 
-                    WorkUnitId = DataSourceTestData.WorkUnits.LastOrDefault()?.Id }
-        };
-    }
-
-    /// <summary>
-    /// Данные для теста создания вида работ для некорректных входных данных.
-    /// </summary>
-    public static TheoryData<WorkTypeCreationModel> CreateAsyncForIncorrectDataTestData()
-    {
-        return new TheoryData<WorkTypeCreationModel> 
-        {
-            new(),
-            new() { Name = null, 
-                    WorkUnitId = DataSourceTestData.WorkUnits.FirstOrDefault()?.Id},
-            new() { Name = string.Empty, 
-                    WorkUnitId = DataSourceTestData.WorkUnits.FirstOrDefault()?.Id},
-            new() { Name = new string('n', 201), 
-                    WorkUnitId = DataSourceTestData.WorkUnits.LastOrDefault()?.Id },
-            new() { Name = $"Вид работ {Guid.NewGuid()}", 
-                    WorkUnitId = byte.MinValue },
-            new() { Name = $"Вид работ {Guid.NewGuid()}", 
-                    WorkUnitId = byte.MaxValue }
-        };
-    }
-
-    /// <summary>
     /// Данные для теста удаления вида работ для корректных входных данных.
     /// </summary>
     public static TheoryData<WorkTypeDeletionModel> DeleteAsyncForCorrectDataTestData()

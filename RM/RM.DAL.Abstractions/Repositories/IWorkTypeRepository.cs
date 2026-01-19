@@ -10,27 +10,26 @@ namespace RM.DAL.Abstractions.Repositories;
 /// </summary>
 public interface IWorkTypeRepository
 {
-    #region Методы
-
     /// <summary>
     /// Предоставляет все виды работ.
     /// </summary>
     /// <param name="pageOptions">Настройки страницы.</param>
     /// <returns>Виды работ.</returns>
-    Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null);
+    Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(
+        PageOptionsModel pageOptions = null);
 
     /// <summary>
-    /// Предоставляет вид работ по его Идентификатор.
+    /// Предоставляет вид работ по ИД.
     /// </summary>
-    /// <param name="workTypeId">Идентификатор вида работ.</param>
+    /// <param name="workTypeId">ИД вида работ.</param>
     /// <returns>Вид работ.</returns>
     #nullable enable
     Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId);
 
     /// <summary>
-    /// Предоставляет вид работ по его названию.
+    /// Предоставляет вид работ по названию.
     /// </summary>
-    /// <param name="workTypeId">Название вида работ.</param>
+    /// <param name="workTypeName">Название вида работ.</param>
     /// <returns>Вид работ.</returns>
     Task<WorkTypeModel?> GetByNameAsync(string workTypeName);
 
@@ -55,5 +54,4 @@ public interface IWorkTypeRepository
     /// <returns/>
     Task DeleteAsync(Guid workTypeId);
 
-    #endregion
 }

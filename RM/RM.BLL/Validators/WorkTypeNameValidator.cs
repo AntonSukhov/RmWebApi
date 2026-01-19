@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentValidation;
 using RM.BLL.Abstractions.Validators;
+using RM.BLL.Extensions;
 
 namespace RM.BLL.Validators;
 
@@ -10,15 +11,11 @@ namespace RM.BLL.Validators;
 /// </summary>
 public class WorkTypeNameValidator: AbstractValidator<string>, IWorkTypeNameValidator
 {
-    #region Конструкторы
- 
     /// <summary>
-    /// Конструктор по умолчанию.
+    /// Инициализирует экземпляр <see cref="WorkTypeNameValidator"/>.
     /// </summary>
     public WorkTypeNameValidator()
     {
-        #region Название вида работ
-
         var propertyName = "Название вида работ";
 
         RuleFor(p => p).NotEmpty()
@@ -29,21 +26,13 @@ public class WorkTypeNameValidator: AbstractValidator<string>, IWorkTypeNameVali
                         .When(p => !string.IsNullOrWhiteSpace(p))
                         .WithMessage("Значение поля '{PropertyName}' должно быть длиной от {MinLength} до {MaxLength} символов. Вы ввели {TotalLength} символов.")
                         .WithName(propertyName);
-
-        #endregion
     }
-
-    #endregion
-
-    #region Методы
 
     /// <inheritdoc/>
     public async Task ValidateAndThrowAsync(string model, CancellationToken cancellationToken = default)
     {
         var validator = (IValidator<string>)this;
 
-        await validator.ValidateAndThrowAsync(model, cancellationToken);
+        await validator.ValidateAndThrowCustomAsync(model, cancellationToken);
     }
-
-    #endregion
 }

@@ -7,15 +7,14 @@ namespace RM.BLL;
 /// </summary>
 public class ValidationException : Exception
 {  
-    #region Конструкторы
+    /// <summary>
+    /// Инициализирует экземпляр <see cref="ValidationException"/>.
+    /// </summary>
+    public ValidationException(): base() {}
 
     /// <summary>
-    /// Конструктор по умолчанию.
+    /// Инициализирует экземпляр <see cref="ValidationException"/>.
     /// </summary>
     /// <param name="message">Сообщение об ошибки.</param>
-    public ValidationException(string message) : base(message)
-    {
-    }
-
-    #endregion
+    public ValidationException(string message) : base(message) { }
 }

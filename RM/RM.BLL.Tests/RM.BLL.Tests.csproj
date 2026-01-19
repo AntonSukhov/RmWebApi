@@ -8,8 +8,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="8.8.0" />
-    <PackageReference Include="Infrastructure.Testing" Version="1.0.3" />
-    <PackageReference Include="Infrastructure.Testing.XUnit" Version="1.0.0" />
+    <PackageReference Include="Infrastructure.Testing" Version="1.0.4" />
+    <PackageReference Include="Infrastructure.Testing.XUnit" Version="1.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />

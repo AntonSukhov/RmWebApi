@@ -35,9 +35,9 @@ public class WorkUnitService : IWorkUnitService
     {
         var workUnits = await _workUnitRepository.GetAllAsync();
         
-        var result = workUnits.Select(p => p.ToBll())
+        var results = workUnits.Select(p => p.ToBll())
                               .ToList();
-        return result;
+        return results;
     }
 
 }

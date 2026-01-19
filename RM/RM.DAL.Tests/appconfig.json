@@ -1,6 +1,0 @@
-{
-  "ConnectionStrings": {
-    "PostgreDbContractConnection": "host=localhost;port=5432;database=DbContract;user id=postgres;password=sa",
-    "MsSqlDbContractConnection": "Server=127.0.0.1,1433;Database=DbContract;User ID=sa;Password=ZZTop1986;MultipleActiveResultSets=true;TrustServerCertificate=true"
-  }
-}

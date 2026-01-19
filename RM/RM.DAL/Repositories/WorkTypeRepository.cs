@@ -16,19 +16,13 @@ namespace RM.DAL.Repositories;
 /// <param name="dbContext">Контекст работы с базой данных договоров ГПД.</param>
 public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeRepository
 {
-    #region Поля
-
     /// <summary>
     /// Контекст работы с базой данных договоров ГПД.
     /// </summary>
     private readonly ContractGpdDbContextBase _dbContext = dbContext;
 
-    #endregion
-
-    #region Методы
-
     /// <inheritdoc/>
-    public async Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
+    public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
                                          .Include(p => p.WorkUnit)
@@ -82,6 +76,4 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
 
         await _dbContext.RemoveEntityAsync(workTypeModel);
     }
-
-    #endregion
 }

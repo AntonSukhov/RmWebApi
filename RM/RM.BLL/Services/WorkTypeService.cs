@@ -8,52 +8,49 @@ using RM.BLL.Abstractions.Validators;
 using RM.BLL.Extensions;
 using RM.DAL.Abstractions.Repositories;
 
-namespace RM.BLL;
+namespace RM.BLL.Services;
 
 /// <summary>
 /// Сервис видов работ.
 /// </summary>
-/// <param name="workTypeRepository">Репозиторий видов работ.</param>
-/// <param name="workTypeNameValidator">Валидатор названия вида работ.</param>
-/// <param name="workTypeUpdationModelValidator">Валидатор модели обновления вида работ.</param>
-/// <param name="pageOptionsValidator">Валидатор настроек страницы.</param>
-public class WorkTypeService(IWorkTypeRepository workTypeRepository, 
-                             IWorkUnitRepository workUnitRepository,
-                             IWorkTypeNameValidator workTypeNameValidator,
-                             IWorkTypeUpdationModelValidator workTypeUpdationModelValidator,
-                             IPageOptionsValidator pageOptionsValidator) : IWorkTypeService
+public class WorkTypeService : IWorkTypeService
 {
+    private readonly IWorkTypeRepository _workTypeRepository;
 
-    #region Поля
+    private readonly IWorkUnitRepository _workUnitRepository;
 
-    /// <summary>
-    /// Репозиторий видов работ.
-    /// </summary>
-    private readonly IWorkTypeRepository _workTypeRepository = workTypeRepository;
+    private readonly IWorkTypeNameValidator _workTypeNameValidator;
 
-    /// <summary>
-    /// Репозиторий единиц работ.
-    /// </summary>
-    private readonly IWorkUnitRepository _workUnitRepository = workUnitRepository;
+    private readonly IWorkTypeUpdationModelValidator _workTypeUpdationModelValidator;
+
+    private readonly IPageOptionsValidator _pageOptionsValidator;
 
     /// <summary>
-    /// Валидатор названия вида работ.
+    /// Инициализирует экземпляр <see cref="WorkTypeService"/>.
     /// </summary>
-    private readonly IWorkTypeNameValidator _workTypeNameValidator = workTypeNameValidator;
+    /// <param name="workTypeRepository">Репозиторий вида работ.</param>
+    /// <param name="workUnitRepository">Репозиторий единицы работ.</param>
+    /// <param name="workTypeNameValidator">Валидатор названия вида работ.</param>
+    /// <param name="workTypeUpdationModelValidator">Валидатор модели обновления вида работ.</param>
+    /// <param name="pageOptionsValidator">Валидатор настроек страницы.</param>
+    public WorkTypeService(IWorkTypeRepository workTypeRepository, 
+                            IWorkUnitRepository workUnitRepository,
+                            IWorkTypeNameValidator workTypeNameValidator,
+                            IWorkTypeUpdationModelValidator workTypeUpdationModelValidator,
+                            IPageOptionsValidator pageOptionsValidator)
+    {
+        ArgumentNullException.ThrowIfNull(workTypeRepository, nameof(workTypeRepository));
+        ArgumentNullException.ThrowIfNull(workUnitRepository, nameof(workUnitRepository));
+        ArgumentNullException.ThrowIfNull(workTypeNameValidator, nameof(workTypeNameValidator));
+        ArgumentNullException.ThrowIfNull(workTypeUpdationModelValidator, nameof(workTypeUpdationModelValidator));
+        ArgumentNullException.ThrowIfNull(pageOptionsValidator, nameof(pageOptionsValidator));
 
-    /// <summary>
-    /// Валидатор модели обновления вида работ.
-    /// </summary>
-    private readonly IWorkTypeUpdationModelValidator _workTypeUpdationModelValidator = workTypeUpdationModelValidator;
-
-    /// <summary>
-    /// Валидатор настроек страницы.
-    /// </summary>
-    private readonly IPageOptionsValidator _pageOptionsValidator = pageOptionsValidator;
-
-    #endregion
-
-    #region Методы
+        _workTypeRepository = workTypeRepository;
+        _workUnitRepository = workUnitRepository;
+        _workTypeNameValidator = workTypeNameValidator;
+        _workTypeUpdationModelValidator = workTypeUpdationModelValidator;
+        _pageOptionsValidator = pageOptionsValidator;
+    }
 
     /// <inheritdoc/>
     public async Task<Guid> CreateAsync(WorkTypeCreationModel workTypeCreationModel)
@@ -91,16 +88,18 @@ public class WorkTypeService(IWorkTypeRepository workTypeRepository,
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
+    public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
     {
         if (pageOptions != null)
         {
              await _pageOptionsValidator.ValidateAndThrowAsync(pageOptions);
         }
 
-        var results = await _workTypeRepository.GetAllAsync(pageOptions.ToDal());
+        var workTypes = await _workTypeRepository.GetAllAsync(pageOptions.ToDal());
+        var results = workTypes.Select(p => p.ToBll())
+                               .ToList();
 
-        return results.Select(p => p.ToBll());
+        return results;
     }
 
     /// <inheritdoc/>
@@ -137,6 +136,4 @@ public class WorkTypeService(IWorkTypeRepository workTypeRepository,
 
         await _workTypeRepository.UpdateAsync(workType);
     }
-
-    #endregion
 }

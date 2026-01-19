@@ -8,9 +8,7 @@ namespace RM.BLL.Abstractions.Validators;
 /// </summary>
 /// <typeparam name="TModel">Тип данных проверяемой модели.</typeparam>
 public interface IAbstractModelValidator<in TModel>
-{
-    #region Методы
-      
+{    
     /// <summary>
     /// Проверяет модель и выбрасывает исключение в случае ошибки.
     /// </summary>
@@ -18,6 +16,4 @@ public interface IAbstractModelValidator<in TModel>
     /// <param name="cancellationToken">Токен отмены выполнения проверки модели.</param>
     /// <returns/>
     public Task ValidateAndThrowAsync(TModel model, CancellationToken cancellationToken = default);
-
-    #endregion
 }
