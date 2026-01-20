@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using RM.BLL.Abstractions.Errors;
 using RM.Common.Services;
 
 namespace RM.WebApi.Middleware;
@@ -14,88 +15,103 @@ namespace RM.WebApi.Middleware;
 /// </summary>
 public class ErrorHandlingMiddleware : MiddlewareBase
 { 
-        #region Поля
+    /// <summary>
+    /// Опции JSON-сериализации.
+    /// </summary>
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        /// <summary>
-        /// Опции JSON-сериализации.
-        /// </summary>
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
-
-        #endregion
-
-        #region Конструкторы
-
-        /// <summary>
-        /// Конструктор по умолчанию.
-        /// </summary>
-        /// <param name="next">Делегат обработки Http-запроса на следующем этапе конвейера обработки запроса.</param>
-        /// <exception cref="ArgumentNullException"/>
-        public ErrorHandlingMiddleware(RequestDelegate next) : base(next)
+    /// <summary>
+    /// Инициализирует экземпляр <see cref="ErrorHandlingMiddleware"/>.
+    /// </summary>
+    /// <param name="next">Делегат обработки Http-запроса на следующем этапе конвейера обработки запроса.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public ErrorHandlingMiddleware(RequestDelegate next) : base(next)
+    {
+        _jsonSerializerOptions = new JsonSerializerOptions
         {
-            _jsonSerializerOptions = new JsonSerializerOptions
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+    }
+
+    /// <inheritdoc/>
+    public override async Task Invoke(HttpContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        try
+        {
+            await _next(context);
+        }
+        // catch (DbUpdateConcurrencyException)
+        // {
+        //     var exceptionNew = new Exception("Данные сущности были ранее изменены или удалены.");
+        //     await HandleExceptionAsync(context, exceptionNew);
+        // }
+        catch (Exception exception)
+        {
+            await HandleExceptionAsync(context, exception);
+        }
+    }
+
+    /// <summary>
+    /// Метод обработки исключения.
+    /// </summary>
+    /// <param name="context">Контекст Http-запроса.</param>
+    /// <param name="exception">Исключение.</param>
+    /// <returns/>
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        ApiError apiError;
+        int statusCode;
+
+        if (exception is IApiException apiException)
+        {
+            // Бизнес-ошибки:
+            apiError = apiException.ToApiError();
+            statusCode = (int)HttpStatusCode.BadRequest;
+        }
+        else if (exception is DbUpdateConcurrencyException)
+        {
+            // Конфликт параллельного изменения данных:
+            apiError = new ApiError
             {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                Code = ErrorCodes.Concurrency,
+                Message = "Данные были изменены или удалены другим процессом."
             };
+            statusCode = (int)HttpStatusCode.Conflict;
         }
-
-        #endregion
-
-        #region Методы
-
-        /// <inheritdoc/>
-        public override async Task Invoke(HttpContext context)
+        else
         {
-            ArgumentNullException.ThrowIfNull(context);
-
-            try
+            // Непредвиденные внутренние ошибки:
+            apiError = new ApiError
             {
-                await _next(context);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                var exceptionNew = new Exception("Данные сущности были ранее изменены или удалены.");
-                await HandleExceptionAsync(context, exceptionNew);
-            }
-            catch (Exception exception)
-            {
-                await HandleExceptionAsync(context, exception);
-            }
+                Code = ErrorCodes.Generic,
+                Message = "Внутренняя ошибка сервера.",
+                Details = [
+                    $"Тип ошибки: {exception.GetType().Name}",
+                    $"Трассировка: {exception.StackTrace}"
+                ]
+            };
+            statusCode = (int)HttpStatusCode.InternalServerError;
         }
 
-        /// <summary>
-        /// Метод обработки исключения.
-        /// </summary>
-        /// <param name="context">Контекст Http-запроса.</param>
-        /// <param name="exception">Исключение.</param>
-        /// <returns/>
-        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            ArgumentNullException.ThrowIfNull(exception);
+        await SetErrorResponseAsync(context, statusCode, apiError);
+    }
 
-            var baseException = exception.GetBaseException();
-            var message = $"{exception.GetType().Name}: {exception.Message}";
-                
-            if (baseException != null && exception.Message != baseException.Message)
-            {
-                message = $"{exception.GetType().Name}: {exception.Message}, Base {baseException.GetType().Name}: {baseException.Message}";
-            }
-
-            await SetErrorResponseAsync(context, message);
-        }
-
-        /// <summary>
-        /// Устанавливает свойства ответа, которые соответствуют возникшей ошибке.
-        /// </summary>
-        /// <param name="context">Контекст Http-запроса.</param>
-        /// <param name="message">Сообщение об ошибке.</param>
-        /// <returns/>
-        private async Task SetErrorResponseAsync(HttpContext context, string message)
-        {
-            var result = JsonSerializer.Serialize(new { error = message }, _jsonSerializerOptions);
-            context.Response.ContentType = Constants.ApplicationJsonContentType;
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            await context.Response.WriteAsync(result);
-        }
-
-        #endregion
+    /// <summary>
+    /// Устанавливает свойства ответа, которые соответствуют возникшей ошибке.
+    /// </summary>
+    /// <param name="context">Контекст Http-запроса.</param>
+    /// <param name="statusCode">Сообщение об ошибке.</param>
+    /// <param name="apiError"></param>
+    /// <returns/>
+    private async Task SetErrorResponseAsync(HttpContext context, int statusCode, ApiError apiError)
+    {
+        var result = JsonSerializer.Serialize(apiError, _jsonSerializerOptions);
+        context.Response.ContentType = Constants.ApplicationJsonContentType;
+        context.Response.StatusCode = statusCode;
+        await context.Response.WriteAsync(result);
+    }
 }

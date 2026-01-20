@@ -3,6 +3,7 @@ using Infrastructure.Testing.XUnit;
 using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
+using RM.BLL.Exceptions;
 using RM.BLL.Tests.TestSupport.Constants;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.CreateAsync;

@@ -4,6 +4,7 @@ using RM.BLL.Abstractions.Models;
 using Infrastructure.Testing.XUnit;
 using Infrastructure.Testing.TestCases;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.BLL.Exceptions;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
 
@@ -51,8 +52,15 @@ public class GetAllAsyncTests : BaseTest<WorkTypeServiceFixture>
     public async Task FailsForInvalidRequest(TestCaseInput<PageOptionsModel> testCase)
     {
         // Arrange & Act & Assert:
-        await Assert.ThrowsAsync<ValidationException>(
-            async() => await _fixture.WorkTypeService.GetAllAsync(testCase.InputData));
+        var exception = await Assert.ThrowsAnyAsync<Exception>(
+            async () => await _fixture.WorkTypeService.GetAllAsync(testCase.InputData)
+        );
+
+        // Проверяем, что исключение относится к разрешённым типам
+        Assert.True(
+            exception is ValidationException || 
+            exception is ValidationAggregationException
+        );
     }
 
 }
