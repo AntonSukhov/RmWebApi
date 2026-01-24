@@ -2,14 +2,11 @@
 
 namespace RM.Common.Helpers;
 
-
 /// <summary>
 /// Помощник в работе с конфигурациями.
 /// </summary>
 public static class ConfigurationHelper
 {
-    #region Методы
-
     /// <summary>
     /// Получает строку подключения к БД.
     /// </summary>   
@@ -23,6 +20,4 @@ public static class ConfigurationHelper
                                          .Build()
                                          .GetConnectionString(connectionSectionName);
     } 
-
-    #endregion
 }

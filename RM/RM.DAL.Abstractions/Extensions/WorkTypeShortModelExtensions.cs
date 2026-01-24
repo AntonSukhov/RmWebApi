@@ -7,8 +7,6 @@ namespace RM.DAL.Abstractions.Extensions;
 /// </summary>
 public static class WorkTypeShortModelExtensions
 {
-    #region Методы
-
     /// <summary>
     /// Преобразует сокращенный вид работ DAL в вид работ DAL.
     /// </summary>
@@ -23,6 +21,4 @@ public static class WorkTypeShortModelExtensions
             WorkUnitId = workTypeShortModel.WorkUnitId
         } : null;
     }
-
-    #endregion
 }

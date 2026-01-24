@@ -5,8 +5,6 @@
 /// </summary>
 public static class Constants
 {
-    #region Поля
-
     public const string MsSqlDbContractConnectionString = "MsSqlDbContractConnection";
 
     public const string PostgreDbContractConnectionString = "PostgreDbContractConnection";
@@ -19,5 +17,4 @@ public static class Constants
 
     public const string ApplicationJsonContentType = "application/json";
 
-    #endregion
 }

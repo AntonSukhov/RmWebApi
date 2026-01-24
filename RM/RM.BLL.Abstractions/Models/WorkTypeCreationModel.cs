@@ -5,8 +5,6 @@
 /// </summary>
 public class WorkTypeCreationModel
 {
-    #region Свойства
-
     /// <summary>
     /// Название вида работ.
     /// </summary>
@@ -17,5 +15,4 @@ public class WorkTypeCreationModel
     /// </summary>
     public byte? WorkUnitId { get; set; }
 
-    #endregion
 }

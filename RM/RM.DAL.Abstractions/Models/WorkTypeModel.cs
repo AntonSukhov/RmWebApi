@@ -7,28 +7,25 @@ namespace RM.DAL.Abstractions.Models;
 /// </summary>
 public class WorkTypeModel
 {
-    #region Свойства
-
     /// <summary>
-    /// Идентификатор вида работ.
+    /// Получает или задает ИД вида работ.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Название вида работ.
+    /// Получает или задает название вида работ.
     /// </summary>
     public string Name { get; set; }
 
     /// <summary>
-    /// Идентификатор единицы работ для вида работ.
+    /// Получает или задает ИД единицы работ для вида работ.
     /// </summary>
     public byte? WorkUnitId { get; set; }
 
     /// <summary>
-    /// Единица работ для вида работ.
+    /// Получает или задает единицу работ для вида работ.
     /// </summary>
     public WorkUnitModel WorkUnit { get; set; }
 
-    #endregion
 }
 

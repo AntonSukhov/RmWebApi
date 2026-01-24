@@ -17,18 +17,18 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
     /// Инициализирует экземпляр <see cref="CreateAsyncTests"/>.
     /// </summary>
     /// <param name="fixture">Настройка контекста для тестирования сервиса вида работ.</param>
-    public CreateAsyncTests(WorkTypeServiceFixture fixture) : base(fixture){}
+    public CreateAsyncTests(WorkTypeServiceFixture fixture) : base(fixture) { }
 
     /// <summary>
     /// Проверяет, что метод <see cref="IWorkTypeService.CreateAsync"/> успешно создает вид работ.
     /// </summary>
     [Theory]
-    [MemberData(nameof(CreateAsyncTestCases.SuccessTestCases), 
+    [MemberData(nameof(CreateAsyncTestCases.SuccessTestCases),
                 MemberType = typeof(CreateAsyncTestCases))]
     public async Task SucceedsForValidInput(TestCaseInputWithStubs<WorkTypeCreationModel> testCase)
     {
         // Arrange:
-        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
+        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var stubOutputData = stubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel?>();
 
@@ -39,7 +39,7 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
                                        .ReturnsAsync((DAL.Abstractions.Models.WorkTypeModel?)null);
 
         _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<byte>()))
-                                       .ReturnsAsync(stubOutputData);                            
+                                       .ReturnsAsync(stubOutputData);
 
         // Act:         
         var result = await _fixture.WorkTypeService.CreateAsync(testCase.InputData);
@@ -52,29 +52,36 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
     /// Проверяет, что метод <see cref="IWorkTypeService.CreateAsync"/> не создает вид работ из-за некорретных входных данных.
     /// </summary>
     [Theory]
-    [MemberData(nameof(CreateAsyncTestCases.UnSuccessTestCases), 
+    [MemberData(nameof(CreateAsyncTestCases.UnSuccessTestCases),
                 MemberType = typeof(CreateAsyncTestCases))]
     public async Task FailsForInvalidInput(
         TestCaseInputWithStubs<WorkTypeCreationModel> testCase)
     {
         // Arrange:
-        var firstStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
+        var firstStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var firstStubOutputData = firstStubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel?>();
-        var secondStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync, 
+        var secondStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
             StubSequenceConstants.First)];
         var secondStubOutputData = secondStubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel?>();
-     
+
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByNameAsync(It.IsAny<string>()))
                                        .ReturnsAsync(secondStubOutputData);
 
         _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<byte>()))
-                                       .ReturnsAsync(firstStubOutputData);                            
+                                       .ReturnsAsync(firstStubOutputData);
 
         // Act & Assert: 
-        await Assert.ThrowsAsync<ValidationException>(
-            async() => await _fixture.WorkTypeService.CreateAsync(testCase.InputData));
+        var exception = await Assert.ThrowsAnyAsync<Exception>(
+            async () => await _fixture.WorkTypeService.CreateAsync(testCase.InputData)
+        );
 
+        // Проверяем, что исключение относится к разрешённым типам
+        Assert.True(
+            exception is ValidationException || 
+            exception is ValidationAggregationException ||
+            exception is DataNotFoundException
+        );
     }
 
 }

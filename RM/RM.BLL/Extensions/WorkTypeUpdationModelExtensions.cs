@@ -1,5 +1,4 @@
-﻿using System;
-using RM.BLL.Abstractions.Models;
+﻿using RM.BLL.Abstractions.Models;
 
 namespace RM.BLL.Extensions;
 
@@ -8,8 +7,6 @@ namespace RM.BLL.Extensions;
 /// </summary>
 public static class WorkTypeUpdationModelExtensions
 {
-    #region Методы
-
     /// <summary>
     /// Преобразует модель обновления вида работ BLL в модель сокращенного вида работ DAL.
     /// </summary>
@@ -31,6 +28,4 @@ public static class WorkTypeUpdationModelExtensions
         
         return null;
     }
-
-    #endregion
 }

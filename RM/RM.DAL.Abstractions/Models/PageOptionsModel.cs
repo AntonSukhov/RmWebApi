@@ -5,17 +5,14 @@
 /// </summary>
 public class PageOptionsModel
 {
-    #region Свойства
-
     /// <summary>
-    /// Порядковый номер страницы.
+    /// Получает или задает порядковый номер страницы.
     /// </summary>
     public int PageNumber { get; set; }
 
     /// <summary>
-    /// Кол-во элементов страницы.
+    /// Получает или задает кол-во элементов страницы.
     /// </summary>
     public int PageSize { get; set; }
 
-    #endregion
 }

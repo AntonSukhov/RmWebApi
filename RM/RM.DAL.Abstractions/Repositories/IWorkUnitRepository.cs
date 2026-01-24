@@ -20,7 +20,6 @@ public interface IWorkUnitRepository
     /// </summary>
     /// <param name="workUnitId">ИД единицы работ.</param>
     /// <returns>Единица работ.</returns>
-    #nullable enable
     Task<WorkUnitModel?> GetByIdAsync(byte workUnitId);
 }
 

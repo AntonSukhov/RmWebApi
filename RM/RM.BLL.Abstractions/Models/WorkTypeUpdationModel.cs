@@ -7,22 +7,18 @@ namespace RM.BLL.Abstractions.Models;
 /// </summary>
 public class WorkTypeUpdationModel
 {
-   #region Свойства
-
     /// <summary>
-    /// Идентификатор обновляемого вида работ.
+    /// Получает или задет ИД обновляемого вида работ.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Название вида работ.
+    /// Получает или задает название вида работ.
     /// </summary>
     public string Name { get; set; }
 
     /// <summary>
-    /// Идентификатор единицы работ для вида работ.
+    /// Получает или задает ИД единицы работ для вида работ.
     /// </summary>
     public byte? WorkUnitId { get; set; }
-
-    #endregion
 }

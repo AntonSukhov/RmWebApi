@@ -42,11 +42,6 @@ public class ErrorHandlingMiddleware : MiddlewareBase
         {
             await _next(context);
         }
-        // catch (DbUpdateConcurrencyException)
-        // {
-        //     var exceptionNew = new Exception("Данные сущности были ранее изменены или удалены.");
-        //     await HandleExceptionAsync(context, exceptionNew);
-        // }
         catch (Exception exception)
         {
             await HandleExceptionAsync(context, exception);

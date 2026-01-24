@@ -8,11 +8,9 @@ namespace RM.DAL.MsSql.DbContexts;
 /// Контекст работы с базой данных договоров ГПД.
 /// </summary>
 /// <param name="options">Опции контекста работы с базой данных договоров ГПД.</param>
-public class ContractGpdDbContext(DbContextOptions<ContractGpdDbContext> options) : ContractGpdDbContextBase(options)
+public class ContractGpdDbContext(DbContextOptions<ContractGpdDbContext> options) 
+    : ContractGpdDbContextBase(options)
 {
-
-    #region Методы
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -21,6 +19,4 @@ public class ContractGpdDbContext(DbContextOptions<ContractGpdDbContext> options
         optionsBuilder.LogTo(message => Debug.WriteLine(message), LogLevel.Information)
                         .EnableSensitiveDataLogging();
     }
-
-    #endregion
 }

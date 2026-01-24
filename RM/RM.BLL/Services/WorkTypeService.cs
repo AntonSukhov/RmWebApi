@@ -17,13 +17,9 @@ namespace RM.BLL.Services;
 public class WorkTypeService : IWorkTypeService
 {
     private readonly IWorkTypeRepository _workTypeRepository;
-
     private readonly IWorkUnitRepository _workUnitRepository;
-
     private readonly IWorkTypeNameValidator _workTypeNameValidator;
-
     private readonly IWorkTypeUpdationModelValidator _workTypeUpdationModelValidator;
-
     private readonly IPageOptionsValidator _pageOptionsValidator;
 
     /// <summary>
@@ -64,13 +60,15 @@ public class WorkTypeService : IWorkTypeService
 
         if (workTypeByName != null)
         {
-            throw new ValidationException($"Вид работ с названием '{workTypeCreationModel.Name}' (идентификатор '{workTypeByName.Id}') уже существует.");
+            throw new DataNotFoundException(
+                $"Вид работ с названием '{workTypeCreationModel.Name}' (ИД '{workTypeByName.Id}') уже существует.");
         }
 
         if( workTypeCreationModel.WorkUnitId.HasValue && 
             await _workUnitRepository.GetByIdAsync(workTypeCreationModel.WorkUnitId.Value) == null)
         {
-            throw new ValidationException($"Единицы работ с идентификатором '{workTypeCreationModel.WorkUnitId}' не существует.");
+            throw new DataNotFoundException(
+                $"Единицы работ с ИД'{workTypeCreationModel.WorkUnitId}' не существует.");
         }
         
         var workType = workTypeCreationModel.ToDal(workTypeId: Guid.NewGuid());
@@ -84,19 +82,21 @@ public class WorkTypeService : IWorkTypeService
     public async Task DeleteAsync(WorkTypeDeletionModel workTypeDeletionModel)
     {
         ArgumentNullException.ThrowIfNull(workTypeDeletionModel);
-        
+
+        var existingWorkType = await _workTypeRepository.GetByIdAsync(workTypeDeletionModel.Id) 
+            ?? throw new DataNotFoundException($"Вид работ по ИД '{workTypeDeletionModel.Id}' не существует.");
         await _workTypeRepository.DeleteAsync(workTypeDeletionModel.Id);
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
+    public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel? pageOptions = null)
     {
         if (pageOptions != null)
         {
              await _pageOptionsValidator.ValidateAndThrowAsync(pageOptions);
         }
 
-        var workTypes = await _workTypeRepository.GetAllAsync(pageOptions.ToDal());
+        var workTypes = await _workTypeRepository.GetAllAsync(pageOptions?.ToDal());
         var results = workTypes.Select(p => p.ToBll())
                                .ToList();
 
@@ -124,13 +124,15 @@ public class WorkTypeService : IWorkTypeService
 
         if (workTypeByName != null && workTypeByName.Id != workTypeUpdationModel.Id)
         {
-            throw new ValidationException($"Вид работ с названием '{workTypeUpdationModel.Name}' и идентификатором '{workTypeByName.Id}' уже существует.");
+            throw new DataNotFoundException(
+                $"Вид работ с названием '{workTypeUpdationModel.Name}' и ИД '{workTypeByName.Id}' уже существует.");
         }
 
         if( workTypeUpdationModel.WorkUnitId.HasValue && 
             await _workUnitRepository.GetByIdAsync(workTypeUpdationModel.WorkUnitId.Value) == null)
         {
-            throw new ValidationException($"Единица работ с идентификатором '{workTypeUpdationModel.WorkUnitId}' не существует.");
+            throw new DataNotFoundException(
+                $"Единица работ с ИД '{workTypeUpdationModel.WorkUnitId}' не существует.");
         }
         
         var workType = workTypeUpdationModel.ToDal();

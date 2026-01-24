@@ -23,7 +23,6 @@ public interface IWorkTypeRepository
     /// </summary>
     /// <param name="workTypeId">ИД вида работ.</param>
     /// <returns>Вид работ.</returns>
-    #nullable enable
     Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId);
 
     /// <summary>
