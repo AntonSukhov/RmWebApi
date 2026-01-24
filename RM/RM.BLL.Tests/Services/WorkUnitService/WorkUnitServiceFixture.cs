@@ -1,6 +1,7 @@
 ﻿using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
+using RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL.Tests.Services.WorkUnitService;

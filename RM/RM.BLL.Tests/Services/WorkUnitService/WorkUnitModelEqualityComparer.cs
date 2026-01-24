@@ -1,11 +1,11 @@
 using RM.BLL.Abstractions.Models;
 
-namespace RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
+namespace RM.BLL.Tests.Services.WorkUnitService;
 
  /// <summary>
 /// Пользовательский компаратор для сравнения объектов <see cref="WorkUnitModel"/>.
 /// </summary>
-public class WorkUnitModelEqualityComparer : IEqualityComparer<WorkUnitModel>
+public class WorkUnitModelEqualityComparer : IEqualityComparer<WorkUnitModel?>
 {   
     /// <summary>
     /// Определяет равенство двух объектов <see cref="WorkUnitModel"/>.

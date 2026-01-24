@@ -1,6 +1,7 @@
 using RM.BLL.Abstractions.Models;
+using RM.BLL.Tests.Services.WorkUnitService;
 
-namespace RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
+namespace RM.BLL.Tests.Services.WorkTypeService;
 
  /// <summary>
 /// Пользовательский компаратор для сравнения объектов <see cref="WorkTypeModel"/>.
