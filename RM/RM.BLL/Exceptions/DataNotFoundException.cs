@@ -1,4 +1,5 @@
 using System;
+using RM.BLL.Abstractions.Errors;
 
 namespace RM.BLL.Exceptions;
 
@@ -6,7 +7,7 @@ namespace RM.BLL.Exceptions;
 /// Исключение отсутствия данных.
 /// </summary>
 /// <remarks>Исключение возникает при отсутствии требуемых данных.</remarks>
-public class DataNotFoundException : InvalidOperationException
+public class DataNotFoundException : InvalidOperationException, IApiException
 {
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="DataNotFoundException"/>.
@@ -22,4 +23,10 @@ public class DataNotFoundException : InvalidOperationException
     public DataNotFoundException(string message, Exception innerException) 
         : base(message, innerException) { }
 
+    /// <inheritdoc/>
+    public ApiError ToApiError()=> new()
+    {
+        Code = ErrorCodes.DataNotFound,
+        Message = Message
+    };
 }

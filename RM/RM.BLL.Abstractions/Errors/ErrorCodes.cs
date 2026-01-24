@@ -12,6 +12,14 @@ public static class ErrorCodes
     /// Возникает при нарушении правил проверки входных параметров.
     /// </remarks>
     public const string Validation = "validation";
+
+    /// <summary>
+    /// Ошибка отсутствия данных.
+    /// </summary>
+    /// <remarks>
+    /// Возникает, если запрошенные данные не обнаружены.
+    /// </remarks>
+    public const string DataNotFound = "data_not_found";
     
     /// <summary>
     /// Ошибка конкурентного доступа.

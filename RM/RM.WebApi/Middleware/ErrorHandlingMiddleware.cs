@@ -63,13 +63,13 @@ public class ErrorHandlingMiddleware : MiddlewareBase
 
         if (exception is IApiException apiException)
         {
-            // Бизнес-ошибки:
+            // Бизнес-ошибка:
             apiError = apiException.ToApiError();
             statusCode = (int)HttpStatusCode.BadRequest;
         }
         else if (exception is DbUpdateConcurrencyException)
         {
-            // Конфликт параллельного изменения данных:
+            // Ошибка "Конфликт параллельного изменения данных":
             apiError = new ApiError
             {
                 Code = ErrorCodes.Concurrency,
@@ -79,7 +79,7 @@ public class ErrorHandlingMiddleware : MiddlewareBase
         }
         else
         {
-            // Непредвиденные внутренние ошибки:
+            // Непредвиденная внутренняя ошибка:
             apiError = new ApiError
             {
                 Code = ErrorCodes.Generic,
