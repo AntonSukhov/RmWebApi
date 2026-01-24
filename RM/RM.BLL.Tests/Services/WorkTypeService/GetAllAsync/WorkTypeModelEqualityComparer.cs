@@ -5,7 +5,7 @@ namespace RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
  /// <summary>
 /// Пользовательский компаратор для сравнения объектов <see cref="WorkTypeModel"/>.
 /// </summary>
-public class WorkTypeModelEqualityComparer : IEqualityComparer<WorkTypeModel>
+public class WorkTypeModelEqualityComparer : IEqualityComparer<WorkTypeModel?>
 {
     private readonly IEqualityComparer<WorkUnitModel> _workUnitEqualityComparer =
         new WorkUnitModelEqualityComparer();

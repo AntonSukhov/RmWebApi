@@ -104,13 +104,13 @@ public class WorkTypeService : IWorkTypeService
     }
 
     /// <inheritdoc/>
-    public async Task<WorkTypeModel> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel)
+    public async Task<WorkTypeModel?> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel)
     {
         ArgumentNullException.ThrowIfNull(workTypeGettingByIdModel);
 
         var result = await _workTypeRepository.GetByIdAsync(workTypeGettingByIdModel.Id);
 
-        return result.ToBll();
+        return result?.ToBll();
     }
 
     /// <inheritdoc/>

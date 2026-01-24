@@ -35,7 +35,7 @@ public class WorkTypeServiceFixture
     /// <summary>
     /// Получает компаратор для сравнения объектов <see cref="WorkTypeModel"/>.
     /// </summary>
-    public IEqualityComparer<WorkTypeModel> WorkTypeModelEqualityComparer { get; }
+    public IEqualityComparer<WorkTypeModel?> WorkTypeModelEqualityComparer { get; }
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeServiceFixture"/>.

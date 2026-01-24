@@ -17,31 +17,6 @@ public class WorkTypeServiceTestData
     #region Методы
 
     /// <summary>
-    /// Данные для теста получения вида работ по его идентификатору 
-    /// для корректных входных данных.
-    /// </summary>
-    public static TheoryData<WorkTypeGettingByIdModel> GetByIdAsyncForCorrectDataTestData()
-    {
-        return new TheoryData<WorkTypeGettingByIdModel>
-        {
-            new() { Id = Guid.NewGuid() },
-            new() { Id = Guid.Empty }
-        };
-    }
-
-    /// <summary>
-    /// Данные для теста получения вида работ по его идентификатору 
-    /// для некорректных входных данных.
-    /// </summary>
-    public static TheoryData<WorkTypeGettingByIdModel?> GetByIdAsyncForIncorrectDataTestData()
-    {
-        return new TheoryData<WorkTypeGettingByIdModel?>
-        {
-           null
-        };
-    }
-
-    /// <summary>
     /// Данные для теста удаления вида работ для корректных входных данных.
     /// </summary>
     public static TheoryData<WorkTypeDeletionModel> DeleteAsyncForCorrectDataTestData()

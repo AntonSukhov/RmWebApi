@@ -20,9 +20,9 @@ public interface IWorkTypeService
     /// <summary>
     /// Предоставляет вид работ по его идентификатору.
     /// </summary>
-    /// <param name="workTypeGettingByIdModel">Модела получения вида работ по его идентификатору.</param>
+    /// <param name="workTypeGettingByIdModel">Модель получения вида работ по его идентификатору.</param>
     /// <returns>Вид работ.</returns>
-    Task<WorkTypeModel> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel);
+    Task<WorkTypeModel?> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel);
 
     /// <summary>
     /// Создаёт вид работ.

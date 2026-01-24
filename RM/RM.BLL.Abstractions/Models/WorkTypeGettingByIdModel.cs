@@ -3,16 +3,13 @@
 namespace RM.BLL.Abstractions.Models;
 
 /// <summary>
-/// Модель получения вида работ по его идентификатору.
+/// Модель получения вида работ по ИД.
 /// </summary>
 public class WorkTypeGettingByIdModel
 {
-    #region Свойства
-
     /// <summary>
-    /// Идентификатор вида работ.
+    /// Получает или задает ИД вида работ.
     /// </summary>
     public Guid Id { get; set; }
 
-    #endregion
 }

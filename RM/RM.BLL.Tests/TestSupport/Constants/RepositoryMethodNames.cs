@@ -34,6 +34,11 @@ public static class RepositoryMethodNames
         public const string GetByNameAsync = nameof(IWorkTypeRepository.GetByNameAsync);
 
         /// <summary>
+        /// Имя метода <see cref="IWorkTypeRepository.GetByIdAsync"/>.
+        /// </summary>
+        public const string GetByIdAsync = nameof(IWorkTypeRepository.GetByIdAsync);
+
+        /// <summary>
         /// Имя метода <see cref="IWorkTypeRepository.GetAllAsync"/>.
         /// </summary>
         public const string GetAllAsync = nameof(IWorkTypeRepository.GetAllAsync);

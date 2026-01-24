@@ -62,5 +62,4 @@ public class GetAllAsyncTests : BaseTest<WorkTypeServiceFixture>
             exception is ValidationAggregationException
         );
     }
-
 }
