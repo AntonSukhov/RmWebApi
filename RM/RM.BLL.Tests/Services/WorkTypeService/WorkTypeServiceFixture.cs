@@ -1,7 +1,9 @@
+using AutoMapper;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
+using RM.BLL.Mapping.Profiles;
 using RM.BLL.Validators;
 using RM.DAL.Abstractions.Repositories;
 
@@ -42,12 +44,18 @@ public class WorkTypeServiceFixture
     /// </summary>
     public WorkTypeServiceFixture()
     {
+        var configExpr = new MapperConfigurationExpression();
+        configExpr.AddProfile<WorkUnitMappingProfile>();
+
+        var config = new MapperConfiguration(configExpr);
+        config.AssertConfigurationIsValid();
+
         WorkTypeRepositoryMock = new Mock<IWorkTypeRepository>();
         WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
 
         WorkTypeModelEqualityComparer = new WorkTypeModelEqualityComparer();
 
-        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object);
+        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, config.CreateMapper());
         WorkTypeService = new BLL.Services.WorkTypeService(WorkTypeRepositoryMock.Object, 
             WorkUnitRepositoryMock.Object,
             new WorkTypeNameValidator(),

@@ -1,6 +1,6 @@
-﻿using RM.BLL.Abstractions.Models;
+﻿using AutoMapper;
+using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Extensions;
 using RM.DAL.Abstractions.Repositories;
 using System;
 using System.Collections.Generic;
@@ -14,20 +14,21 @@ namespace RM.BLL.Services;
 /// </summary>
 public class WorkUnitService : IWorkUnitService
 {
-    /// <summary>
-    /// Репозиторий единицы работ.
-    /// </summary>
     private readonly IWorkUnitRepository _workUnitRepository;
+    private readonly IMapper _mapper;
  
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="WorkUnitRepository"/>.
     /// </summary>
     /// <param name="workUnitRepository">Репозиторий единицы работ.</param>
-    public WorkUnitService(IWorkUnitRepository workUnitRepository)
+    /// <param name="mapper">Преобразователь классов.</param>
+    public WorkUnitService(IWorkUnitRepository workUnitRepository, IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(workUnitRepository);
+        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
 
         _workUnitRepository = workUnitRepository;
+        _mapper = mapper;
     }
 
     /// <inheritdoc/>
@@ -35,9 +36,8 @@ public class WorkUnitService : IWorkUnitService
     {
         var workUnits = await _workUnitRepository.GetAllAsync();
         
-        var results = workUnits.Select(p => p.ToBll())
+        var results = workUnits.Select(_mapper.Map<WorkUnitModel>)
                               .ToList();
         return results;
     }
-
 }

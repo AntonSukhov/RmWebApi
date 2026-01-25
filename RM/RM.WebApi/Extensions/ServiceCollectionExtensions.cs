@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RM.BLL;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
+using RM.BLL.Mapping.Profiles;
 using RM.BLL.Services;
 using RM.BLL.Validators;
 using RM.Common.Services;
@@ -18,10 +18,8 @@ namespace RM.WebApi.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    #region Методы
-
     /// <summary>
-    /// Регистрация контекстов баз данных в коллекцию сервисов.
+    /// Регистрация контекстов баз данных.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="configuration">Конфигурация свойств приложения.</param>
@@ -40,7 +38,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Регистрация репозиториев в коллекцию сервисов.
+    /// Регистрация репозиториев.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     public static void RegisterRepositories(this IServiceCollection services)
@@ -50,7 +48,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Регистрация сервисов в коллекцию сервисов.
+    /// Регистрация сервисов.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     public static void RegisterServices(this IServiceCollection services)
@@ -60,7 +58,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Регистрация валидаторов в коллекцию сервисов.
+    /// Регистрация валидаторов.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     public static void RegisterValidators(this IServiceCollection services)
@@ -70,5 +68,12 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IWorkTypeUpdationModelValidator, WorkTypeUpdationModelValidator>();
     }
 
-    #endregion
+    /// <summary>
+    /// Регистрация профилей настроек преобразований объектов.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    public static void RegisterMappingProfiles(this IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(WorkUnitMappingProfile));
+    }
 }

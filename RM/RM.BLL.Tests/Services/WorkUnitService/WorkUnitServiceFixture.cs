@@ -1,7 +1,9 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
+using RM.BLL.Mapping.Profiles;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL.Tests.Services.WorkUnitService;
@@ -31,9 +33,15 @@ public class WorkUnitServiceFixture
     /// </summary>
     public WorkUnitServiceFixture()
     {
+        var configExpr = new MapperConfigurationExpression();
+        configExpr.AddProfile<WorkUnitMappingProfile>();
+
+        var config = new MapperConfiguration(configExpr);
+        config.AssertConfigurationIsValid();
+
         WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
         WorkUnitModelEqualityComparer = new WorkUnitModelEqualityComparer();
-        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object);
+        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, config.CreateMapper());
     }
 
 }

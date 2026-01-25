@@ -25,10 +25,13 @@ namespace RM.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.RegisterDbContexts(Configuration);
             services.RegisterRepositories();         
             services.RegisterServices();
             services.RegisterValidators();
+            services.RegisterMappingProfiles();
+           
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
