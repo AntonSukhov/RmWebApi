@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Validators;
+using RM.BLL.Extensions;
 
 namespace RM.BLL.Validators;
 
@@ -52,6 +53,6 @@ public class WorkTypeUpdationModelValidator: AbstractValidator<WorkTypeUpdationM
     {
         var validator = (IValidator<WorkTypeUpdationModel>)this;
 
-        await validator.ValidateAndThrowAsync(model, cancellationToken);
+        await validator.ValidateAndThrowCustomAsync(model, cancellationToken);
     }
 }

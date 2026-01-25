@@ -23,8 +23,8 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
     /// Проверяет, что метод <see cref="IWorkTypeService.CreateAsync"/> успешно создает вид работ.
     /// </summary>
     [Theory]
-    [MemberData(nameof(CreateAsyncTestCases.SuccessTestCases),
-                MemberType = typeof(CreateAsyncTestCases))]
+    [MemberData(nameof(UpdateAsyncTestCases.SuccessTestCases),
+                MemberType = typeof(UpdateAsyncTestCases))]
     public async Task SucceedsForValidInput(TestCaseInputWithStubs<WorkTypeCreationModel> testCase)
     {
         // Arrange:
@@ -52,8 +52,8 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
     /// Проверяет, что метод <see cref="IWorkTypeService.CreateAsync"/> не создает вид работ из-за некорретных входных данных.
     /// </summary>
     [Theory]
-    [MemberData(nameof(CreateAsyncTestCases.UnSuccessTestCases),
-                MemberType = typeof(CreateAsyncTestCases))]
+    [MemberData(nameof(UpdateAsyncTestCases.UnSuccessTestCases),
+                MemberType = typeof(UpdateAsyncTestCases))]
     public async Task FailsForInvalidInput(
         TestCaseInputWithStubs<WorkTypeCreationModel> testCase)
     {
