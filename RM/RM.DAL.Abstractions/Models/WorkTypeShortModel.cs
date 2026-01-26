@@ -15,7 +15,7 @@ public class WorkTypeShortModel
     /// <summary>
     /// Получает или задает название вида работ.
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Получает или задает ИД единицы работ для вида работ.

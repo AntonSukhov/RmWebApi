@@ -15,7 +15,7 @@ public class WorkTypeModel
     /// <summary>
     /// Получает или задает название вида работ.
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Получает или задает ИД единицы работ для вида работ.
@@ -25,7 +25,7 @@ public class WorkTypeModel
     /// <summary>
     /// Получает или задает единицу работ для вида работ.
     /// </summary>
-    public WorkUnitModel WorkUnit { get; set; }
+    public WorkUnitModel? WorkUnit { get; set; }
 
 }
 

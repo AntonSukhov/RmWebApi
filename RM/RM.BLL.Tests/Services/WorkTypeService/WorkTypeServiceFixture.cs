@@ -44,22 +44,26 @@ public class WorkTypeServiceFixture
     /// </summary>
     public WorkTypeServiceFixture()
     {
-        var configExpr = new MapperConfigurationExpression();
-        configExpr.AddProfile<WorkUnitMappingProfile>();
+        var expr = new MapperConfigurationExpression();
+        expr.AddProfile<WorkUnitMappingProfile>();
+        expr.AddProfile<WorkTypeMappingProfile>();
 
-        var config = new MapperConfiguration(configExpr);
+        var config = new MapperConfiguration(expr);
         config.AssertConfigurationIsValid();
+
+        var mapper = config.CreateMapper();
 
         WorkTypeRepositoryMock = new Mock<IWorkTypeRepository>();
         WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
 
         WorkTypeModelEqualityComparer = new WorkTypeModelEqualityComparer();
 
-        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, config.CreateMapper());
+        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, mapper);
         WorkTypeService = new BLL.Services.WorkTypeService(WorkTypeRepositoryMock.Object, 
             WorkUnitRepositoryMock.Object,
             new WorkTypeNameValidator(),
             new WorkTypeUpdationModelValidator(),
-            new PageOptionsValidator());
+            new PageOptionsValidator(), 
+            mapper);
     }
 }

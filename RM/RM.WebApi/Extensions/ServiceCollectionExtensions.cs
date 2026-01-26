@@ -75,5 +75,6 @@ public static class ServiceCollectionExtensions
     public static void RegisterMappingProfiles(this IServiceCollection services)
     {
         services.AddAutoMapper(typeof(WorkUnitMappingProfile));
+        services.AddAutoMapper(typeof(WorkTypeMappingProfile));
     }
 }

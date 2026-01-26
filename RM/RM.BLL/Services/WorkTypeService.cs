@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
@@ -21,6 +22,7 @@ public class WorkTypeService : IWorkTypeService
     private readonly IWorkTypeNameValidator _workTypeNameValidator;
     private readonly IWorkTypeUpdationModelValidator _workTypeUpdationModelValidator;
     private readonly IPageOptionsValidator _pageOptionsValidator;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeService"/>.
@@ -34,19 +36,22 @@ public class WorkTypeService : IWorkTypeService
                             IWorkUnitRepository workUnitRepository,
                             IWorkTypeNameValidator workTypeNameValidator,
                             IWorkTypeUpdationModelValidator workTypeUpdationModelValidator,
-                            IPageOptionsValidator pageOptionsValidator)
+                            IPageOptionsValidator pageOptionsValidator,
+                            IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(workTypeRepository, nameof(workTypeRepository));
         ArgumentNullException.ThrowIfNull(workUnitRepository, nameof(workUnitRepository));
         ArgumentNullException.ThrowIfNull(workTypeNameValidator, nameof(workTypeNameValidator));
         ArgumentNullException.ThrowIfNull(workTypeUpdationModelValidator, nameof(workTypeUpdationModelValidator));
         ArgumentNullException.ThrowIfNull(pageOptionsValidator, nameof(pageOptionsValidator));
+        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
 
         _workTypeRepository = workTypeRepository;
         _workUnitRepository = workUnitRepository;
         _workTypeNameValidator = workTypeNameValidator;
         _workTypeUpdationModelValidator = workTypeUpdationModelValidator;
         _pageOptionsValidator = pageOptionsValidator;
+        _mapper = mapper;
     }
 
     /// <inheritdoc/>
@@ -97,7 +102,7 @@ public class WorkTypeService : IWorkTypeService
         }
 
         var workTypes = await _workTypeRepository.GetAllAsync(pageOptions?.ToDal());
-        var results = workTypes.Select(p => p.ToBll())
+        var results = workTypes.Select(_mapper.Map<WorkTypeModel>)
                                .ToList();
 
         return results;
@@ -108,9 +113,11 @@ public class WorkTypeService : IWorkTypeService
     {
         ArgumentNullException.ThrowIfNull(workTypeGettingByIdModel);
 
-        var result = await _workTypeRepository.GetByIdAsync(workTypeGettingByIdModel.Id);
+        var workType = await _workTypeRepository.GetByIdAsync(workTypeGettingByIdModel.Id);
 
-        return result?.ToBll();
+        var result = _mapper.Map<WorkTypeModel>(workType);
+
+        return result;
     }
 
     /// <inheritdoc/>

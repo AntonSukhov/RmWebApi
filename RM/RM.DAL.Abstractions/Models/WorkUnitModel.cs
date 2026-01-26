@@ -13,7 +13,7 @@ public class WorkUnitModel
     /// <summary>
     /// Получает или задает название единицы работ.
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
 }
 

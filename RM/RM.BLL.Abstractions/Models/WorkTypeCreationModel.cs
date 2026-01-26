@@ -8,7 +8,7 @@ public class WorkTypeCreationModel
     /// <summary>
     /// Название вида работ.
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Идентификатор единицы работ для вида работ.
