@@ -7,7 +7,6 @@ using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
 using RM.BLL.Exceptions;
-using RM.BLL.Extensions;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL.Services;
@@ -76,7 +75,8 @@ public class WorkTypeService : IWorkTypeService
                 $"Единицы работ с ИД'{workTypeCreationModel.WorkUnitId}' не существует.");
         }
         
-        var workType = workTypeCreationModel.ToDal(workTypeId: Guid.NewGuid());
+        var workType = _mapper.Map<DAL.Abstractions.Models.WorkTypeShortModel>(workTypeCreationModel);
+        workType.Id = Guid.NewGuid();
 
         await _workTypeRepository.CreateAsync(workType);
 
@@ -90,6 +90,7 @@ public class WorkTypeService : IWorkTypeService
 
         var existingWorkType = await _workTypeRepository.GetByIdAsync(workTypeDeletionModel.Id) 
             ?? throw new DataNotFoundException($"Вид работ по ИД '{workTypeDeletionModel.Id}' не существует.");
+
         await _workTypeRepository.DeleteAsync(workTypeDeletionModel.Id);
     }
 
@@ -100,8 +101,10 @@ public class WorkTypeService : IWorkTypeService
         {
              await _pageOptionsValidator.ValidateAndThrowAsync(pageOptions);
         }
+        
+        var workTypes = await _workTypeRepository.GetAllAsync(
+            _mapper.Map<DAL.Abstractions.Models.PageOptionsModel>(pageOptions));
 
-        var workTypes = await _workTypeRepository.GetAllAsync(pageOptions?.ToDal());
         var results = workTypes.Select(_mapper.Map<WorkTypeModel>)
                                .ToList();
 
@@ -142,7 +145,7 @@ public class WorkTypeService : IWorkTypeService
                 $"Единица работ с ИД '{workTypeUpdationModel.WorkUnitId}' не существует.");
         }
         
-        var workType = workTypeUpdationModel.ToDal();
+        var workType = _mapper.Map<DAL.Abstractions.Models.WorkTypeShortModel>(workTypeUpdationModel);
 
         await _workTypeRepository.UpdateAsync(workType);
     }

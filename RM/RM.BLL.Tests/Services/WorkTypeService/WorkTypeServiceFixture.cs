@@ -47,6 +47,9 @@ public class WorkTypeServiceFixture
         var expr = new MapperConfigurationExpression();
         expr.AddProfile<WorkUnitMappingProfile>();
         expr.AddProfile<WorkTypeMappingProfile>();
+        expr.AddProfile<PageOptionsMappingProfile>();
+        expr.AddProfile<WorkTypeCreationMappingProfile>();
+        expr.AddProfile<WorkTypeUpdationMappingProfile>();
 
         var config = new MapperConfiguration(expr);
         config.AssertConfigurationIsValid();
