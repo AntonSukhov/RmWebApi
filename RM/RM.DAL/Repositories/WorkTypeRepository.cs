@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RM.DAL.Abstractions.Extensions;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.Extensions;
@@ -13,13 +13,25 @@ namespace RM.DAL.Repositories;
 /// <summary>
 /// Репозиторий вида работ.
 /// </summary>
-/// <param name="dbContext">Контекст работы с базой данных договоров ГПД.</param>
-public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeRepository
+public class WorkTypeRepository : IWorkTypeRepository
 {
+    private readonly ContractGpdDbContextBase _dbContext;
+    private readonly IMapper _mapper;
+
     /// <summary>
-    /// Контекст работы с базой данных договоров ГПД.
+    /// Инициализирует экземпляр <see cref="WorkTypeRepository"/>.
     /// </summary>
-    private readonly ContractGpdDbContextBase _dbContext = dbContext;
+    /// <param name="dbContext">Контекст работы с БД договоров ГПД.</param>
+    /// <param name="mapper"></param>
+    public  WorkTypeRepository(ContractGpdDbContextBase dbContext, IMapper mapper)
+    {
+        ArgumentNullException.ThrowIfNull(dbContext, nameof(dbContext));
+        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
+
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
+    
 
     /// <inheritdoc/>
     public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
@@ -50,7 +62,9 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
     /// <inheritdoc/>
     public async Task CreateAsync(WorkTypeShortModel workTypeModel)
     {
-        await _dbContext.AddEntityAsync(workTypeModel.ToDal());
+        var workType = _mapper.Map<WorkTypeModel>(workTypeModel);
+
+        await _dbContext.AddEntityAsync(workType);
     }
 
     /// <inheritdoc/>
@@ -63,17 +77,19 @@ public class WorkTypeRepository(ContractGpdDbContextBase dbContext) : IWorkTypeR
             updatedProperties = updatedProperties.Append(nameof(WorkTypeModel.Name));
         }
 
-        await _dbContext.UpdateEntityAsync(workTypeModel.ToDal(), updatedProperties);
+        var workType = _mapper.Map<WorkTypeModel>(workTypeModel);
+
+        await _dbContext.UpdateEntityAsync(workType, updatedProperties);
     }
 
     /// <inheritdoc/>
     public async Task DeleteAsync(Guid workTypeId)
     {
-        var workTypeModel = new WorkTypeModel
+        var workType = new WorkTypeModel
         {
             Id = workTypeId
         };
 
-        await _dbContext.RemoveEntityAsync(workTypeModel);
+        await _dbContext.RemoveEntityAsync(workType);
     }
 }

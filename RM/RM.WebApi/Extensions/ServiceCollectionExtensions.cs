@@ -9,6 +9,7 @@ using RM.BLL.Validators;
 using RM.Common.Services;
 using RM.DAL;
 using RM.DAL.Abstractions.Repositories;
+using RM.DAL.Mapping.Profiles;
 using RM.DAL.Repositories;
 
 namespace RM.WebApi.Extensions;
@@ -79,5 +80,6 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(typeof(PageOptionsMappingProfile));
         services.AddAutoMapper(typeof(WorkTypeCreationMappingProfile));
         services.AddAutoMapper(typeof(WorkTypeUpdationMappingProfile));
+        services.AddAutoMapper(typeof(WorkTypeShortMappingProfile));
     }
 }
