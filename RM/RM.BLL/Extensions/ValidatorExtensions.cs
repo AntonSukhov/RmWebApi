@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using FluentValidation.Results;
 using RM.BLL.Exceptions;
 using ValidationException = RM.BLL.Exceptions.ValidationException;
 
@@ -33,16 +35,28 @@ public static class ValidatorExtensions
 
         if (!result.IsValid)
         {
-            if(result.Errors.Count == 1)
-            {
-                var errorMessage = result.Errors.Single().ErrorMessage;
-                throw new ValidationException(errorMessage);
-            }
-
-            var errors = result.Errors.Select(p => new ValidationException(p.ErrorMessage))
-                                      .ToList();
-                                      
-            throw new ValidationAggregationException("Обнаружены ошибки валидации.", errors);
+            ThrowValidationException(result.Errors);
         }
+    }
+
+    /// <summary>
+    /// Формирует и выбрасывает исключение на основе списка ошибок.
+    /// </summary>
+    /// <param name="errors">Список ошибок</param>
+    private static void ThrowValidationException(List<ValidationFailure> errors)
+    {
+        if (errors.Count == 1)
+        {
+            var errorMessage = errors.First().ErrorMessage;
+            throw new ValidationException(errorMessage);
+        }
+
+        var innerExceptions = errors
+            .Select(error => new ValidationException(error.ErrorMessage))
+            .ToList();
+
+        throw new ValidationAggregationException(
+            "Обнаружены ошибки валидации.",
+            innerExceptions);
     }
 }

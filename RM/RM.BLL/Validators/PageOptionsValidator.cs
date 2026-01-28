@@ -34,9 +34,7 @@ public class PageOptionsValidator: AbstractValidator<PageOptionsModel>, IPageOpt
     public async Task ValidateAndThrowAsync(PageOptionsModel model, 
                                             CancellationToken cancellationToken = default)
     {
-        var validator = (IValidator<PageOptionsModel>)this;
-
-        await validator.ValidateAndThrowCustomAsync(model, cancellationToken);
+        await this.ValidateAndThrowCustomAsync(model, cancellationToken);
     }
 
 }

@@ -7,7 +7,7 @@ namespace RM.BLL.Abstractions.Validators;
 /// Валидатор абстрактной модели.
 /// </summary>
 /// <typeparam name="TModel">Тип данных проверяемой модели.</typeparam>
-public interface IAbstractModelValidator<in TModel>
+public interface IAbstractModelValidator<TModel>
 {    
     /// <summary>
     /// Проверяет модель и выбрасывает исключение в случае ошибки.

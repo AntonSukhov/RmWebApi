@@ -31,8 +31,6 @@ public class WorkTypeNameValidator: AbstractValidator<string>, IWorkTypeNameVali
     /// <inheritdoc/>
     public async Task ValidateAndThrowAsync(string model, CancellationToken cancellationToken = default)
     {
-        var validator = (IValidator<string>)this;
-
-        await validator.ValidateAndThrowCustomAsync(model, cancellationToken);
+        await this.ValidateAndThrowCustomAsync(model, cancellationToken);
     }
 }

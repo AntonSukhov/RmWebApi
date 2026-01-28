@@ -51,8 +51,6 @@ public class WorkTypeUpdationModelValidator: AbstractValidator<WorkTypeUpdationM
     public async Task ValidateAndThrowAsync(WorkTypeUpdationModel model, 
                                             CancellationToken cancellationToken = default)
     {
-        var validator = (IValidator<WorkTypeUpdationModel>)this;
-
-        await validator.ValidateAndThrowCustomAsync(model, cancellationToken);
+        await this.ValidateAndThrowCustomAsync(model, cancellationToken);
     }
 }
