@@ -67,6 +67,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPageOptionsValidator, PageOptionsValidator>();
         services.AddSingleton<IWorkTypeNameValidator, WorkTypeNameValidator>();
         services.AddSingleton<IWorkTypeUpdationModelValidator, WorkTypeUpdationModelValidator>();
+        services.AddSingleton<WorkTypeNamePropertyValidator>();
     }
 
     /// <summary>

@@ -64,7 +64,7 @@ public class WorkTypeServiceFixture
         WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, mapper);
         WorkTypeService = new BLL.Services.WorkTypeService(WorkTypeRepositoryMock.Object, 
             WorkUnitRepositoryMock.Object,
-            new WorkTypeNameValidator(),
+            new WorkTypeNameValidator( new WorkTypeNamePropertyValidator()),
             new WorkTypeUpdationModelValidator(),
             new PageOptionsValidator(), 
             mapper);
