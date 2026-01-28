@@ -3,6 +3,6 @@
 /// <summary>
 /// Валидатор названия вида работ.
 /// </summary>
-public interface IWorkTypeNameValidator: IAbstractModelValidator<string>
+public interface IWorkTypeNameValidator: IAbstractValidator<string>
 {
 }

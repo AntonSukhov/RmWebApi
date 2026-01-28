@@ -5,6 +5,6 @@ namespace RM.BLL.Abstractions.Validators;
 /// <summary>
 /// Валидатор настроек страницы.
 /// </summary>
-public interface IPageOptionsValidator: IAbstractModelValidator<PageOptionsModel>
+public interface IPageOptionsValidator: IAbstractValidator<PageOptionsModel>
 {
 }
