@@ -1,5 +1,4 @@
 using AutoMapper;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
@@ -61,11 +60,13 @@ public class WorkTypeServiceFixture
 
         WorkTypeModelEqualityComparer = new WorkTypeModelEqualityComparer();
 
+        var workTypeNamePropertyValidator = new WorkTypeNamePropertyValidator();
+
         WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, mapper);
         WorkTypeService = new BLL.Services.WorkTypeService(WorkTypeRepositoryMock.Object, 
             WorkUnitRepositoryMock.Object,
-            new WorkTypeNameValidator( new WorkTypeNamePropertyValidator()),
-            new WorkTypeUpdationModelValidator(),
+            new WorkTypeNameValidator( workTypeNamePropertyValidator),
+            new WorkTypeUpdationModelValidator(workTypeNamePropertyValidator),
             new PageOptionsValidator(), 
             mapper);
     }

@@ -1,4 +1,5 @@
 using FluentValidation;
+using RM.BLL.Validators.Constants;
 
 namespace RM.BLL.Validators;
 
@@ -12,15 +13,13 @@ public class WorkTypeNamePropertyValidator: AbstractValidator<string>
     /// </summary>
     public WorkTypeNamePropertyValidator()
     {
-        var propertyName = "Название вида работ";
-
         RuleFor(p => p).NotEmpty()
-                       .WithMessage("Значение поля '{PropertyName}' не должно быть пустым.")
-                       .WithName(propertyName);
+                       .WithMessage(ValidationMessages.NotEmpty)
+                       .WithName(FieldNames.WorkTypeName);
 
         RuleFor(p => p).Length(1, 200)
                         .When(p => !string.IsNullOrWhiteSpace(p))
-                        .WithMessage("Значение поля '{PropertyName}' должно быть длиной от {MinLength} до {MaxLength} символов. Вы ввели {TotalLength} символов.")
-                        .WithName(propertyName);
+                        .WithMessage(ValidationMessages.LengthRange)
+                        .WithName(FieldNames.WorkTypeName);
     }
 }

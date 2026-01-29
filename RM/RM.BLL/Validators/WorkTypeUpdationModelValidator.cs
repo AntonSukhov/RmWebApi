@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Validators;
 using RM.BLL.Extensions;
+using RM.BLL.Validators.Constants;
 
 namespace RM.BLL.Validators;
 
@@ -13,38 +15,24 @@ namespace RM.BLL.Validators;
 public class WorkTypeUpdationModelValidator: AbstractValidator<WorkTypeUpdationModel>, 
                                              IWorkTypeUpdationModelValidator
 {
+     private readonly WorkTypeNamePropertyValidator _workTypeNamePropertyValidator;
+
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeUpdationModelValidator"/>.
     /// </summary>
-    public WorkTypeUpdationModelValidator()
+    public WorkTypeUpdationModelValidator(WorkTypeNamePropertyValidator workTypeNamePropertyValidator)
     {
 
-        var propertyName = "Идентификатор вида работ";
+        ArgumentNullException.ThrowIfNull(workTypeNamePropertyValidator, 
+            nameof(workTypeNamePropertyValidator));
+
+        _workTypeNamePropertyValidator = workTypeNamePropertyValidator;
 
         RuleFor(p => p.Id).NotEmpty()
-                          .WithMessage("Значение поля '{PropertyName}' не должно быть пустым.")
-                          .WithName(propertyName);
+                          .WithMessage(ValidationMessages.NotEmpty)
+                          .WithName(FieldNames.WorkTypeId);
 
-        propertyName = "Название вида работ";
-
-        RuleFor(p => p).Custom((p, context) =>
-        {
-            context.MessageFormatter.AppendArgument("PropertyName", propertyName);
-            
-            if (!p.WorkUnitId.HasValue && string.IsNullOrWhiteSpace(p.Name))
-            {           
-                context.AddFailure(propertyName, "Значение поля '{PropertyName}' не должно быть пустым.");
-            }
-            else if(!string.IsNullOrWhiteSpace(p.Name) && !(p.Name.Length >= 1 && p.Name.Length <= 200))
-            {
-                context.MessageFormatter.AppendArgument("MinLength", 1);
-                context.MessageFormatter.AppendArgument("MaxLength", 200);
-                context.MessageFormatter.AppendArgument("TotalLength", p.Name.Length);
-
-                context.AddFailure(propertyName, "Значение поля '{PropertyName}' должно быть длиной от {MinLength} до {MaxLength} символов. Вы ввели {TotalLength} символов.");
-            }   
-        });
-
+        RuleFor(p=>p.Name).SetValidator(_workTypeNamePropertyValidator);
     }
 
     /// <inheritdoc/>

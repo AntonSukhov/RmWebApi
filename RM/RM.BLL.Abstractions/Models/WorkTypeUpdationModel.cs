@@ -8,7 +8,7 @@ namespace RM.BLL.Abstractions.Models;
 public class WorkTypeUpdationModel
 {
     /// <summary>
-    /// Получает или задет ИД обновляемого вида работ.
+    /// Получает или задает ИД обновляемого вида работ.
     /// </summary>
     public Guid Id { get; set; }
 
