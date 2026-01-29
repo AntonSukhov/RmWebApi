@@ -9,7 +9,7 @@ namespace RM.BLL.Tests.Services.WorkTypeService.CreateAsync;
 /// <summary>
 /// Набор тестовых сценариев для проверки метода <see cref="IWorkTypeService.CreateAsync"/>.
 /// </summary>
-public static class UpdateAsyncTestCases
+public static class CreateAsyncTestCases
 {
     /// <summary>
     /// Получает сценарии успешного выполнения метода <see cref="IWorkTypeService.CreateAsync"/>.
