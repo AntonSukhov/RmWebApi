@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using RM.BLL.Abstractions.Errors;
 using RM.Common.Services;
+using RM.WebApi.Extensions;
 
 namespace RM.WebApi.Middleware;
 
@@ -67,6 +68,16 @@ public class ErrorHandlingMiddleware : MiddlewareBase
             apiError = apiException.ToApiError();
             statusCode = (int)HttpStatusCode.BadRequest;
         }
+        else if( exception.IsAuthenticationFailure())
+        {
+            // Ошибка аутентификации
+            apiError = new ApiError
+            {
+                Code = ErrorCodes.AuthenticationFailed,
+                Message = "Неверный логин или пароль"
+            };
+            statusCode = (int)HttpStatusCode.Unauthorized;
+        }
         else if (exception is DbUpdateConcurrencyException)
         {
             // Ошибка "Конфликт параллельного изменения данных":
@@ -79,17 +90,15 @@ public class ErrorHandlingMiddleware : MiddlewareBase
         }
         else
         {
-            // Непредвиденная внутренняя ошибка:
+            // Непредвиденная ошибка (клиенту — обобщённое сообщение)
             apiError = new ApiError
             {
                 Code = ErrorCodes.Generic,
-                Message = "Внутренняя ошибка сервера.",
-                Details = [
-                    $"Тип ошибки: {exception.GetType().Name}",
-                    $"Трассировка: {exception.StackTrace}"
-                ]
+                Message = "Произошла непредвиденная ошибка при обработке запроса."
             };
             statusCode = (int)HttpStatusCode.InternalServerError;
+
+            // TODO: Добавить логирование полной информации для разработчиков.
         }
 
         await SetErrorResponseAsync(context, statusCode, apiError);

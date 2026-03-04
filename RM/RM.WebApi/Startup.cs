@@ -13,26 +13,42 @@ using RM.WebApi.Middleware;
 
 namespace RM.WebApi
 {
+    /// <summary>
+    /// Класс начальной конфигурации приложения ASP.NET Core.
+    /// </summary>
+    /// <remarks>
+    /// Отвечает за настройку сервисов (DI‑контейнер) и конвейера обработки HTTP‑запросов.
+    /// </remarks>
     public class Startup
     {
+        /// <summary>
+        /// Инициализирует экземпляр <see cref="Startup"/>.
+        /// </summary>
+        /// <param name="configuration">Настройки приложения.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Получает настройки приложения.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Выполняет регистрацию сервисов, используемых в приложении.
+        /// </summary>
+        /// <param name="services">Коллекция сервисов.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             
             services.RegisterDbContexts(Configuration);
+            services.RegisterSettings(Configuration);
             services.RegisterRepositories();         
             services.RegisterServices();
             services.RegisterValidators();
             services.RegisterMappingProfiles();
            
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -53,24 +69,29 @@ namespace RM.WebApi
         }
 
         /// <summary>
-        /// Настройка конвейера HTTP-запросов. Вызывается средой выполнения.
+        /// Выполняет настройку конвейера HTTP-запросов. Вызывается средой выполнения.
         /// </summary>
-        /// <param name="app">Создаёт компоненты конвейера HTTP-запросов.</param>
-        /// <param name="env">Предоставляет информацию о среде веб-хостинга, в которой работает приложение.</param>
+        /// <param name="app">Создатель компонентов конвейера HTTP-запросов.</param>
+        /// <param name="env">Информация о среде веб-хостинга, в которой работает приложение.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {        
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 app.UseSwagger();
+
+                // Запускает веб‑интерфейс Swagger UI для интерактивного тестирования API.
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RM.WebApi v1"));
             }
 
+            // Глобальный обработчик исключений
             app.UseMiddleware<ErrorHandlingMiddleware>();
 
+            // Перенаправляет HTTP‑запросы на HTTPS.
             app.UseHttpsRedirection();
 
+            // Настраивает маршрутизацию — определяет, какой код будет вызван для каждого URL
             app.UseRouting();
 
             app.UseAuthorization();

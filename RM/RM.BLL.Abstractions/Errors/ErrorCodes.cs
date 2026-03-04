@@ -36,4 +36,12 @@ public static class ErrorCodes
     /// Используется, когда конкретная причина ошибки неизвестна или не требует детализации.
     /// </remarks>
     public const string Generic = "internal_error";
+
+    /// <summary>
+    /// Ошибка аутентификации пользователя.
+    /// </summary>
+    /// <remarks>
+    /// Возникает при неуспешной аутентификации пользователя.
+    /// </remarks>
+    public const string AuthenticationFailed = "authentication_failed";
 }

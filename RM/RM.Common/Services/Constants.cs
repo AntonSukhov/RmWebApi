@@ -17,4 +17,6 @@ public static class Constants
 
     public const string ApplicationJsonContentType = "application/json";
 
+    public const string Authentication = "Authentication";
+
 }

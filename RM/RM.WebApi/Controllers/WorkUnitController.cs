@@ -14,16 +14,10 @@ namespace RM.WebApi.Controllers;
 [Route("api/work-unit")]
 public class WorkUnitApiController(IWorkUnitService workUnitService) : ControllerBase
 {
-    #region Поля
-
     /// <summary>
     /// Сервис получения данных о единицах работ.
     /// </summary>
     private readonly IWorkUnitService _workUnitService = workUnitService;
-
-    #endregion
-
-    #region Методы
 
     /// <summary>
     /// Предоставляет все единицы работ.
@@ -37,6 +31,4 @@ public class WorkUnitApiController(IWorkUnitService workUnitService) : Controlle
 
         return result;
     }
-
-    #endregion
 }

@@ -15,16 +15,10 @@ namespace RM.WebApi.Controllers;
 [Route("api/work-type")]
 public class WorkTypeApiController(IWorkTypeService workTypeService) : ControllerBase
 {
-   #region Поля
-
     /// <summary>
     /// Сервис работы с видами работ.
     /// </summary>
     private readonly IWorkTypeService _workTypeService = workTypeService;
-
-    #endregion
-
-    #region Методы
 
     /// <summary>
     /// Предоставляет все виды работ.
@@ -91,6 +85,4 @@ public class WorkTypeApiController(IWorkTypeService workTypeService) : Controlle
     {
         await _workTypeService.UpdateAsync(workTypeUpdationModel);
     }
-
-    #endregion
 }

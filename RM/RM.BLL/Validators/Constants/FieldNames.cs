@@ -5,24 +5,11 @@ namespace RM.BLL.Validators.Constants;
 /// </summary>
 public class FieldNames
 {
-    /// <summary>
-    /// Имя проверяемого поля «Порядковый номер страницы».
-    /// </summary>
     public const string PageNumber = "Порядковый номер страницы";
-
-
-    /// <summary>
-    /// Имя проверяемого поля «Кол‑во элементов страницы».
-    /// </summary>
     public const string PageSize = "Кол-во элементов страницы";
-
-    /// <summary>
-    /// Имя проверяемого поля «Название вида работ».
-    /// </summary>
     public const string WorkTypeId = "ИД вида работ";
-
-    /// <summary>
-    /// Имя проверяемого поля «Название вида работ».
-    /// </summary>
     public const string WorkTypeName = "Название вида работ";
+    public const string UserName = "Логин"; 
+    public const string UserPassword = "Пароль";
+    public const string ServerName = "Имя сервера";
 }

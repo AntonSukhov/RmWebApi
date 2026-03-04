@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RM.BLL.Abstractions.Configuration;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
 using RM.BLL.Mapping.Profiles;
@@ -23,18 +24,20 @@ public static class ServiceCollectionExtensions
     /// Регистрация контекстов баз данных.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
-    /// <param name="configuration">Конфигурация свойств приложения.</param>
+    /// <param name="configuration">Конфигурация свойств API.</param>
     public static void RegisterDbContexts(this IServiceCollection services, IConfiguration configuration)
     {
         if (configuration.GetValue<string>(Constants.DataStorageTypeString) == Constants.MsSqlServer)
         {
             //TODO: вынести UseSqlServer отсюда
-            services.AddDbContext<ContractGpdDbContextBase, DAL.MsSql.DbContexts.ContractGpdDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(Constants.MsSqlDbContractConnectionString)));
+            services.AddDbContext<ContractGpdDbContextBase, DAL.MsSql.DbContexts.ContractGpdDbContext>(
+                options => options.UseSqlServer(configuration.GetConnectionString(Constants.MsSqlDbContractConnectionString)));
         }
         else if (configuration.GetValue<string>(Constants.DataStorageTypeString) == Constants.PostgreSql)
         {
             //TODO: вынести UseNpgsql отсюда
-            services.AddDbContext<ContractGpdDbContextBase, DAL.PostgreSql.DbContexts.ContractGpdDbContext>(options => options.UseNpgsql(configuration.GetConnectionString(Constants.PostgreDbContractConnectionString)));
+            services.AddDbContext<ContractGpdDbContextBase, DAL.PostgreSql.DbContexts.ContractGpdDbContext>(
+                options => options.UseNpgsql(configuration.GetConnectionString(Constants.PostgreDbContractConnectionString)));
         }
     }
 
@@ -56,6 +59,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IWorkUnitService, WorkUnitService>();
         services.AddScoped<IWorkTypeService, WorkTypeService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IdentityWebApp.Api.Services.AuthenticationService>();
     }
 
     /// <summary>
@@ -67,6 +72,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPageOptionsValidator, PageOptionsValidator>();
         services.AddSingleton<IWorkTypeNameValidator, WorkTypeNameValidator>();
         services.AddSingleton<IWorkTypeUpdationModelValidator, WorkTypeUpdationModelValidator>();
+        services.AddSingleton<IAuthenticationCredentialsValidator, AuthenticationCredentialsValidator>();
         services.AddSingleton<WorkTypeNamePropertyValidator>();
     }
 
@@ -82,5 +88,17 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(typeof(WorkTypeCreationMappingProfile));
         services.AddAutoMapper(typeof(WorkTypeUpdationMappingProfile));
         services.AddAutoMapper(typeof(WorkTypeShortMappingProfile));
+    }
+
+    /// <summary>
+    /// Регистрация настроек API.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="configuration">Конфигурация свойств API.</param>
+    public static void RegisterSettings(this IServiceCollection services, 
+        IConfiguration configuration)
+    {
+        services.Configure<AuthenticationSettings>(
+            configuration.GetSection(Constants.Authentication));
     }
 }
