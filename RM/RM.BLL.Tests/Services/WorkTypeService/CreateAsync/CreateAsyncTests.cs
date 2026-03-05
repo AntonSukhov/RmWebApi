@@ -1,3 +1,4 @@
+using Infrastructure.Testing.Common;
 using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Moq;
@@ -28,7 +29,8 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
     public async Task SucceedsForValidInput(TestCaseInputWithStubs<WorkTypeCreationModel> testCase)
     {
         // Arrange:
-        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
+        var stubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var stubOutputData = stubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel?>();
 
@@ -58,10 +60,12 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
         TestCaseInputWithStubs<WorkTypeCreationModel> testCase)
     {
         // Arrange:
-        var firstStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
+        var firstStubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var firstStubOutputData = firstStubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel?>();
-        var secondStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
+        var secondStubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
             StubSequenceConstants.First)];
         var secondStubOutputData = secondStubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel?>();
 

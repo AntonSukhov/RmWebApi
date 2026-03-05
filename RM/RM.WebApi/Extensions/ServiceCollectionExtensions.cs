@@ -60,7 +60,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWorkUnitService, WorkUnitService>();
         services.AddScoped<IWorkTypeService, WorkTypeService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddScoped<IdentityWebApp.Api.Services.AuthenticationService>();
+        services.AddScoped<IdentityWebApp.Api.Services.IAuthenticationService, 
+            IdentityWebApp.Api.Services.AuthenticationService>();
     }
 
     /// <summary>

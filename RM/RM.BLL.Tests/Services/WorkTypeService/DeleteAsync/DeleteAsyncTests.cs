@@ -1,4 +1,5 @@
-﻿using Infrastructure.Testing.TestCases;
+﻿using Infrastructure.Testing.Common;
+using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Moq;
 using RM.BLL.Abstractions.Models;
@@ -28,7 +29,8 @@ public class DeleteAsyncTests: BaseTest<WorkTypeServiceFixture>
     public async Task SucceedsForValidInput(TestCaseInputWithStubs<WorkTypeDeletionModel> testCase)
     {
         // Arrange:
-        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync,
+        var stubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var stubOutputData = stubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel>();
 
@@ -52,7 +54,8 @@ public class DeleteAsyncTests: BaseTest<WorkTypeServiceFixture>
     public async Task FailsForNonExistingId(TestCaseInputWithStubs<WorkTypeDeletionModel> testCase)
     {
         // Arrange:
-        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync,
+        var stubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var stubOutputData = stubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel>();
 

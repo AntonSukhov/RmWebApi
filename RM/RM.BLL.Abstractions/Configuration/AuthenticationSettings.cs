@@ -18,5 +18,5 @@ public class AuthenticationSettings
     /// <summary>
     /// Получает или задает признак использования протокола HTTPS.
     /// </summary>
-    public bool UseHttps { get; set; }
+    public bool UseHttps { get; set; } = true;
 }

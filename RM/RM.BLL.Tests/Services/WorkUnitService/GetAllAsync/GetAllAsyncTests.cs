@@ -1,4 +1,5 @@
-﻿using Infrastructure.Testing.TestCases;
+﻿using Infrastructure.Testing.Common;
+using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Infrastructure.Testing.XUnit.Helpers;
 using RM.BLL.Abstractions.Models;
@@ -27,7 +28,8 @@ public class GetAllAsyncTests : BaseTest<WorkUnitServiceFixture>
         TestCaseResultWithStubs<IEnumerable<WorkUnitModel>> testCase)
     {
         // Arrange:
-        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
+        var stubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
             StubSequenceConstants.First)];
         var stubOutputData = stubOutput.GetOutputData<List<DAL.Abstractions.Models.WorkUnitModel>>();
 

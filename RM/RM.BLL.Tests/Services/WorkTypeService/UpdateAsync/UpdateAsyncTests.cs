@@ -1,4 +1,5 @@
-﻿using Infrastructure.Testing.TestCases;
+﻿using Infrastructure.Testing.Common;
+using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Moq;
 using RM.BLL.Abstractions.Models;
@@ -28,10 +29,12 @@ public class UpdateAsyncTests: BaseTest<WorkTypeServiceFixture>
     public async Task SucceedsForValidInput(TestCaseInputWithStubs<WorkTypeUpdationModel> testCase)
     {
         // Arrange:
-        var getByIdAsyncStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
+        var getByIdAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var getByIdAsyncStubOutputData = getByIdAsyncStubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel>();
-        var getByNameAsyncStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
+        var getByNameAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
             StubSequenceConstants.First)];
         var getByNameAsyncStubOutputData = getByNameAsyncStubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel>();
 
@@ -58,10 +61,12 @@ public class UpdateAsyncTests: BaseTest<WorkTypeServiceFixture>
     {
 
           // Arrange:
-        var getByIdAsyncStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
+        var getByIdAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
         var getByIdAsyncStubOutputData = getByIdAsyncStubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel>();
-        var getByNameAsyncStubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
+        var getByNameAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
             StubSequenceConstants.First)];
         var getByNameAsyncStubOutputData = getByNameAsyncStubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel>();
 

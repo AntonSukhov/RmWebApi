@@ -1,3 +1,4 @@
+using Infrastructure.Testing.Common;
 using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Moq;
@@ -29,7 +30,8 @@ public class GetByIdAsyncTests: BaseTest<WorkTypeServiceFixture>
         TestCaseWithStubs<WorkTypeGettingByIdModel, WorkTypeModel?> testCase)
     {       
         // Arrange:
-        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+        var stubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
             StubSequenceConstants.First)];
         var stubOutputData = stubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel>();
 

@@ -5,6 +5,7 @@ using Infrastructure.Testing.XUnit;
 using Infrastructure.Testing.TestCases;
 using RM.BLL.Tests.TestSupport.Constants;
 using RM.BLL.Exceptions;
+using Infrastructure.Testing.Common;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
 
@@ -29,7 +30,8 @@ public class GetAllAsyncTests : BaseTest<WorkTypeServiceFixture>
         testCase)
     {
         // Arrange:
-        var stubOutput = testCase.StubOutputs[(RepositoryMethodNames.WorkTypeRepository.GetAllAsync, 
+        var stubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetAllAsync, 
             StubSequenceConstants.First)];
         var stubOutputData = stubOutput.GetOutputData<IReadOnlyCollection<DAL.Abstractions.Models.WorkTypeModel>>();
 

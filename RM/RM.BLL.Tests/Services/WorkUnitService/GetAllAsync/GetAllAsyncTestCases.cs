@@ -28,9 +28,9 @@ public static class GetAllAsyncTestCases
                 new() { Id = 2, Name = "WorkUnit2" },
                 new() { Id = 3, Name = "WorkUnit3" }
             ],
-            StubOutputs = new Dictionary<(string MethodName, int SequenceNumber), StubOutput>
+            StubOutputs = new Dictionary<StubOutputKey, StubOutput>
             {
-                [(RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
+                [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
                     StubSequenceConstants.First)] = new StubOutput
                 {
                     OutputData = new List<DAL.Abstractions.Models.WorkUnitModel>

@@ -29,9 +29,9 @@ public static class GetByIdAsyncTestCases
                     Id = _workTypeId, Name = "WorkType1", 
                     WorkUnit = new WorkUnitModel { Id = 1, Name = "WorkUnit1"} 
                 },
-                StubOutputs =new Dictionary<(string MethodName, int SequenceNumber), StubOutput>
+                StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                 {
-                    [(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                    [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                         StubSequenceConstants.First)] = new StubOutput
                     {
                         OutputData =  new DAL.Abstractions.Models.WorkTypeModel 
@@ -52,9 +52,9 @@ public static class GetByIdAsyncTestCases
                 Description = "Проверка получения Null по пустому значению ИД.",
                 InputData = new WorkTypeGettingByIdModel { Id = Guid.Empty},
                 OutputData = default,
-                StubOutputs =new Dictionary<(string MethodName, int SequenceNumber), StubOutput>
+                StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                 {
-                    [(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                    [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                         StubSequenceConstants.First)] = new StubOutput
                     {
                         OutputData = null,
@@ -68,9 +68,9 @@ public static class GetByIdAsyncTestCases
                 Description = "Проверка получения Null по не пустому значению ИД и которого нет в БД.",
                 InputData = new WorkTypeGettingByIdModel { Id = Guid.NewGuid()},
                 OutputData = default,
-                StubOutputs =new Dictionary<(string MethodName, int SequenceNumber), StubOutput>
+                StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                 {
-                    [(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                    [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                         StubSequenceConstants.First)] = new StubOutput
                     {
                         OutputData = null,

@@ -16,64 +16,75 @@ public static class DeleteAsyncTestCases
     /// <summary>
     /// Получает сценарии успешного выполнения метода <see cref="IWorkTypeService.DeleteAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>> 
-        SuccessTestCases =>
-        [
-            new TestCaseInputWithStubs<WorkTypeDeletionModel>
+    public static TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>> SuccessTestCases
+    {
+        get
+        {
+            var theoryData = new TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>>
             {
-                ScenarioNumber = 1,
-                Description = "Проверка успешного удаления вида работ по его значению ИД, который есть в БД.",
-                InputData = new WorkTypeDeletionModel { Id = _workTypeId },
-                StubOutputs =new Dictionary<(string MethodName, int SequenceNumber), StubOutput>
-                {
-                    [(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
-                        StubSequenceConstants.First)] = new StubOutput
+                new() {
+                    ScenarioNumber = 1,
+                    Description = "Проверка успешного удаления вида работ по его значению ИД, который есть в БД.",
+                    InputData = new WorkTypeDeletionModel { Id = _workTypeId },
+                    StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {
-                        OutputData =  new DAL.Abstractions.Models.WorkTypeModel
-                        { 
-                            Id = _workTypeId , Name = "WorkType201"
-                        },
-                        ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                        [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  new DAL.Abstractions.Models.WorkTypeModel
+                            { 
+                                Id = _workTypeId , Name = "WorkType201"
+                            },
+                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                        }
                     }
                 }
-            }
-        ];
+            };
 
-     /// <summary>
+            return theoryData;
+        }
+    }
+
+    /// <summary>
     /// Получает сценарии неуспешного выполнения метода <see cref="IWorkTypeService.DeleteAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>> 
-        UnSuccessTestCases =>
-        [
-            new TestCaseInputWithStubs<WorkTypeDeletionModel>
+    public static TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>> UnSuccessTestCases
+    {
+        get
+        {
+            var theoryData = new TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>>
             {
-                ScenarioNumber = 1,
-                Description = "Проверка не успешного удаления вида работ по пустому значению его ИД, которого нет в БД.",
-                InputData = new WorkTypeDeletionModel { Id = Guid.Empty },
-                StubOutputs =new Dictionary<(string MethodName, int SequenceNumber), StubOutput>
-                {
-                    [(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
-                        StubSequenceConstants.First)] = new StubOutput
+                new() {
+                    ScenarioNumber = 1,
+                    Description = "Проверка не успешного удаления вида работ по пустому значению его ИД, которого нет в БД.",
+                    InputData = new WorkTypeDeletionModel { Id = Guid.Empty },
+                    StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {
-                        OutputData =  default,
-                        ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                        [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  default,
+                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                        }
+                    }
+                },
+                new() {
+                    ScenarioNumber = 2,
+                    Description = "Проверка не успешного удаления вида работ по не пустому значению его ИД, которого нет в БД.",
+                    InputData = new WorkTypeDeletionModel { Id = Guid.NewGuid() },
+                    StubOutputs =new Dictionary<StubOutputKey, StubOutput>
+                    {
+                        [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  default,
+                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                        }
                     }
                 }
-            },
-            new TestCaseInputWithStubs<WorkTypeDeletionModel>
-            {
-                ScenarioNumber = 2,
-                Description = "Проверка не успешного удаления вида работ по не пустому значению его ИД, которого нет в БД.",
-                InputData = new WorkTypeDeletionModel { Id = Guid.NewGuid() },
-                StubOutputs =new Dictionary<(string MethodName, int SequenceNumber), StubOutput>
-                {
-                    [(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
-                        StubSequenceConstants.First)] = new StubOutput
-                    {
-                        OutputData =  default,
-                        ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
-                    }
-                }
-            }
-        ];
+            };
+
+            return theoryData;
+        }
+    }
 }

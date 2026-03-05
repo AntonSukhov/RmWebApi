@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityWebApp.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using RM.BLL.Abstractions.Services;
 using RM.WebApi.Models.Requests;
@@ -23,7 +22,7 @@ public class AuthenticationController : ControllerBase
     /// <param name="authenticationService">Сервис аутентификации пользователей.</param>
     public AuthenticationController(IAuthenticationService authenticationService)
     {
-        ArgumentNullException.ThrowIfNull(authenticationService, nameof(AuthenticationService));
+        ArgumentNullException.ThrowIfNull(authenticationService, nameof(authenticationService));
 
         _authenticationService = authenticationService;
     }

@@ -14,7 +14,7 @@ namespace RM.BLL.Services;
 /// </summary>
 public class AuthenticationService : IAuthenticationService
 {
-    private readonly IdentityWebApp.Api.Services.AuthenticationService _authenticationService;
+    private readonly IdentityWebApp.Api.Services.IAuthenticationService _authenticationService;
     private readonly AuthenticationSettings _authenticationSettings;
     private readonly IAuthenticationCredentialsValidator _authenticationCredentialsValidator;
 
@@ -25,7 +25,7 @@ public class AuthenticationService : IAuthenticationService
     /// <param name="authenticationSettings">Настройки для подключения к сервису аутентификации.</param>
     /// <param name="authenticationCredentialsValidator">Валидатор учётных данных для аутентификации пользователя.</param>
     public AuthenticationService(
-        IdentityWebApp.Api.Services.AuthenticationService  authenticationService,
+        IdentityWebApp.Api.Services.IAuthenticationService  authenticationService,
         IOptions<AuthenticationSettings> authenticationSettings,
         IAuthenticationCredentialsValidator authenticationCredentialsValidator)
     {
