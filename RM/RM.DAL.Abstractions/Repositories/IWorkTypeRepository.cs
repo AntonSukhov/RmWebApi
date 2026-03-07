@@ -1,4 +1,5 @@
-﻿using RM.DAL.Abstractions.Models;
+﻿using Infrastructure.Shared.Models;
+using RM.DAL.Abstractions.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

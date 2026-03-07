@@ -105,7 +105,7 @@ public class WorkTypeService : IWorkTypeService
         }
         
         var workTypes = await _workTypeRepository.GetAllAsync(
-            _mapper.Map<DAL.Abstractions.Models.PageOptionsModel>(pageOptions));
+            _mapper.Map<Infrastructure.Shared.Models.PageOptionsModel>(pageOptions));
 
         var results = workTypes.Select(_mapper.Map<WorkTypeModel>)
                                .ToList();

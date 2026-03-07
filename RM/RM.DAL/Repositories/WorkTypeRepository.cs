@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Infrastructure.EntityFramework.Extensions;
+using Infrastructure.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using RM.DAL.Abstractions.Models;
 using RM.DAL.Abstractions.Repositories;
-using RM.DAL.Extensions;
+using RM.DAL.DbContexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,26 +18,26 @@ namespace RM.DAL.Repositories;
 public class WorkTypeRepository : IWorkTypeRepository
 {
     private readonly ContractGpdDbContextBase _dbContext;
-    private readonly IMapper _mapper;
+    private readonly IMapper _workTypeMapper;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeRepository"/>.
     /// </summary>
     /// <param name="dbContext">Контекст работы с БД договоров ГПД.</param>
-    /// <param name="mapper"></param>
-    public  WorkTypeRepository(ContractGpdDbContextBase dbContext, IMapper mapper)
+    /// <param name="workTypeMapper">Маппер типа работ.</param>
+    public  WorkTypeRepository(ContractGpdDbContextBase dbContext, IMapper workTypeMapper)
     {
         ArgumentNullException.ThrowIfNull(dbContext, nameof(dbContext));
-        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
+        ArgumentNullException.ThrowIfNull(workTypeMapper, nameof(workTypeMapper));
 
         _dbContext = dbContext;
-        _mapper = mapper;
+        _workTypeMapper = workTypeMapper;
     }
     
 
     /// <inheritdoc/>
     public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(
-        PageOptionsModel pageOptions = null)
+        PageOptionsModel? pageOptions = null)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
                                          .Include(p => p.WorkUnit)
@@ -62,7 +64,7 @@ public class WorkTypeRepository : IWorkTypeRepository
     /// <inheritdoc/>
     public async Task CreateAsync(WorkTypeShortModel workTypeModel)
     {
-        var workType = _mapper.Map<WorkTypeModel>(workTypeModel);
+        var workType = _workTypeMapper.Map<WorkTypeModel>(workTypeModel);
 
         await _dbContext.AddEntityAsync(workType);
     }
@@ -77,7 +79,7 @@ public class WorkTypeRepository : IWorkTypeRepository
             updatedProperties = updatedProperties.Append(nameof(WorkTypeModel.Name));
         }
 
-        var workType = _mapper.Map<WorkTypeModel>(workTypeModel);
+        var workType = _workTypeMapper.Map<WorkTypeModel>(workTypeModel);
 
         await _dbContext.UpdateEntityAsync(workType, updatedProperties);
     }

@@ -1,17 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.EntityFramework.DbContexts;
+using Microsoft.EntityFrameworkCore;
 using RM.DAL.Abstractions.Models;
-using RM.DAL.DbContexts;
 
-namespace RM.DAL;
+namespace RM.DAL.DbContexts;
 
 /// <summary>
 /// Базовый контекст работы с базой данных договоров ГПД.
 /// </summary>
-/// <param name="options">Опции контекста работы с базой данных договоров ГПД.</param>
-public abstract class ContractGpdDbContextBase(DbContextOptions options) : DbContextBase(options)
+public abstract class ContractGpdDbContextBase : DbContextBase
 {
-    #region Свойства
-
     /// <summary>
     /// Единицы работ.
     /// </summary>
@@ -22,5 +19,9 @@ public abstract class ContractGpdDbContextBase(DbContextOptions options) : DbCon
     /// </summary>
     public DbSet<WorkTypeModel> WorkTypes { get; set; }
 
-    #endregion
+    /// <summary>
+    /// Инициализирует экземпляр <see cref="ContractGpdDbContextBase"/>.
+    /// </summary>
+    /// <param name="options">Опции контекста работы с базой данных договоров ГПД.</param>
+    public ContractGpdDbContextBase(DbContextOptions options): base(options) {}
 }
