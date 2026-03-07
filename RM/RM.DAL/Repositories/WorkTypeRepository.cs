@@ -34,7 +34,8 @@ public class WorkTypeRepository : IWorkTypeRepository
     
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
+    public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(
+        PageOptionsModel pageOptions = null)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
                                          .Include(p => p.WorkUnit)
@@ -43,7 +44,6 @@ public class WorkTypeRepository : IWorkTypeRepository
     }
 
     /// <inheritdoc/>
-    #nullable enable
     public async Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId)
     {
         return await _dbContext.WorkTypes.AsNoTracking()

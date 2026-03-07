@@ -58,9 +58,11 @@ public class WorkTypeService : IWorkTypeService
     {
         ArgumentNullException.ThrowIfNull(workTypeCreationModel);
 
-        await _workTypeNameValidator.ValidateAndThrowAsync(workTypeCreationModel.Name?? string.Empty);
+        var workTypeName = workTypeCreationModel.Name?? string.Empty;
 
-        var workTypeByName = await _workTypeRepository.GetByNameAsync(workTypeCreationModel.Name);
+        await _workTypeNameValidator.ValidateAndThrowAsync(workTypeName);
+
+        var workTypeByName = await _workTypeRepository.GetByNameAsync(workTypeName);
 
         if (workTypeByName != null)
         {
@@ -87,8 +89,8 @@ public class WorkTypeService : IWorkTypeService
     public async Task DeleteAsync(WorkTypeDeletionModel workTypeDeletionModel)
     {
         ArgumentNullException.ThrowIfNull(workTypeDeletionModel);
-
-        var existingWorkType = await _workTypeRepository.GetByIdAsync(workTypeDeletionModel.Id) 
+        
+        _ = await _workTypeRepository.GetByIdAsync(workTypeDeletionModel.Id)
             ?? throw new DataNotFoundException($"Вид работ по ИД '{workTypeDeletionModel.Id}' не существует.");
 
         await _workTypeRepository.DeleteAsync(workTypeDeletionModel.Id);

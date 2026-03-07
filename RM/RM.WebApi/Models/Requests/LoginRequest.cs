@@ -8,10 +8,10 @@ public class LoginRequest
     /// <summary>
     /// Получает имя пользователя для аутентификации.
     /// </summary>
-    public string UserName { get; set; }
+    public string UserName { get; set; } = string.Empty;
 
     /// <summary>
     /// Получает пароль пользователя.
     /// </summary>
-    public string UserPassword { get; set; }
+    public string UserPassword { get; set; } = string.Empty;
 }

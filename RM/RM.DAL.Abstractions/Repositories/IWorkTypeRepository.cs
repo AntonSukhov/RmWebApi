@@ -16,7 +16,7 @@ public interface IWorkTypeRepository
     /// <param name="pageOptions">Настройки страницы.</param>
     /// <returns>Виды работ.</returns>
     Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(
-        PageOptionsModel pageOptions = null);
+        PageOptionsModel? pageOptions = null);
 
     /// <summary>
     /// Предоставляет вид работ по ИД.

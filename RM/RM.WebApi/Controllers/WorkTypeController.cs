@@ -27,7 +27,7 @@ public class WorkTypeApiController(IWorkTypeService workTypeService) : Controlle
     /// <returns>Виды работ.</returns>
     [Route("get-all")]
     [HttpPost]
-    public async Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel pageOptions = null)
+    public async Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel? pageOptions = null)
     {
         var result = await _workTypeService.GetAllAsync(pageOptions);
 
@@ -41,7 +41,7 @@ public class WorkTypeApiController(IWorkTypeService workTypeService) : Controlle
     /// <returns>Вид работ.</returns>
     [Route("get-by-id")]
     [HttpPost]
-    public async Task<WorkTypeModel> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel)
+    public async Task<WorkTypeModel?> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel)
     {
         var result = await _workTypeService.GetByIdAsync(workTypeGettingByIdModel);
 
