@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Shared.Models;
-using RM.DAL.Abstractions.Models;
+using RM.DAL.Abstractions.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ public interface IWorkTypeRepository
     /// </summary>
     /// <param name="pageOptions">Настройки страницы.</param>
     /// <returns>Виды работ.</returns>
-    Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(
+    Task<IReadOnlyCollection<WorkTypeEntity>> GetAllAsync(
         PageOptionsModel? pageOptions = null);
 
     /// <summary>
@@ -24,28 +24,28 @@ public interface IWorkTypeRepository
     /// </summary>
     /// <param name="workTypeId">ИД вида работ.</param>
     /// <returns>Вид работ.</returns>
-    Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId);
+    Task<WorkTypeEntity?> GetByIdAsync(Guid workTypeId);
 
     /// <summary>
     /// Предоставляет вид работ по названию.
     /// </summary>
     /// <param name="workTypeName">Название вида работ.</param>
     /// <returns>Вид работ.</returns>
-    Task<WorkTypeModel?> GetByNameAsync(string workTypeName);
+    Task<WorkTypeEntity?> GetByNameAsync(string workTypeName);
 
     /// <summary>
     /// Создаёт вид работ.
     /// </summary>
-    /// <param name="workTypeModel">Модель создаваемого вида работ.</param>
+    /// <param name="workType">Вид работ.</param>
     /// <returns/>
-    Task CreateAsync(WorkTypeShortModel workTypeModel);
+    Task CreateAsync(WorkTypeShortEntity workType);
 
     /// <summary>
     /// Обновляет вид работ.
     /// </summary>
-    /// <param name="workTypeModel">Модель обновляемого вида работ.</param>
+    /// <param name="workType">Вид работ.</param>
     /// <returns/>
-    Task UpdateAsync(WorkTypeShortModel workTypeModel);
+    Task UpdateAsync(WorkTypeShortEntity workType);
 
     /// <summary>
     /// Удаление вида работ

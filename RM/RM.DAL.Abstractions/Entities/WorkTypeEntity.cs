@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace RM.DAL.Abstractions.Models;
+namespace RM.DAL.Abstractions.Entities;
 
 /// <summary>
-/// Модель вида работ.
+/// Сущность вида работ.
 /// </summary>
-public class WorkTypeModel
+public class WorkTypeEntity
 {
     /// <summary>
     /// Получает или задает ИД вида работ.
@@ -25,7 +25,7 @@ public class WorkTypeModel
     /// <summary>
     /// Получает или задает единицу работ для вида работ.
     /// </summary>
-    public WorkUnitModel? WorkUnit { get; set; }
+    public WorkUnitEntity? WorkUnit { get; set; }
 
 }
 

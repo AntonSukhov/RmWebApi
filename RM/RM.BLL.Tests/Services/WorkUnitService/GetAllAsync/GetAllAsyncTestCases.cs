@@ -3,6 +3,7 @@ using Infrastructure.Testing.TestCases;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.BLL.Tests.Services.WorkUnitService.GetAllAsync;
 
@@ -11,7 +12,7 @@ namespace RM.BLL.Tests.Services.WorkUnitService.GetAllAsync;
 /// </summary>
 public static class GetAllAsyncTestCases
 {
-    private static readonly Type WorkUnitModelListType = typeof(List<DAL.Abstractions.Models.WorkUnitModel>);
+    private static readonly Type WorkUnitModelListType = typeof(List<WorkUnitEntity>);
 
     /// <summary>
     /// Получает сценарии успешного выполнения метода <see cref="IWorkUnitService.GetAllAsync"/>.
@@ -36,7 +37,7 @@ public static class GetAllAsyncTestCases
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
-                            OutputData = new List<DAL.Abstractions.Models.WorkUnitModel>
+                            OutputData = new List<WorkUnitEntity>
                             {
                                 new() { Id = 1, Name = "WorkUnit1" },
                                 new() { Id = 2, Name = "WorkUnit2" },

@@ -6,6 +6,7 @@ using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Exceptions;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.CreateAsync;
 
@@ -32,13 +33,13 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
         var stubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
-        var stubOutputData = stubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel?>();
+        var stubOutputData = stubOutput.GetOutputData<WorkUnitEntity?>();
 
-        _fixture.WorkTypeRepositoryMock.Setup(p => p.CreateAsync(It.IsAny<DAL.Abstractions.Models.WorkTypeShortModel>()))
+        _fixture.WorkTypeRepositoryMock.Setup(p => p.CreateAsync(It.IsAny<WorkTypeShortEntity>()))
                                        .Returns(Task.CompletedTask);
 
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByNameAsync(It.IsAny<string>()))
-                                       .ReturnsAsync((DAL.Abstractions.Models.WorkTypeModel?)null);
+                                       .ReturnsAsync((WorkTypeEntity?)null);
 
         _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<byte>()))
                                        .ReturnsAsync(stubOutputData);
@@ -63,11 +64,11 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
         var firstStubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
-        var firstStubOutputData = firstStubOutput.GetOutputData<DAL.Abstractions.Models.WorkUnitModel?>();
+        var firstStubOutputData = firstStubOutput.GetOutputData<WorkUnitEntity?>();
         var secondStubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
             StubSequenceConstants.First)];
-        var secondStubOutputData = secondStubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel?>();
+        var secondStubOutputData = secondStubOutput.GetOutputData<WorkTypeEntity?>();
 
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByNameAsync(It.IsAny<string>()))
                                        .ReturnsAsync(secondStubOutputData);

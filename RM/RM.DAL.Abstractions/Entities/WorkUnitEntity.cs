@@ -1,9 +1,9 @@
-﻿namespace RM.DAL.Abstractions.Models;
+﻿namespace RM.DAL.Abstractions.Entities;
 
 /// <summary>
-/// Модель единицы работ.
+/// Сущность единицы работ.
 /// </summary>
-public class WorkUnitModel
+public class WorkUnitEntity
 {
     /// <summary>
     /// Получает или задает ИД единицы работ.

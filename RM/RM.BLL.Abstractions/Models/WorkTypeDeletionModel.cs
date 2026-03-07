@@ -8,7 +8,7 @@ namespace RM.BLL.Abstractions.Models;
 public class WorkTypeDeletionModel
 {
     /// <summary>
-    /// Идентификатор удаляемого вида работ.
+    /// Получает или задает ИД удаляемого вида работ.
     /// </summary>
     public Guid Id { get; set; }
 }

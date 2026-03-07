@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace RM.DAL.Abstractions.Models;
+namespace RM.DAL.Abstractions.Entities;
 
 /// <summary>
-/// Модель сокращенного вида работ.
+/// Сущность сокращенного вида работ.
 /// </summary>
-public class WorkTypeShortModel
+public class WorkTypeShortEntity
 {
     /// <summary>
     /// Получает или задает ИД вида работ.

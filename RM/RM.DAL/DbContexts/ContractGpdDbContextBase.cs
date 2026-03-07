@@ -1,6 +1,6 @@
 ﻿using Infrastructure.EntityFramework.DbContexts;
 using Microsoft.EntityFrameworkCore;
-using RM.DAL.Abstractions.Models;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.DAL.DbContexts;
 
@@ -12,12 +12,12 @@ public abstract class ContractGpdDbContextBase : DbContextBase
     /// <summary>
     /// Единицы работ.
     /// </summary>
-    public DbSet<WorkUnitModel> WorkUnits { get; set; }
+    public DbSet<WorkUnitEntity> WorkUnits { get; set; }
 
     /// <summary>
     /// Виды работ.
     /// </summary>
-    public DbSet<WorkTypeModel> WorkTypes { get; set; }
+    public DbSet<WorkTypeEntity> WorkTypes { get; set; }
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="ContractGpdDbContextBase"/>.

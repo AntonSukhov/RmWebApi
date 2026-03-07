@@ -6,6 +6,7 @@ using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL.Tests.Services.WorkUnitService.GetAllAsync;
@@ -32,7 +33,7 @@ public class GetAllAsyncTests : BaseTest<WorkUnitServiceFixture>
         var stubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
             StubSequenceConstants.First)];
-        var stubOutputData = stubOutput.GetOutputData<List<DAL.Abstractions.Models.WorkUnitModel>>()?? [];
+        var stubOutputData = stubOutput.GetOutputData<List<WorkUnitEntity>>()?? [];
 
         _fixture.WorkUnitRepositoryMock.Setup(p => p.GetAllAsync())
                                        .ReturnsAsync(stubOutputData);

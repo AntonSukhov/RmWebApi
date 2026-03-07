@@ -3,6 +3,7 @@ using Infrastructure.Testing.TestCases;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.CreateAsync;
 
@@ -29,8 +30,8 @@ public static class CreateAsyncTestCases
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
-                            OutputData =  new DAL.Abstractions.Models.WorkUnitModel { Id = 1, Name = "WorkUnit1"},
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkUnitModel)
+                            OutputData =  new WorkUnitEntity { Id = 1, Name = "WorkUnit1"},
+                            ExpectedType = typeof(WorkUnitEntity)
                         }
                     }
                 },
@@ -44,7 +45,7 @@ public static class CreateAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkUnitModel)
+                            ExpectedType = typeof(WorkUnitEntity)
                         }
                     }
                 },
@@ -58,7 +59,7 @@ public static class CreateAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkUnitModel)
+                            ExpectedType = typeof(WorkUnitEntity)
                         }
                     }
                 }
@@ -87,13 +88,13 @@ public static class CreateAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkUnitModel)
+                            ExpectedType = typeof(WorkUnitEntity)
                         }
                     }
                 },
@@ -107,13 +108,13 @@ public static class CreateAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkUnitModel)
+                            ExpectedType = typeof(WorkUnitEntity)
                         }
                     }
                 },
@@ -127,13 +128,13 @@ public static class CreateAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkUnitModel)
+                            ExpectedType = typeof(WorkUnitEntity)
                         }
                     }
                 },
@@ -146,14 +147,14 @@ public static class CreateAsyncTestCases
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
-                            OutputData =  new DAL.Abstractions.Models.WorkTypeModel{ Id = Guid.NewGuid(), Name = "WorkType101"},
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            OutputData =  new WorkTypeEntity{ Id = Guid.NewGuid(), Name = "WorkType101"},
+                            ExpectedType = typeof(WorkTypeEntity)
                         },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkUnitModel)
+                            ExpectedType = typeof(WorkUnitEntity)
                         }
                     }
                 }

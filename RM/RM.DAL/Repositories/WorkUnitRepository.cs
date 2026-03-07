@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RM.DAL.Abstractions.Models;
+using RM.DAL.Abstractions.Entities;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
 using System;
@@ -30,7 +30,7 @@ namespace RM.DAL.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<WorkUnitModel>> GetAllAsync()
+        public async Task<IReadOnlyCollection<WorkUnitEntity>> GetAllAsync()
         {
             return await _dbContext.WorkUnits.AsNoTracking()
                                              .ToListAsync();
@@ -38,7 +38,7 @@ namespace RM.DAL.Repositories
 
         /// <inheritdoc/>
         #nullable enable
-        public async Task<WorkUnitModel?> GetByIdAsync(byte workUnitId)
+        public async Task<WorkUnitEntity?> GetByIdAsync(byte workUnitId)
         {
             return await _dbContext.WorkUnits.AsNoTracking()
                                              .SingleOrDefaultAsync(p => p.Id == workUnitId);

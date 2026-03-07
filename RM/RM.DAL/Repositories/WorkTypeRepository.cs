@@ -2,7 +2,7 @@
 using Infrastructure.EntityFramework.Extensions;
 using Infrastructure.Shared.Models;
 using Microsoft.EntityFrameworkCore;
-using RM.DAL.Abstractions.Models;
+using RM.DAL.Abstractions.Entities;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
 using System;
@@ -36,7 +36,7 @@ public class WorkTypeRepository : IWorkTypeRepository
     
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(
+    public async Task<IReadOnlyCollection<WorkTypeEntity>> GetAllAsync(
         PageOptionsModel? pageOptions = null)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
@@ -46,7 +46,7 @@ public class WorkTypeRepository : IWorkTypeRepository
     }
 
     /// <inheritdoc/>
-    public async Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId)
+    public async Task<WorkTypeEntity?> GetByIdAsync(Guid workTypeId)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
                                          .Include(p => p.WorkUnit)
@@ -54,7 +54,7 @@ public class WorkTypeRepository : IWorkTypeRepository
     }
 
     /// <inheritdoc/>
-    public async Task<WorkTypeModel?> GetByNameAsync(string workTypeName)
+    public async Task<WorkTypeEntity?> GetByNameAsync(string workTypeName)
     {
         return await _dbContext.WorkTypes.AsNoTracking()
                                          .Include(p => p.WorkUnit)
@@ -62,32 +62,32 @@ public class WorkTypeRepository : IWorkTypeRepository
     }
 
     /// <inheritdoc/>
-    public async Task CreateAsync(WorkTypeShortModel workTypeModel)
+    public async Task CreateAsync(WorkTypeShortEntity workType)
     {
-        var workType = _workTypeMapper.Map<WorkTypeModel>(workTypeModel);
+        var workTypeLocal = _workTypeMapper.Map<WorkTypeEntity>(workType);
 
-        await _dbContext.AddEntityAsync(workType);
+        await _dbContext.AddEntityAsync(workTypeLocal);
     }
 
     /// <inheritdoc/>
-    public async Task UpdateAsync(WorkTypeShortModel workTypeModel)
+    public async Task UpdateAsync(WorkTypeShortEntity workType)
     {
-        IEnumerable<string> updatedProperties = [nameof(WorkTypeModel.WorkUnitId)];
+        IEnumerable<string> updatedProperties = [nameof(WorkTypeEntity.WorkUnitId)];
 
-        if (workTypeModel.Name != null)
+        if (workType.Name != null)
         {
-            updatedProperties = updatedProperties.Append(nameof(WorkTypeModel.Name));
+            updatedProperties = updatedProperties.Append(nameof(WorkTypeEntity.Name));
         }
 
-        var workType = _workTypeMapper.Map<WorkTypeModel>(workTypeModel);
+        var workTypeLocal = _workTypeMapper.Map<WorkTypeEntity>(workType);
 
-        await _dbContext.UpdateEntityAsync(workType, updatedProperties);
+        await _dbContext.UpdateEntityAsync(workTypeLocal, updatedProperties);
     }
 
     /// <inheritdoc/>
     public async Task DeleteAsync(Guid workTypeId)
     {
-        var workType = new WorkTypeModel
+        var workType = new WorkTypeEntity
         {
             Id = workTypeId
         };

@@ -3,6 +3,7 @@ using Infrastructure.Testing.TestCases;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.GetByIdAsync;
 
@@ -36,15 +37,15 @@ public static class GetByIdAsyncTestCases
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
-                            OutputData =  new DAL.Abstractions.Models.WorkTypeModel 
+                            OutputData =  new WorkTypeEntity 
                             { 
                                     Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1, 
-                                    WorkUnit = new DAL.Abstractions.Models.WorkUnitModel 
+                                    WorkUnit = new WorkUnitEntity 
                                     { 
                                         Id = 1, Name = "WorkUnit1"
                                     }
                             },
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         }
                     }
                 },
@@ -59,7 +60,7 @@ public static class GetByIdAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData = null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         }
                     }
                 },
@@ -74,7 +75,7 @@ public static class GetByIdAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData = null,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         }
                     }
                 }

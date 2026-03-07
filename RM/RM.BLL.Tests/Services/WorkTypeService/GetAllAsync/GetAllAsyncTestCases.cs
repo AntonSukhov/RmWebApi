@@ -3,6 +3,7 @@ using Infrastructure.Testing.TestCases;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.GetAllAsync;
 
@@ -53,24 +54,24 @@ public static class GetAllAsyncTestCases
                             {
                                 OutputData =  new []
                                 {
-                                    new DAL.Abstractions.Models.WorkTypeModel 
+                                    new WorkTypeEntity 
                                     { 
                                         Id = _workTypeId1, Name = "WorkType1", WorkUnitId = 1, 
-                                        WorkUnit = new DAL.Abstractions.Models.WorkUnitModel 
+                                        WorkUnit = new WorkUnitEntity 
                                         { 
                                             Id = 1, Name = "WorkUnit1"
                                         }
                                     },
-                                    new DAL.Abstractions.Models.WorkTypeModel 
+                                    new WorkTypeEntity 
                                     { 
                                         Id = _workTypeId2, Name = "WorkType2"
                                     },
-                                    new DAL.Abstractions.Models.WorkTypeModel 
+                                    new WorkTypeEntity 
                                     { 
                                         Id = _workTypeId3, Name = "WorkType3"
                                     }
                                 },
-                                ExpectedType = typeof(IReadOnlyCollection<DAL.Abstractions.Models.WorkTypeModel>)
+                                ExpectedType = typeof(IReadOnlyCollection<WorkTypeEntity>)
                             }
                         }
                     },
@@ -101,24 +102,24 @@ public static class GetAllAsyncTestCases
                             {
                                 OutputData =  new []
                                 {
-                                    new DAL.Abstractions.Models.WorkTypeModel 
+                                    new WorkTypeEntity 
                                     { 
                                         Id = _workTypeId1, Name = "WorkType1", WorkUnitId = 1, 
-                                        WorkUnit = new DAL.Abstractions.Models.WorkUnitModel 
+                                        WorkUnit = new WorkUnitEntity 
                                         { 
                                             Id = 1, Name = "WorkUnit1"
                                         }
                                     },
-                                    new DAL.Abstractions.Models.WorkTypeModel 
+                                    new WorkTypeEntity 
                                     { 
                                         Id = _workTypeId2, Name = "WorkType2"
                                     },
-                                    new DAL.Abstractions.Models.WorkTypeModel 
+                                    new WorkTypeEntity 
                                     { 
                                         Id = _workTypeId3, Name = "WorkType3"
                                     }
                                 },
-                                ExpectedType = typeof(IReadOnlyCollection<DAL.Abstractions.Models.WorkTypeModel>)
+                                ExpectedType = typeof(IReadOnlyCollection<WorkTypeEntity>)
                             }
                         }
                     }

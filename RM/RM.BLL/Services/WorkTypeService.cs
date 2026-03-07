@@ -7,6 +7,7 @@ using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
 using RM.BLL.Exceptions;
+using RM.DAL.Abstractions.Entities;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL.Services;
@@ -77,7 +78,7 @@ public class WorkTypeService : IWorkTypeService
                 $"Единицы работ с ИД'{workTypeCreationModel.WorkUnitId}' не существует.");
         }
         
-        var workType = _mapper.Map<DAL.Abstractions.Models.WorkTypeShortModel>(workTypeCreationModel);
+        var workType = _mapper.Map<WorkTypeShortEntity>(workTypeCreationModel);
         workType.Id = Guid.NewGuid();
 
         await _workTypeRepository.CreateAsync(workType);
@@ -147,7 +148,7 @@ public class WorkTypeService : IWorkTypeService
                 $"Единица работ с ИД '{workTypeUpdationModel.WorkUnitId}' не существует.");
         }
         
-        var workType = _mapper.Map<DAL.Abstractions.Models.WorkTypeShortModel>(workTypeUpdationModel);
+        var workType = _mapper.Map<WorkTypeShortEntity>(workTypeUpdationModel);
 
         await _workTypeRepository.UpdateAsync(workType);
     }

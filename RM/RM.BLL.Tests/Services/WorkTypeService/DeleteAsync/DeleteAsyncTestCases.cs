@@ -3,6 +3,7 @@ using Infrastructure.Testing.TestCases;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.DeleteAsync;
 
@@ -31,11 +32,11 @@ public static class DeleteAsyncTestCases
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
-                            OutputData =  new DAL.Abstractions.Models.WorkTypeModel
+                            OutputData =  new WorkTypeEntity
                             { 
                                 Id = _workTypeId , Name = "WorkType201"
                             },
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         }
                     }
                 }
@@ -64,7 +65,7 @@ public static class DeleteAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  default,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         }
                     }
                 },
@@ -78,7 +79,7 @@ public static class DeleteAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  default,
-                            ExpectedType = typeof(DAL.Abstractions.Models.WorkTypeModel)
+                            ExpectedType = typeof(WorkTypeEntity)
                         }
                     }
                 }

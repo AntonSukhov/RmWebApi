@@ -5,6 +5,7 @@ using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
+using RM.DAL.Abstractions.Entities;
 
 namespace RM.BLL.Tests.Services.WorkTypeService.GetByIdAsync;
 
@@ -33,7 +34,7 @@ public class GetByIdAsyncTests: BaseTest<WorkTypeServiceFixture>
         var stubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
             StubSequenceConstants.First)];
-        var stubOutputData = stubOutput.GetOutputData<DAL.Abstractions.Models.WorkTypeModel>();
+        var stubOutputData = stubOutput.GetOutputData<WorkTypeEntity>();
 
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<Guid>()))
                                        .ReturnsAsync(stubOutputData);
