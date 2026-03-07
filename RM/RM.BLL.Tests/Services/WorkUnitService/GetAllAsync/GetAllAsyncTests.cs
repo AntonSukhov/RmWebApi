@@ -2,6 +2,7 @@
 using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Infrastructure.Testing.XUnit.Helpers;
+using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
@@ -31,11 +32,10 @@ public class GetAllAsyncTests : BaseTest<WorkUnitServiceFixture>
         var stubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
             StubSequenceConstants.First)];
-        var stubOutputData = stubOutput.GetOutputData<List<DAL.Abstractions.Models.WorkUnitModel>>();
+        var stubOutputData = stubOutput.GetOutputData<List<DAL.Abstractions.Models.WorkUnitModel>>()?? [];
 
         _fixture.WorkUnitRepositoryMock.Setup(p => p.GetAllAsync())
-                                       .Returns(Task.FromResult<
-                                            IReadOnlyCollection<DAL.Abstractions.Models.WorkUnitModel>?>(stubOutputData));
+                                       .ReturnsAsync(stubOutputData);
 
         // Act:
         var result = await _fixture.WorkUnitService.GetAllAsync();

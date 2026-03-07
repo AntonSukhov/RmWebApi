@@ -16,34 +16,41 @@ public static class GetAllAsyncTestCases
     /// <summary>
     /// Получает сценарии успешного выполнения метода <see cref="IWorkUnitService.GetAllAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseResultWithStubs<IEnumerable<WorkUnitModel>>> SuccessTestCases =>
-    [
-        new TestCaseResultWithStubs<IEnumerable<WorkUnitModel>>
+    public static TheoryData<TestCaseResultWithStubs<IEnumerable<WorkUnitModel>>> SuccessTestCases
+    {
+        get
         {
-            ScenarioNumber = 1,
-            Description = "Проверка успешного получения списка всех рабочих единиц из репозитория.",
-            OutputData =
-            [
-                new() { Id = 1, Name = "WorkUnit1" },
-                new() { Id = 2, Name = "WorkUnit2" },
-                new() { Id = 3, Name = "WorkUnit3" }
-            ],
-            StubOutputs = new Dictionary<StubOutputKey, StubOutput>
+            var theoryData = new TheoryData<TestCaseResultWithStubs<IEnumerable<WorkUnitModel>>>
             {
-                [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
-                    StubSequenceConstants.First)] = new StubOutput
-                {
-                    OutputData = new List<DAL.Abstractions.Models.WorkUnitModel>
-                    {
+                 new() {
+                    ScenarioNumber = 1,
+                    Description = "Проверка успешного получения списка всех рабочих единиц из репозитория.",
+                    OutputData =
+                    [
                         new() { Id = 1, Name = "WorkUnit1" },
                         new() { Id = 2, Name = "WorkUnit2" },
                         new() { Id = 3, Name = "WorkUnit3" }
-                    },
-                    ExpectedType = WorkUnitModelListType
+                    ],
+                    StubOutputs = new Dictionary<StubOutputKey, StubOutput>
+                    {
+                        [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetAllAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData = new List<DAL.Abstractions.Models.WorkUnitModel>
+                            {
+                                new() { Id = 1, Name = "WorkUnit1" },
+                                new() { Id = 2, Name = "WorkUnit2" },
+                                new() { Id = 3, Name = "WorkUnit3" }
+                            },
+                            ExpectedType = WorkUnitModelListType
+                        }
+                    }
                 }
-            }
+            };
+
+            return theoryData;
         }
-    ];
+    }
 
     /// <summary>
     /// Получает сценарии ошибок при выполнении метода <see cref="IWorkUnitService.GetAllAsync"/>,

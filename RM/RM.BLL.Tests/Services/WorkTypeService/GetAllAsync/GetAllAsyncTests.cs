@@ -33,9 +33,9 @@ public class GetAllAsyncTests : BaseTest<WorkTypeServiceFixture>
         var stubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkTypeRepository.GetAllAsync, 
             StubSequenceConstants.First)];
-        var stubOutputData = stubOutput.GetOutputData<IReadOnlyCollection<DAL.Abstractions.Models.WorkTypeModel>>();
+        var stubOutputData = stubOutput.GetOutputData<IReadOnlyCollection<DAL.Abstractions.Models.WorkTypeModel>>()?? [];
 
-        _fixture.WorkTypeRepositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel?>()))
+        _fixture.WorkTypeRepositoryMock.Setup(p => p.GetAllAsync(It.IsAny<DAL.Abstractions.Models.PageOptionsModel>()))
                                        .ReturnsAsync(stubOutputData);
                                        
         // Act:         
