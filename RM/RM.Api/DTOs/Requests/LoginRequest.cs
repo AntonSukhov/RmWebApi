@@ -1,7 +1,7 @@
 namespace RM.Api.DTOs.Requests;
 
 /// <summary>
-/// Модель запроса для аутентификации пользователя.
+/// Запроса на аутентификацию пользователя.
 /// </summary>
 public class LoginRequest
 {
