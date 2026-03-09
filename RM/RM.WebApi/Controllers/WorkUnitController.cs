@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RM.BLL.Abstractions.Models;
+using RM.Api.DTOs.Responses;
 using RM.BLL.Abstractions.Services;
 
 namespace RM.WebApi.Controllers;
@@ -9,15 +12,26 @@ namespace RM.WebApi.Controllers;
 /// <summary>
 /// Контроллер работы с единицами работ.
 /// </summary>
-/// <param name="workUnitService">Сервис получения данных о единицах работ.</param>
 [ApiController]
 [Route("api/work-unit")]
-public class WorkUnitApiController(IWorkUnitService workUnitService) : ControllerBase
+public class WorkUnitApiController : ControllerBase
 {
+    private readonly IWorkUnitService _workUnitService;
+    private readonly IMapper _workUnitMapper;
+
     /// <summary>
-    /// Сервис получения данных о единицах работ.
+    /// Инициализирует экземпляр <see cref="WorkUnitApiController"/>.
     /// </summary>
-    private readonly IWorkUnitService _workUnitService = workUnitService;
+    /// <param name="workUnitService">Сервис получения данных о единицах работ.</param>
+    /// <param name="workUnitMapper"></param>
+    public WorkUnitApiController(IWorkUnitService workUnitService, IMapper workUnitMapper)
+    {
+        ArgumentNullException.ThrowIfNull(workUnitService, nameof(workUnitService));
+        ArgumentNullException.ThrowIfNull(workUnitMapper, nameof(workUnitMapper));
+
+        _workUnitService = workUnitService;
+        _workUnitMapper = workUnitMapper;
+    }
 
     /// <summary>
     /// Предоставляет все единицы работ.
@@ -25,9 +39,11 @@ public class WorkUnitApiController(IWorkUnitService workUnitService) : Controlle
     /// <returns>Единицы работ.</returns>
     [Route("get-all")]
     [HttpGet]
-    public async Task<IEnumerable<WorkUnitModel>> GetAllAsync()
+    public async Task<IEnumerable<WorkUnitResponse>> GetAllAsync()
     {
-        var result = await _workUnitService.GetAllAsync();
+        var workUnits = await _workUnitService.GetAllAsync();
+
+        var result = workUnits?.Select(_workUnitMapper.Map<WorkUnitResponse>) ?? [];
 
         return result;
     }
