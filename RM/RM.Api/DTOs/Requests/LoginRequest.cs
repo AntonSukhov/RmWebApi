@@ -1,4 +1,4 @@
-namespace RM.WebApi.Models.Requests;
+namespace RM.Api.DTOs.Requests;
 
 /// <summary>
 /// Модель запроса для аутентификации пользователя.

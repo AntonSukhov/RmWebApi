@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.BLL.Abstractions.Services;
-using RM.WebApi.Models.Requests;
+using RM.Api.DTOs.Requests;
 
 namespace RM.WebApi.Controllers;
 

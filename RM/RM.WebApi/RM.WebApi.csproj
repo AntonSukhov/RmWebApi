@@ -16,5 +16,6 @@
     <ProjectReference Include="..\RM.DAL.PostgreSql\RM.DAL.PostgreSql.csproj" />
     <ProjectReference Include="..\RM.DAL\RM.DAL.csproj" />
     <ProjectReference Include="..\RM.BLL\RM.BLL.csproj" />
+    <ProjectReference Include="..\RM.Api\RM.Api.csproj" />
   </ItemGroup>
 </Project>
