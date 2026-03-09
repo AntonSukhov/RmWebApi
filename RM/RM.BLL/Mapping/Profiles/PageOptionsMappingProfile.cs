@@ -18,8 +18,6 @@ public class PageOptionsMappingProfile: Profile
     public PageOptionsMappingProfile()
     {
         CreateMap<PageOptionsModel, Abstractions.Models.PageOptionsModel>()
-           .ForMember(bll => bll.PageNumber, expr => expr.MapFrom(dll => dll.PageNumber))
-           .ForMember(bll => bll.PageSize, expr => expr.MapFrom(dll => dll.PageSize))
            .ReverseMap(); // Включаем обратный маппинг     
     }
 }

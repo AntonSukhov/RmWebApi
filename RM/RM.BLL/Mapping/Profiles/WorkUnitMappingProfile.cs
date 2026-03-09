@@ -18,8 +18,6 @@ public class WorkUnitMappingProfile: Profile
     /// </summary>
     public WorkUnitMappingProfile()
     {
-        CreateMap<WorkUnitEntity, WorkUnitModel>()
-           .ForMember(bll => bll.Id, expr => expr.MapFrom(dal => dal.Id))
-           .ForMember(bll => bll.Name, expr => expr.MapFrom(dal => dal.Name));
+        CreateMap<WorkUnitEntity, WorkUnitModel>();
     }
 }

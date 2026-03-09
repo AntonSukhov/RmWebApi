@@ -18,9 +18,6 @@ public class WorkTypeUpdationMappingProfile: Profile
     /// </summary>
     public WorkTypeUpdationMappingProfile()
     {
-        CreateMap<WorkTypeUpdationModel, WorkTypeShortEntity>()
-            .ForMember(dll => dll.Id, expr => expr.MapFrom(bll => bll.Id))
-            .ForMember(dll => dll.Name , expr => expr.MapFrom(bll => bll.Name))
-            .ForMember(dll => dll.WorkUnitId, expr => expr.MapFrom(bll => bll.WorkUnitId));
+        CreateMap<WorkTypeUpdationModel, WorkTypeShortEntity>();
     }
 }
