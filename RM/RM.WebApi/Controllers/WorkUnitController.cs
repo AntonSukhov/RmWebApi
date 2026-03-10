@@ -17,20 +17,20 @@ namespace RM.WebApi.Controllers;
 public class WorkUnitApiController : ControllerBase
 {
     private readonly IWorkUnitService _workUnitService;
-    private readonly IMapper _workUnitMapper;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkUnitApiController"/>.
     /// </summary>
     /// <param name="workUnitService">Сервис получения данных о единицах работ.</param>
-    /// <param name="workUnitMapper"></param>
-    public WorkUnitApiController(IWorkUnitService workUnitService, IMapper workUnitMapper)
+    /// <param name="mapper">Маппер.</param>
+    public WorkUnitApiController(IWorkUnitService workUnitService, IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(workUnitService, nameof(workUnitService));
-        ArgumentNullException.ThrowIfNull(workUnitMapper, nameof(workUnitMapper));
+        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
 
         _workUnitService = workUnitService;
-        _workUnitMapper = workUnitMapper;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class WorkUnitApiController : ControllerBase
     {
         var workUnits = await _workUnitService.GetAllAsync();
 
-        var result = workUnits?.Select(_workUnitMapper.Map<WorkUnitResponse>) ?? [];
+        var result = workUnits?.Select(_mapper.Map<WorkUnitResponse>) ?? [];
 
         return result;
     }

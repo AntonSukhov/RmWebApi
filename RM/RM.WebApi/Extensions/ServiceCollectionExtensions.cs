@@ -83,8 +83,11 @@ public static class ServiceCollectionExtensions
     /// <param name="services">Коллекция сервисов.</param>
     public static void RegisterMappingProfiles(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(WorkUnitMappingProfile));
         services.AddAutoMapper(typeof(Mapping.Profiles.WorkUnitMappingProfile));
+        services.AddAutoMapper(typeof(Mapping.Profiles.WorkTypeMappingProfile));
+        services.AddAutoMapper(typeof(Mapping.Profiles.WorkTypeGettingByIdMappingProfile));
+        services.AddAutoMapper(typeof(Mapping.Profiles.PageOptionsMappingProfile));
+        services.AddAutoMapper(typeof(WorkUnitMappingProfile));
         services.AddAutoMapper(typeof(WorkTypeMappingProfile));
         services.AddAutoMapper(typeof(PageOptionsMappingProfile));
         services.AddAutoMapper(typeof(WorkTypeCreationMappingProfile));

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RM.Api.DTOs.Requests;
+using RM.Api.DTOs.Responses;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 
@@ -10,15 +14,28 @@ namespace RM.WebApi.Controllers;
 /// <summary>
 /// Контроллер работы с видами работ.
 /// </summary>
-/// <param name="workTypeService">Сервис работы с видами работ.</param>
 [ApiController]
 [Route("api/work-type")]
-public class WorkTypeApiController(IWorkTypeService workTypeService) : ControllerBase
+public class WorkTypeApiController : ControllerBase
 {
+    private readonly IWorkTypeService _workTypeService;
+    private readonly IMapper _mapper;
+
     /// <summary>
-    /// Сервис работы с видами работ.
+    /// Инициализирует экземпляр <see cref="WorkTypeApiController"/>.
     /// </summary>
-    private readonly IWorkTypeService _workTypeService = workTypeService;
+    /// <param name="workTypeService">Сервис работы с видами работ.</param>
+    /// <param name="mapper">Маппер.</param>
+    public WorkTypeApiController(
+        IWorkTypeService workTypeService,
+        IMapper mapper)
+    {
+        ArgumentNullException.ThrowIfNull(workTypeService, nameof(workTypeService));
+        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
+
+        _workTypeService = workTypeService;
+        _mapper = mapper;
+    }
 
     /// <summary>
     /// Предоставляет все виды работ.
@@ -27,9 +44,13 @@ public class WorkTypeApiController(IWorkTypeService workTypeService) : Controlle
     /// <returns>Виды работ.</returns>
     [Route("get-all")]
     [HttpPost]
-    public async Task<IEnumerable<WorkTypeModel>> GetAllAsync(PageOptionsModel? pageOptions = null)
+    public async Task<IEnumerable<WorkTypeResponse>> GetAllAsync(PageOptionsRequest? pageOptions = null)
     {
-        var result = await _workTypeService.GetAllAsync(pageOptions);
+        var pageOptionsModel = _mapper.Map<PageOptionsModel>(pageOptions);
+
+        var workTypes = await _workTypeService.GetAllAsync(pageOptionsModel);
+
+        var result = workTypes?.Select(_mapper.Map<WorkTypeResponse>)?? [];
 
         return result;
     }
@@ -37,13 +58,17 @@ public class WorkTypeApiController(IWorkTypeService workTypeService) : Controlle
     /// <summary>
     /// Предоставляет вид работ по его индентификатору.
     /// </summary>
-    /// <param name="workTypeGettingByIdModel">Модель с данными для получения вида работ по его идентификатору.</param>
+    /// <param name="workTypeGettingByIdRequest">Запрос для получения вида работ по его идентификатору.</param>
     /// <returns>Вид работ.</returns>
     [Route("get-by-id")]
     [HttpPost]
-    public async Task<WorkTypeModel?> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel)
+    public async Task<WorkTypeResponse?> GetByIdAsync(WorkTypeGettingByIdRequest workTypeGettingByIdRequest)
     {
-        var result = await _workTypeService.GetByIdAsync(workTypeGettingByIdModel);
+        var workTypeGettingByIdModel = _mapper.Map<WorkTypeGettingByIdModel>(workTypeGettingByIdRequest);
+
+        var workType = await _workTypeService.GetByIdAsync(workTypeGettingByIdModel);
+
+        var result = _mapper.Map<WorkTypeResponse>(workType);
 
         return result;
     }
