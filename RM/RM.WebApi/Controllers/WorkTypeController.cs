@@ -76,12 +76,14 @@ public class WorkTypeApiController : ControllerBase
     /// <summary>
     /// Создаёт вид работ.
     /// </summary>
-    /// <param name="workTypeCreationModel">Модель с данными для создания вида работ.</param>
+    /// <param name="workTypeCreationRequest">Запрос на создание вида работ.</param>
     /// <returns>Созданный вид работ.</returns>
     [Route("create")]
     [HttpPost]
-    public async Task<Guid> CreateAsync(WorkTypeCreationModel workTypeCreationModel)
+    public async Task<Guid> CreateAsync(WorkTypeCreationRequest workTypeCreationRequest)
     {
+        var workTypeCreationModel = _mapper.Map<WorkTypeCreationModel>(workTypeCreationRequest);
+
         var result = await _workTypeService.CreateAsync(workTypeCreationModel);
 
         return result;
@@ -90,24 +92,28 @@ public class WorkTypeApiController : ControllerBase
     /// <summary>
     /// Удаляет вид работ.
     /// </summary>
-    /// <param name="workTypeDeletionModel">Модель с данными для удаления вида работ.</param>
+    /// <param name="workTypeDeletionRequest">Запрос на удаление вида работ.</param>
     /// <returns/>
     [Route("delete")]
     [HttpPost]
-    public async Task DeleteAsync(WorkTypeDeletionModel workTypeDeletionModel)
+    public async Task DeleteAsync(WorkTypeDeletionRequest workTypeDeletionRequest)
     {
+        var workTypeDeletionModel = _mapper.Map<WorkTypeDeletionModel>(workTypeDeletionRequest);
+
         await _workTypeService.DeleteAsync(workTypeDeletionModel);
     }
 
     /// <summary>
     /// Обновляет вид работ.
     /// </summary>
-    /// <param name="workTypeUpdationModel">Модель с данными для обновления вида работ.</param>
+    /// <param name="workTypeUpdationRequest">Запрос на обновление вида работ.</param>
     /// <returns>Созданный вид работ.</returns>
     [Route("update")]
     [HttpPost]
-    public async Task UpdateAsync(WorkTypeUpdationModel workTypeUpdationModel)
+    public async Task UpdateAsync(WorkTypeUpdationRequest workTypeUpdationRequest)
     {
+        var workTypeUpdationModel = _mapper.Map<WorkTypeUpdationModel>(workTypeUpdationRequest);
+
         await _workTypeService.UpdateAsync(workTypeUpdationModel);
     }
 }
