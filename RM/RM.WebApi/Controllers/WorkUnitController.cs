@@ -37,7 +37,6 @@ public class WorkUnitApiController : ControllerBase
     /// Предоставляет все единицы работ.
     /// </summary>
     /// <returns>Единицы работ.</returns>
-    [Route("get-all")]
     [HttpGet]
     public async Task<IEnumerable<WorkUnitResponse>> GetAllAsync()
     {
