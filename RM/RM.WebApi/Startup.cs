@@ -50,6 +50,7 @@ namespace RM.WebApi
             services.RegisterMappingProfiles();
            
             services.AddControllers();
+            services.AddRazorPages(); 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RM.WebApi", Version = "v1" });
@@ -91,6 +92,9 @@ namespace RM.WebApi
             // Перенаправляет HTTP‑запросы на HTTPS.
             app.UseHttpsRedirection();
 
+            //Для обслуживания CSS/JS
+            app.UseStaticFiles();
+
             // Настраивает маршрутизацию — определяет, какой код будет вызван для каждого URL
             app.UseRouting();
 
@@ -99,6 +103,7 @@ namespace RM.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapRazorPages();
             });
         }
     }

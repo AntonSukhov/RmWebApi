@@ -1,0 +1,45 @@
+@page
+@using System.Diagnostics
+@{
+    Layout = null;
+    ViewData["Title"] = "RM.WebApi";
+
+    var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
+    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link href="/css/site.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="api-card">
+            <h1 class="logo">RM.WebApi</h1>
+            <p class="subtitle">Простой и надёжный API</p>
+
+            <!-- Кнопка документации -->
+            <a href="/swagger" class="btn primary">Документация API</a>
+
+            <!-- Блок системной информации -->
+            <div class="system-info">
+                <div class="info-item">
+                    <span class="label">Окружение</span>
+                    <span class="value @(environment == "Development" ? "dev" : "prod")">@environment</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Время работы</span>
+                    <span class="value">@string.Format("{0:0}ч {1:0}м", uptime.TotalHours, uptime.Minutes)</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Версия</span>
+                    <span class="value">1.0.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
