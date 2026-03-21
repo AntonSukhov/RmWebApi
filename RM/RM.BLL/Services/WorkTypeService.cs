@@ -87,14 +87,12 @@ public class WorkTypeService : IWorkTypeService
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(WorkTypeDeletionModel workTypeDeletionModel)
-    {
-        ArgumentNullException.ThrowIfNull(workTypeDeletionModel);
-        
-        _ = await _workTypeRepository.GetByIdAsync(workTypeDeletionModel.Id)
-            ?? throw new DataNotFoundException($"Вид работ по ИД '{workTypeDeletionModel.Id}' не существует.");
+    public async Task DeleteAsync(Guid workTypeId)
+    {        
+        _ = await _workTypeRepository.GetByIdAsync(workTypeId)
+            ?? throw new DataNotFoundException($"Вид работ по ИД '{workTypeId}' не существует.");
 
-        await _workTypeRepository.DeleteAsync(workTypeDeletionModel.Id);
+        await _workTypeRepository.DeleteAsync(workTypeId);
     }
 
     /// <inheritdoc/>

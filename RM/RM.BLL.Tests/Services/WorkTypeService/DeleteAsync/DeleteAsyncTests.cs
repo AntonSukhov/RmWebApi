@@ -2,7 +2,6 @@
 using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Moq;
-using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Exceptions;
 using RM.BLL.Tests.TestSupport.Constants;
@@ -27,7 +26,7 @@ public class DeleteAsyncTests: BaseTest<WorkTypeServiceFixture>
     [Theory]
     [MemberData(nameof(DeleteAsyncTestCases.SuccessTestCases), 
                 MemberType = typeof(DeleteAsyncTestCases))]
-    public async Task SucceedsForValidInput(TestCaseInputWithStubs<WorkTypeDeletionModel> testCase)
+    public async Task SucceedsForValidInput(TestCaseInputWithStubs<Guid> testCase)
     {
         // Arrange:
         var stubOutput = testCase.StubOutputs[new StubOutputKey(
@@ -52,7 +51,7 @@ public class DeleteAsyncTests: BaseTest<WorkTypeServiceFixture>
     [Theory]
     [MemberData(nameof(DeleteAsyncTestCases.UnSuccessTestCases), 
                 MemberType = typeof(DeleteAsyncTestCases))]
-    public async Task FailsForNonExistingId(TestCaseInputWithStubs<WorkTypeDeletionModel> testCase)
+    public async Task FailsForNonExistingId(TestCaseInputWithStubs<Guid> testCase)
     {
         // Arrange:
         var stubOutput = testCase.StubOutputs[new StubOutputKey(

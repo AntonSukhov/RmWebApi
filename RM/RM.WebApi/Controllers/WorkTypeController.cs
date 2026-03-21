@@ -89,15 +89,12 @@ public class WorkTypeApiController : ControllerBase
     /// <summary>
     /// Удаляет вид работ.
     /// </summary>
-    /// <param name="workTypeDeletionRequest">Запрос на удаление вида работ.</param>
+    /// <param name="workTypeId">ИД удаляемого вида работ.</param>
     /// <returns/>
-    [Route("delete")]
-    [HttpPost]
-    public async Task DeleteAsync(WorkTypeDeletionRequest workTypeDeletionRequest)
+    [HttpDelete]
+    public async Task DeleteAsync(Guid workTypeId)
     {
-        var workTypeDeletionModel = _mapper.Map<WorkTypeDeletionModel>(workTypeDeletionRequest);
-
-        await _workTypeService.DeleteAsync(workTypeDeletionModel);
+        await _workTypeService.DeleteAsync(workTypeId);
     }
 
     /// <summary>

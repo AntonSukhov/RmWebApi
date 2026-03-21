@@ -1,6 +1,5 @@
 using Infrastructure.Testing.Common;
 using Infrastructure.Testing.TestCases;
-using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Tests.TestSupport.Constants;
 using RM.DAL.Abstractions.Entities;
@@ -17,16 +16,16 @@ public static class DeleteAsyncTestCases
     /// <summary>
     /// Получает сценарии успешного выполнения метода <see cref="IWorkTypeService.DeleteAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>> SuccessTestCases
+    public static TheoryData<TestCaseInputWithStubs<Guid>> SuccessTestCases
     {
         get
         {
-            var theoryData = new TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>>
+            var theoryData = new TheoryData<TestCaseInputWithStubs<Guid>>
             {
                 new() {
                     ScenarioNumber = 1,
                     Description = "Проверка успешного удаления вида работ по его значению ИД, который есть в БД.",
-                    InputData = new WorkTypeDeletionModel { Id = _workTypeId },
+                    InputData = _workTypeId,
                     StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
@@ -49,17 +48,17 @@ public static class DeleteAsyncTestCases
     /// <summary>
     /// Получает сценарии неуспешного выполнения метода <see cref="IWorkTypeService.DeleteAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>> UnSuccessTestCases
+    public static TheoryData<TestCaseInputWithStubs<Guid>> UnSuccessTestCases
     {
         get
         {
-            var theoryData = new TheoryData<TestCaseInputWithStubs<WorkTypeDeletionModel>>
+            var theoryData = new TheoryData<TestCaseInputWithStubs<Guid>>
             {
                 new() {
                     ScenarioNumber = 1,
                     Description = "Проверка не успешного удаления вида работ по пустому значению его ИД, которого нет в БД.",
-                    InputData = new WorkTypeDeletionModel { Id = Guid.Empty },
-                    StubOutputs =new Dictionary<StubOutputKey, StubOutput>
+                    InputData = Guid.Empty,
+                    StubOutputs = new Dictionary<StubOutputKey, StubOutput>
                     {
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
@@ -72,7 +71,7 @@ public static class DeleteAsyncTestCases
                 new() {
                     ScenarioNumber = 2,
                     Description = "Проверка не успешного удаления вида работ по не пустому значению его ИД, которого нет в БД.",
-                    InputData = new WorkTypeDeletionModel { Id = Guid.NewGuid() },
+                    InputData = Guid.NewGuid(),
                     StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 

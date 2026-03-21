@@ -85,9 +85,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddAutoMapper(typeof(Mapping.Profiles.WorkUnitMappingProfile));
         services.AddAutoMapper(typeof(Mapping.Profiles.WorkTypeMappingProfile));
-        services.AddAutoMapper(typeof(Mapping.Profiles.WorkTypeGettingByIdMappingProfile));
         services.AddAutoMapper(typeof(Mapping.Profiles.WorkTypeCreationMappingProfile));
-        services.AddAutoMapper(typeof(Mapping.Profiles.WorkTypeDeletionMappingProfile));
         services.AddAutoMapper(typeof(Mapping.Profiles.WorkTypeUpdationMappingProfile));
         services.AddAutoMapper(typeof(Mapping.Profiles.PageOptionsMappingProfile));
         services.AddAutoMapper(typeof(WorkUnitMappingProfile));

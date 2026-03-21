@@ -41,8 +41,8 @@ public interface IWorkTypeService
     /// <summary>
     /// Удаление вида работ.
     /// </summary>
-    /// <param name="workTypeDeletionModel">Модель удаления вида работ.</param>
+    /// <param name="workTypeId">ИД удаляемого вида работ.</param>
     /// <returns/>
-    Task DeleteAsync(WorkTypeDeletionModel workTypeDeletionModel);
+    Task DeleteAsync(Guid workTypeId);
 
 }
