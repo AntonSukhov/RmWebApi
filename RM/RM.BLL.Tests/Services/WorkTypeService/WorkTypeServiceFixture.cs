@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
@@ -43,14 +44,16 @@ public class WorkTypeServiceFixture
     /// </summary>
     public WorkTypeServiceFixture()
     {
-        var expr = new MapperConfigurationExpression();
-        expr.AddProfile<WorkUnitMappingProfile>();
-        expr.AddProfile<WorkTypeMappingProfile>();
-        expr.AddProfile<PageOptionsMappingProfile>();
-        expr.AddProfile<WorkTypeCreationMappingProfile>();
-        expr.AddProfile<WorkTypeUpdationMappingProfile>();
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<WorkUnitMappingProfile>();
+            cfg.AddProfile<WorkTypeMappingProfile>();
+            cfg.AddProfile<PageOptionsMappingProfile>();
+            cfg.AddProfile<WorkTypeCreationMappingProfile>();
+            cfg.AddProfile<WorkTypeUpdationMappingProfile>();
+        }, 
+        NullLoggerFactory.Instance);
 
-        var config = new MapperConfiguration(expr);
         config.AssertConfigurationIsValid();
 
         var mapper = config.CreateMapper();

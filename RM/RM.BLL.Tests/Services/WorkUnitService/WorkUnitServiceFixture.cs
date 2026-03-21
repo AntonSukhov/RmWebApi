@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
@@ -32,10 +33,12 @@ public class WorkUnitServiceFixture
     /// </summary>
     public WorkUnitServiceFixture()
     {
-        var configExpr = new MapperConfigurationExpression();
-        configExpr.AddProfile<WorkUnitMappingProfile>();
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<WorkUnitMappingProfile>();
+        }, 
+        NullLoggerFactory.Instance);
 
-        var config = new MapperConfiguration(configExpr);
         config.AssertConfigurationIsValid();
 
         WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
