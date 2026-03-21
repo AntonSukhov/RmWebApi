@@ -18,11 +18,11 @@ public interface IWorkTypeService
     Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel? pageOptions = null);
 
     /// <summary>
-    /// Предоставляет вид работ по его идентификатору.
+    /// Предоставляет вид работ по его ИД.
     /// </summary>
-    /// <param name="workTypeGettingByIdModel">Модель получения вида работ по его идентификатору.</param>
+    /// <param name="workTypeId">ИД вида работ.</param>
     /// <returns>Вид работ.</returns>
-    Task<WorkTypeModel?> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel);
+    Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId);
 
     /// <summary>
     /// Создаёт вид работ.

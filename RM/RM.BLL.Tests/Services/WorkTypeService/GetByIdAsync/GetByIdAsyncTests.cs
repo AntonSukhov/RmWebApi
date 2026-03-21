@@ -28,7 +28,7 @@ public class GetByIdAsyncTests: BaseTest<WorkTypeServiceFixture>
     [MemberData(nameof(GetByIdAsyncTestCases.SuccessTestCases), 
                 MemberType = typeof(GetByIdAsyncTestCases))]
     public async Task SucceedsForValidInput(
-        TestCaseWithStubs<WorkTypeGettingByIdModel, WorkTypeModel?> testCase)
+        TestCaseWithStubs<Guid, WorkTypeModel?> testCase)
     {       
         // Arrange:
         var stubOutput = testCase.StubOutputs[new StubOutputKey(

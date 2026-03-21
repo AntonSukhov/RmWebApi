@@ -115,11 +115,9 @@ public class WorkTypeService : IWorkTypeService
     }
 
     /// <inheritdoc/>
-    public async Task<WorkTypeModel?> GetByIdAsync(WorkTypeGettingByIdModel workTypeGettingByIdModel)
+    public async Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId)
     {
-        ArgumentNullException.ThrowIfNull(workTypeGettingByIdModel);
-
-        var workType = await _workTypeRepository.GetByIdAsync(workTypeGettingByIdModel.Id);
+        var workType = await _workTypeRepository.GetByIdAsync(workTypeId);
 
         var result = _mapper.Map<WorkTypeModel>(workType);
 

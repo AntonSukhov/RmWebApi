@@ -17,16 +17,16 @@ public static class GetByIdAsyncTestCases
     /// <summary>
     /// Получает сценарии успешного выполнения метода <see cref="IWorkTypeService.GetByIdAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseWithStubs<WorkTypeGettingByIdModel, WorkTypeModel?>> SuccessTestCases
+    public static TheoryData<TestCaseWithStubs<Guid, WorkTypeModel?>> SuccessTestCases
     {
         get
         {
-            var theoryData = new TheoryData<TestCaseWithStubs<WorkTypeGettingByIdModel, WorkTypeModel?>>
+            var theoryData = new TheoryData<TestCaseWithStubs<Guid, WorkTypeModel?>>
             {
                 new() {
                     ScenarioNumber = 1,
                     Description = "Проверка успешного получения вида работ по не пустому значению ИД.",
-                    InputData = new WorkTypeGettingByIdModel { Id = _workTypeId},
+                    InputData = _workTypeId,
                     OutputData = new WorkTypeModel 
                     { 
                         Id = _workTypeId, Name = "WorkType1", 
@@ -52,7 +52,7 @@ public static class GetByIdAsyncTestCases
                 new() {
                     ScenarioNumber = 2,
                     Description = "Проверка получения Null по пустому значению ИД.",
-                    InputData = new WorkTypeGettingByIdModel { Id = Guid.Empty},
+                    InputData = Guid.Empty,
                     OutputData = default,
                     StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {
@@ -67,7 +67,7 @@ public static class GetByIdAsyncTestCases
                 new() {
                     ScenarioNumber = 3,
                     Description = "Проверка получения Null по не пустому значению ИД и которого нет в БД.",
-                    InputData = new WorkTypeGettingByIdModel { Id = Guid.NewGuid()},
+                    InputData = _workTypeId,
                     OutputData = default,
                     StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {

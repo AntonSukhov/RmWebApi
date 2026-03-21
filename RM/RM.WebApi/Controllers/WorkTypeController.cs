@@ -42,9 +42,9 @@ public class WorkTypeApiController : ControllerBase
     /// </summary>
     /// <param name="pageOptions">Настройки страницы.</param>
     /// <returns>Виды работ.</returns>
-    [Route("get-all")]
-    [HttpPost]
-    public async Task<IEnumerable<WorkTypeResponse>> GetAllAsync(PageOptionsRequest? pageOptions = null)
+    [HttpGet]
+    [Route("all")]
+    public async Task<IEnumerable<WorkTypeResponse>> GetAllAsync([FromQuery] PageOptionsRequest pageOptions)
     {
         var pageOptionsModel = _mapper.Map<PageOptionsModel>(pageOptions);
 
@@ -56,17 +56,14 @@ public class WorkTypeApiController : ControllerBase
     }
 
     /// <summary>
-    /// Предоставляет вид работ по его индентификатору.
+    /// Предоставляет вид работ по его ИД.
     /// </summary>
-    /// <param name="workTypeGettingByIdRequest">Запрос для получения вида работ по его идентификатору.</param>
+    /// <param name="workTypeId">ИД вида работ.</param>
     /// <returns>Вид работ.</returns>
-    [Route("get-by-id")]
-    [HttpPost]
-    public async Task<WorkTypeResponse?> GetByIdAsync(WorkTypeGettingByIdRequest workTypeGettingByIdRequest)
+    [HttpGet("{workTypeId:guid}")]
+    public async Task<WorkTypeResponse?> GetByIdAsync(Guid workTypeId)
     {
-        var workTypeGettingByIdModel = _mapper.Map<WorkTypeGettingByIdModel>(workTypeGettingByIdRequest);
-
-        var workType = await _workTypeService.GetByIdAsync(workTypeGettingByIdModel);
+        var workType = await _workTypeService.GetByIdAsync(workTypeId);
 
         var result = _mapper.Map<WorkTypeResponse>(workType);
 
