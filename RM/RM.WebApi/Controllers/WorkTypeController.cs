@@ -74,7 +74,6 @@ public class WorkTypeApiController : ControllerBase
     /// </summary>
     /// <param name="workTypeCreationRequest">Запрос на создание вида работ.</param>
     /// <returns>Созданный вид работ.</returns>
-    [Route("create")]
     [HttpPost]
     public async Task<Guid> CreateAsync(WorkTypeCreationRequest workTypeCreationRequest)
     {
@@ -101,8 +100,7 @@ public class WorkTypeApiController : ControllerBase
     /// </summary>
     /// <param name="workTypeUpdationRequest">Запрос на обновление вида работ.</param>
     /// <returns>Созданный вид работ.</returns>
-    [Route("update")]
-    [HttpPost]
+    [HttpPut]
     public async Task UpdateAsync(WorkTypeUpdationRequest workTypeUpdationRequest)
     {
         var workTypeUpdationModel = _mapper.Map<WorkTypeUpdationModel>(workTypeUpdationRequest);
