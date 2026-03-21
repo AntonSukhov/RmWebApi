@@ -42,8 +42,7 @@ public class WorkTypeApiController : ControllerBase
     /// </summary>
     /// <param name="pageOptions">Настройки страницы.</param>
     /// <returns>Виды работ.</returns>
-    [HttpGet]
-    [Route("all")]
+    [HttpGet("all")]
     public async Task<IEnumerable<WorkTypeResponse>> GetAllAsync([FromQuery] PageOptionsRequest pageOptions)
     {
         var pageOptionsModel = _mapper.Map<PageOptionsModel>(pageOptions);
@@ -91,7 +90,7 @@ public class WorkTypeApiController : ControllerBase
     /// </summary>
     /// <param name="workTypeId">ИД удаляемого вида работ.</param>
     /// <returns/>
-    [HttpDelete]
+    [HttpDelete("{workTypeId:guid}")]
     public async Task DeleteAsync(Guid workTypeId)
     {
         await _workTypeService.DeleteAsync(workTypeId);
