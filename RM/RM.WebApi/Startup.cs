@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using IdentityWebApp.Api.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -43,7 +44,8 @@ namespace RM.WebApi
         {           
             services.RegisterDbContexts(Configuration);
             services.RegisterSettings(Configuration);
-            services.RegisterRepositories();         
+            services.RegisterRepositories(); 
+            services.AddIdentityWebAppAuthentication();        
             services.RegisterServices();
             services.RegisterValidators();
             services.RegisterMappingProfiles();
