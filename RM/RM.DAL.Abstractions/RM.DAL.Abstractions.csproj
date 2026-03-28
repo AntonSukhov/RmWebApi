@@ -5,6 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\RM.Common\RM.Common.csproj" />
-    <PackageReference Include="Infrastructure.Shared" Version="1.0.4" />
+    <PackageReference Include="Infrastructure.Shared" Version="1.0.6" />
   </ItemGroup>
 </Project>
