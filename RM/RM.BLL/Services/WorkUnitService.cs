@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Infrastructure.Disposable;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.DAL.Abstractions.Repositories;
@@ -12,7 +13,7 @@ namespace RM.BLL.Services;
 /// <summary>
 /// Сервис единицы работ.
 /// </summary>
-public class WorkUnitService : IWorkUnitService
+public class WorkUnitService : DisposableBase, IWorkUnitService
 {
     private readonly IWorkUnitRepository _workUnitRepository;
     private readonly IMapper _mapper;
@@ -39,5 +40,20 @@ public class WorkUnitService : IWorkUnitService
         var results = workUnits.Select(_mapper.Map<WorkUnitModel>)
                               .ToList();
         return results;
+    }
+
+    /// <inheritdoc/>
+    protected override void DisposeManagedResources()
+    {
+        _workUnitRepository?.Dispose();
+    }
+
+    /// <inheritdoc/>
+    protected override async ValueTask DisposeManagedResourcesAsync()
+    {
+        if(_workUnitRepository != null)
+        {
+            await _workUnitRepository.DisposeAsync().ConfigureAwait(false);
+        }
     }
 }

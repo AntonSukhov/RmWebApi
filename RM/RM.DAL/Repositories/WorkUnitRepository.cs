@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Disposable;
+using Microsoft.EntityFrameworkCore;
 using RM.DAL.Abstractions.Entities;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
@@ -11,7 +12,7 @@ namespace RM.DAL.Repositories
     /// <summary>
     /// Репозиторий единицы работ.
     /// </summary>
-    public class WorkUnitRepository : IWorkUnitRepository
+    public class WorkUnitRepository : DisposableBase, IWorkUnitRepository
     {
         /// <summary>
         /// Контекст работы с базой данных договоров ГПД.
@@ -37,11 +38,25 @@ namespace RM.DAL.Repositories
         }
 
         /// <inheritdoc/>
-        #nullable enable
         public async Task<WorkUnitEntity?> GetByIdAsync(byte workUnitId)
         {
             return await _dbContext.WorkUnits.AsNoTracking()
                                              .SingleOrDefaultAsync(p => p.Id == workUnitId);
         }
+
+        /// <inheritdoc/>
+        protected override void DisposeManagedResources()
+        {
+            _dbContext?.Dispose();
+        }
+
+        /// <inheritdoc/>
+        protected override async ValueTask DisposeManagedResourcesAsync()
+        {
+            if (_dbContext != null)
+            {
+                await _dbContext.DisposeAsync().ConfigureAwait(false);
+            }
+        }    
     }
 }

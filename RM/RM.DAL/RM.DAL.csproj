@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
+    <PackageReference Include="Infrastructure.Disposable" Version="1.0.1" />
     <PackageReference Include="Infrastructure.EntityFramework" Version="1.0.4" />
   </ItemGroup>
 </Project>

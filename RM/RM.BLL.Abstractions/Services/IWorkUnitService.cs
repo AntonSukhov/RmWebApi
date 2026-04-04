@@ -1,4 +1,5 @@
 ﻿using RM.BLL.Abstractions.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ namespace RM.BLL.Abstractions.Services;
 /// <summary>
 /// Сервис единицы работ.
 /// </summary>
-public interface IWorkUnitService
+public interface IWorkUnitService: IDisposable, IAsyncDisposable
 {
     /// <summary>
     /// Предоставляет все единицы работ.
