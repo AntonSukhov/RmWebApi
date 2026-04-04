@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
-    <PackageReference Include="IdentityWebApp.Api" Version="1.0.4" />
+    <PackageReference Include="IdentityWebApp.Api" Version="2.0.0" />
     <PackageReference Include="Infrastructure.Disposable" Version="1.0.1" />
   </ItemGroup>
 </Project>
