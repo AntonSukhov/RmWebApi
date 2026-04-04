@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Infrastructure.Disposable;
 using Infrastructure.EntityFramework.Extensions;
 using Infrastructure.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace RM.DAL.Repositories;
 /// <summary>
 /// Репозиторий вида работ.
 /// </summary>
-public class WorkTypeRepository : IWorkTypeRepository
+public class WorkTypeRepository : DisposableBase, IWorkTypeRepository
 {
     private readonly ContractGpdDbContextBase _dbContext;
     private readonly IMapper _workTypeMapper;
@@ -94,4 +95,19 @@ public class WorkTypeRepository : IWorkTypeRepository
 
         await _dbContext.RemoveEntityAsync(workType);
     }
+
+    /// <inheritdoc/>
+    protected override void DisposeManagedResources()
+    {
+        _dbContext?.Dispose();
+    }
+
+    /// <inheritdoc/>
+    protected override async ValueTask DisposeManagedResourcesAsync()
+    {
+        if (_dbContext != null)
+        {
+            await _dbContext.DisposeAsync().ConfigureAwait(false);
+        }
+    }    
 }

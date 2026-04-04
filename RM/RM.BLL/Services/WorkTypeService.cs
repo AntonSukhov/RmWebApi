@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Infrastructure.Disposable;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
@@ -15,7 +16,7 @@ namespace RM.BLL.Services;
 /// <summary>
 /// Сервис видов работ.
 /// </summary>
-public class WorkTypeService : IWorkTypeService
+public class WorkTypeService : DisposableBase, IWorkTypeService
 {
     private readonly IWorkTypeRepository _workTypeRepository;
     private readonly IWorkUnitRepository _workUnitRepository;
@@ -147,5 +148,26 @@ public class WorkTypeService : IWorkTypeService
         var workType = _mapper.Map<WorkTypeShortEntity>(workTypeUpdationModel);
 
         await _workTypeRepository.UpdateAsync(workType);
+    }
+
+    /// <inheritdoc/>
+    protected override void DisposeManagedResources()
+    {
+        _workUnitRepository?.Dispose();
+        _workTypeRepository?.Dispose();
+    }
+
+    /// <inheritdoc/>
+    protected override async ValueTask DisposeManagedResourcesAsync()
+    {
+        if(_workUnitRepository != null)
+        {
+            await _workUnitRepository.DisposeAsync().ConfigureAwait(false);
+        }
+
+        if(_workTypeRepository != null)
+        {
+            await _workTypeRepository.DisposeAsync().ConfigureAwait(false);
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace RM.BLL.Abstractions.Services;
 /// <summary>
 /// Сервис видов работ.
 /// </summary>
-public interface IWorkTypeService
+public interface IWorkTypeService: IDisposable, IAsyncDisposable
 {
     /// <summary>
     /// Предоставляет все виды работ.

@@ -9,7 +9,7 @@ namespace RM.DAL.Abstractions.Repositories;
 /// <summary>
 /// Репозиторий видов работ.
 /// </summary>
-public interface IWorkTypeRepository
+public interface IWorkTypeRepository: IDisposable, IAsyncDisposable
 {
     /// <summary>
     /// Предоставляет все виды работ.
