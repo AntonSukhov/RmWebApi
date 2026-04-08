@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+using Infrastructure.Mapping.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using RM.Api.DTOs.Responses;
+using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 
 namespace RM.WebApi.Controllers;
@@ -17,20 +18,22 @@ namespace RM.WebApi.Controllers;
 public class WorkUnitApiController : ControllerBase
 {
     private readonly IWorkUnitService _workUnitService;
-    private readonly IMapper _mapper;
+    private readonly IMapper<WorkUnitModel, WorkUnitResponse> _workUnitMapper;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkUnitApiController"/>.
     /// </summary>
     /// <param name="workUnitService">Сервис получения данных о единицах работ.</param>
-    /// <param name="mapper">Маппер.</param>
-    public WorkUnitApiController(IWorkUnitService workUnitService, IMapper mapper)
+    /// <param name="workUnitMapper">Преобразователь единицы работ.</param>
+    public WorkUnitApiController(
+        IWorkUnitService workUnitService, 
+        IMapper<WorkUnitModel, WorkUnitResponse> workUnitMapper)
     {
         ArgumentNullException.ThrowIfNull(workUnitService, nameof(workUnitService));
-        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
+        ArgumentNullException.ThrowIfNull(workUnitMapper, nameof(workUnitMapper));
 
         _workUnitService = workUnitService;
-        _mapper = mapper;
+        _workUnitMapper = workUnitMapper;
     }
 
     /// <summary>
@@ -42,7 +45,7 @@ public class WorkUnitApiController : ControllerBase
     {
         var workUnits = await _workUnitService.GetAllAsync();
 
-        var result = workUnits?.Select(_mapper.Map<WorkUnitResponse>) ?? [];
+        var result = workUnits?.Select(_workUnitMapper.Map) ?? [];
 
         return result;
     }

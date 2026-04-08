@@ -1,10 +1,12 @@
 using AutoMapper;
+using Infrastructure.Mapping.AutoMapper;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Mapping.Profiles;
 using RM.BLL.Validators;
+using RM.DAL.Abstractions.Entities;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL.Tests.Services.WorkTypeService;
@@ -57,6 +59,7 @@ public class WorkTypeServiceFixture
         config.AssertConfigurationIsValid();
 
         var mapper = config.CreateMapper();
+        var workUnitMapper = new Mapper<WorkUnitEntity, WorkUnitModel>(mapper);
 
         WorkTypeRepositoryMock = new Mock<IWorkTypeRepository>();
         WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
@@ -65,7 +68,7 @@ public class WorkTypeServiceFixture
 
         var workTypeNamePropertyValidator = new WorkTypeNamePropertyValidator();
 
-        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, mapper);
+        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, workUnitMapper);
         WorkTypeService = new BLL.Services.WorkTypeService(WorkTypeRepositoryMock.Object, 
             WorkUnitRepositoryMock.Object,
             new WorkTypeNameValidator( workTypeNamePropertyValidator),

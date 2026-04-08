@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Mapping.AutoMapper;
+using Infrastructure.Mapping.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RM.BLL.Abstractions.Configuration;
@@ -86,6 +88,7 @@ public static class ServiceCollectionExtensions
             typeof(WorkUnitMappingProfile), 
             typeof(WorkTypeShortMappingProfile));
 
+        services.AddSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
     }
 
     /// <summary>
