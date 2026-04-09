@@ -19,4 +19,7 @@
     <ProjectReference Include="..\RM.BLL\RM.BLL.csproj" />
     <ProjectReference Include="..\RM.Api\RM.Api.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mapping/MapperSets/" />
+  </ItemGroup>
 </Project>

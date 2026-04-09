@@ -14,6 +14,7 @@ using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
 using RM.DAL.Mapping.Profiles;
 using RM.DAL.Repositories;
+using RM.WebApi.Mapping.MapperSets;
 
 namespace RM.WebApi.Extensions;
 
@@ -78,17 +79,25 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Регистрация профилей настроек преобразований объектов.
+    /// Регистрация профилей настроек преобразований объектов через AutoMapper.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
-    public static void RegisterMappingProfiles(this IServiceCollection services)
+    public static void RegisterAutoMapperProfiles(this IServiceCollection services)
     {
         services.AddAutoMapper(config => {}, 
             typeof(Mapping.Profiles.WorkUnitMappingProfile), 
             typeof(WorkUnitMappingProfile), 
             typeof(WorkTypeShortMappingProfile));
+    }
 
-        services.AddSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
+    /// <summary>
+    /// Регистрация кастомных мапперов для явных преобразований.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    public static void RegisterCustomMappers(this IServiceCollection services)
+    {
+         services.AddSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
+         services.AddSingleton<IWorkTypeApiMappers, WorkTypeApiMappers>();
     }
 
     /// <summary>

@@ -44,7 +44,8 @@ internal class Startup: Infrastructure.AspNetCore.StartupBase
         services.AddIdentityWebAppAuthentication();        
         services.RegisterServices();
         services.RegisterValidators();
-        services.RegisterMappingProfiles();
+        services.RegisterAutoMapperProfiles();
+        services.RegisterCustomMappers();
         
         services.AddControllers();
         services.AddRazorPages(); 
