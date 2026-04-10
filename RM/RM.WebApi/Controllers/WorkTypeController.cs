@@ -24,7 +24,7 @@ public class WorkTypeApiController : ControllerBase
     /// Инициализирует экземпляр <see cref="WorkTypeApiController"/>.
     /// </summary>
     /// <param name="workTypeService">Сервис работы с видами работ.</param>
-    /// <param name="workTypeApiMappers">Контейнер мапперов для работы с видами работ. </param>
+    /// <param name="workTypeApiMappers">Контейнер мапперов для работы с видами работ.</param>
     public WorkTypeApiController(
         IWorkTypeService workTypeService,
         IWorkTypeApiMappers workTypeApiMappers)

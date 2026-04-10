@@ -23,7 +23,7 @@ public class WorkUnitService : DisposableBase, IWorkUnitService
     /// Инициализирует новый экземпляр <see cref="WorkUnitRepository"/>.
     /// </summary>
     /// <param name="workUnitRepository">Репозиторий единицы работ.</param>
-    /// <param name="workUnitMapper">Преобразователь единицы работ.</param>
+    /// <param name="workUnitMapper">Маппер единицы работ.</param>
     public WorkUnitService(
         IWorkUnitRepository workUnitRepository, 
         IMapper<WorkUnitEntity, WorkUnitModel> workUnitMapper)
