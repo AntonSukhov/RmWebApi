@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using Infrastructure.Mapping.Interfaces;
 using Infrastructure.Disposable;
 using Infrastructure.EntityFramework.Extensions;
 using Infrastructure.Shared.Models;
@@ -19,14 +19,16 @@ namespace RM.DAL.Repositories;
 public class WorkTypeRepository : DisposableBase, IWorkTypeRepository
 {
     private readonly ContractGpdDbContextBase _dbContext;
-    private readonly IMapper _workTypeMapper;
+    private readonly IMapper<WorkTypeShortEntity, WorkTypeEntity> _workTypeMapper;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeRepository"/>.
     /// </summary>
     /// <param name="dbContext">Контекст работы с БД договоров ГПД.</param>
-    /// <param name="workTypeMapper">Маппер типа работ.</param>
-    public  WorkTypeRepository(ContractGpdDbContextBase dbContext, IMapper workTypeMapper)
+    /// <param name="workTypeMapper">Маппер вида работ.</param>
+    public  WorkTypeRepository(
+        ContractGpdDbContextBase dbContext, 
+        IMapper<WorkTypeShortEntity, WorkTypeEntity> workTypeMapper)
     {
         ArgumentNullException.ThrowIfNull(dbContext, nameof(dbContext));
         ArgumentNullException.ThrowIfNull(workTypeMapper, nameof(workTypeMapper));
@@ -65,9 +67,9 @@ public class WorkTypeRepository : DisposableBase, IWorkTypeRepository
     /// <inheritdoc/>
     public async Task CreateAsync(WorkTypeShortEntity workType)
     {
-        var workTypeLocal = _workTypeMapper.Map<WorkTypeEntity>(workType);
+        var workTypeEntity = _workTypeMapper.Map(workType);
 
-        await _dbContext.AddEntityAsync(workTypeLocal);
+        await _dbContext.AddEntityAsync(workTypeEntity);
     }
 
     /// <inheritdoc/>
@@ -80,9 +82,9 @@ public class WorkTypeRepository : DisposableBase, IWorkTypeRepository
             updatedProperties = updatedProperties.Append(nameof(WorkTypeEntity.Name));
         }
 
-        var workTypeLocal = _workTypeMapper.Map<WorkTypeEntity>(workType);
+        var workTypeEntity = _workTypeMapper.Map(workType);
 
-        await _dbContext.UpdateEntityAsync(workTypeLocal, updatedProperties);
+        await _dbContext.UpdateEntityAsync(workTypeEntity, updatedProperties);
     }
 
     /// <inheritdoc/>
