@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RM.BLL.Abstractions.Configuration;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
+using RM.BLL.Mapping.MapperSets;
 using RM.BLL.Mapping.Profiles;
 using RM.BLL.Services;
 using RM.BLL.Validators;
@@ -98,6 +99,7 @@ public static class ServiceCollectionExtensions
     {
          services.AddSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
          services.AddSingleton<IWorkTypeApiMappers, WorkTypeApiMappers>();
+         services.AddSingleton<IWorkTypeBllMappers, WorkTypeBllMappers>();
     }
 
     /// <summary>

@@ -14,4 +14,7 @@
     <PackageReference Include="Infrastructure.Mapping.AutoMapper" Version="1.0.0" />
     <PackageReference Include="Infrastructure.Disposable" Version="1.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mapping/MapperSets/" />
+  </ItemGroup>
 </Project>

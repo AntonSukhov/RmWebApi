@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
+using RM.BLL.Mapping.MapperSets;
 using RM.BLL.Mapping.Profiles;
 using RM.BLL.Validators;
 using RM.DAL.Abstractions.Entities;
@@ -61,6 +62,13 @@ public class WorkTypeServiceFixture
         var mapper = config.CreateMapper();
         var workUnitMapper = new Mapper<WorkUnitEntity, WorkUnitModel>(mapper);
 
+        var workTypeBllMappers = new WorkTypeBllMappers(
+            new Mapper<WorkTypeCreationModel, WorkTypeShortEntity>(mapper),
+            new Mapper<WorkTypeUpdationModel, WorkTypeShortEntity>(mapper),
+            new Mapper<WorkTypeEntity, WorkTypeModel>(mapper),
+            new Mapper<PageOptionsModel, Infrastructure.Shared.Models.PageOptionsModel>(mapper)
+        );
+
         WorkTypeRepositoryMock = new Mock<IWorkTypeRepository>();
         WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
 
@@ -74,6 +82,6 @@ public class WorkTypeServiceFixture
             new WorkTypeNameValidator( workTypeNamePropertyValidator),
             new WorkTypeUpdationModelValidator(workTypeNamePropertyValidator),
             new PageOptionsValidator(), 
-            mapper);
+            workTypeBllMappers);
     }
 }

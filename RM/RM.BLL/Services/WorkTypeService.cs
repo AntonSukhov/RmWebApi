@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Infrastructure.Disposable;
+using Infrastructure.Mapping.Extensions;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
 using RM.BLL.Exceptions;
-using RM.DAL.Abstractions.Entities;
+using RM.BLL.Mapping.MapperSets;
 using RM.DAL.Abstractions.Repositories;
 
 namespace RM.BLL.Services;
@@ -23,7 +23,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
     private readonly IWorkTypeNameValidator _workTypeNameValidator;
     private readonly IWorkTypeUpdationModelValidator _workTypeUpdationModelValidator;
     private readonly IPageOptionsValidator _pageOptionsValidator;
-    private readonly IMapper _mapper;
+    private readonly IWorkTypeBllMappers _workTypeBllMappers;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeService"/>.
@@ -33,26 +33,27 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
     /// <param name="workTypeNameValidator">Валидатор названия вида работ.</param>
     /// <param name="workTypeUpdationModelValidator">Валидатор модели обновления вида работ.</param>
     /// <param name="pageOptionsValidator">Валидатор настроек страницы.</param>
+    /// <param name="workTypeBllMappers">Контейнер мапперов для работы с видами работ.</param>
     public WorkTypeService(IWorkTypeRepository workTypeRepository, 
                             IWorkUnitRepository workUnitRepository,
                             IWorkTypeNameValidator workTypeNameValidator,
                             IWorkTypeUpdationModelValidator workTypeUpdationModelValidator,
                             IPageOptionsValidator pageOptionsValidator,
-                            IMapper mapper)
+                            IWorkTypeBllMappers workTypeBllMappers)
     {
         ArgumentNullException.ThrowIfNull(workTypeRepository, nameof(workTypeRepository));
         ArgumentNullException.ThrowIfNull(workUnitRepository, nameof(workUnitRepository));
         ArgumentNullException.ThrowIfNull(workTypeNameValidator, nameof(workTypeNameValidator));
         ArgumentNullException.ThrowIfNull(workTypeUpdationModelValidator, nameof(workTypeUpdationModelValidator));
         ArgumentNullException.ThrowIfNull(pageOptionsValidator, nameof(pageOptionsValidator));
-        ArgumentNullException.ThrowIfNull(mapper, nameof(mapper));
+        ArgumentNullException.ThrowIfNull(workTypeBllMappers, nameof(workTypeBllMappers));
 
         _workTypeRepository = workTypeRepository;
         _workUnitRepository = workUnitRepository;
         _workTypeNameValidator = workTypeNameValidator;
         _workTypeUpdationModelValidator = workTypeUpdationModelValidator;
         _pageOptionsValidator = pageOptionsValidator;
-        _mapper = mapper;
+        _workTypeBllMappers = workTypeBllMappers;
     }
 
     /// <inheritdoc/>
@@ -79,7 +80,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
                 $"Единицы работ с ИД'{workTypeCreationModel.WorkUnitId}' не существует.");
         }
         
-        var workType = _mapper.Map<WorkTypeShortEntity>(workTypeCreationModel);
+        var workType = _workTypeBllMappers.ToWorkTypeShortEntity.Map(workTypeCreationModel);
         workType.Id = Guid.NewGuid();
 
         await _workTypeRepository.CreateAsync(workType);
@@ -99,15 +100,18 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
     /// <inheritdoc/>
     public async Task<IReadOnlyCollection<WorkTypeModel>> GetAllAsync(PageOptionsModel? pageOptions = null)
     {
+        Infrastructure.Shared.Models.PageOptionsModel? pageOptionsLocal = null;
+
         if (pageOptions != null)
         {
              await _pageOptionsValidator.ValidateAndThrowAsync(pageOptions);
+
+             pageOptionsLocal = _workTypeBllMappers.ToPageOptionsModel.Map(pageOptions);
         }
         
-        var workTypes = await _workTypeRepository.GetAllAsync(
-            _mapper.Map<Infrastructure.Shared.Models.PageOptionsModel>(pageOptions));
+        var workTypes = await _workTypeRepository.GetAllAsync(pageOptionsLocal);
 
-        var results = workTypes.Select(_mapper.Map<WorkTypeModel>)
+        var results = workTypes.Select(_workTypeBllMappers.ToWorkTypeModel.Map)
                                .ToList();
 
         return results;
@@ -116,9 +120,10 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
     /// <inheritdoc/>
     public async Task<WorkTypeModel?> GetByIdAsync(Guid workTypeId)
     {
-        var workType = await _workTypeRepository.GetByIdAsync(workTypeId);
+        var workTypeEntity = await _workTypeRepository.GetByIdAsync(workTypeId);
 
-        var result = _mapper.Map<WorkTypeModel>(workType);
+        var result = workTypeEntity is not null? 
+            _workTypeBllMappers.ToWorkTypeModel.Map(workTypeEntity) : null;
 
         return result;
     }
@@ -145,7 +150,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
                 $"Единица работ с ИД '{workTypeUpdationModel.WorkUnitId}' не существует.");
         }
         
-        var workType = _mapper.Map<WorkTypeShortEntity>(workTypeUpdationModel);
+        var workType = _workTypeBllMappers.ToWorkTypeShortEntityForUpdate.Map(workTypeUpdationModel);
 
         await _workTypeRepository.UpdateAsync(workType);
     }
