@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using RM.BLL.Abstractions.Configuration;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
@@ -26,16 +25,16 @@ public class AuthenticationService : IAuthenticationService
     /// <param name="authenticationCredentialsValidator">Валидатор учётных данных для аутентификации пользователя.</param>
     public AuthenticationService(
         IdentityWebApp.Api.Services.IAuthenticationService  authenticationService,
-        IOptions<AuthenticationSettings> authenticationSettings,
+        AuthenticationSettings authenticationSettings,
         IAuthenticationCredentialsValidator authenticationCredentialsValidator)
     {
         ArgumentNullException.ThrowIfNull(authenticationService);
         ArgumentNullException.ThrowIfNull(authenticationSettings);
-        ArgumentNullException.ThrowIfNull(authenticationSettings.Value);
+        ArgumentNullException.ThrowIfNull(authenticationSettings);
         ArgumentNullException.ThrowIfNull(authenticationCredentialsValidator);
 
         _authenticationService = authenticationService;
-        _authenticationSettings = authenticationSettings.Value;
+        _authenticationSettings = authenticationSettings;
         _authenticationCredentialsValidator = authenticationCredentialsValidator;
     }
 

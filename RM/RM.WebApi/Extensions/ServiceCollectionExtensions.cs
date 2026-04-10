@@ -3,6 +3,7 @@ using Infrastructure.Mapping.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using RM.BLL.Abstractions.Configuration;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
@@ -107,10 +108,14 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="configuration">Конфигурация свойств API.</param>
-    public static void RegisterSettings(this IServiceCollection services, 
-        IConfiguration configuration)
+    public static void RegisterSettings(
+        this IServiceCollection services, 
+             IConfiguration configuration)
     {
         services.Configure<AuthenticationSettings>(
             configuration.GetSection(Constants.Authentication));
+
+        services.AddSingleton(provider => 
+            provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
     }
 }

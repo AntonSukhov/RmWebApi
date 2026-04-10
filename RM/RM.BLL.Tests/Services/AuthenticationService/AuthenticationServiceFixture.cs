@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using Moq;
 using RM.BLL.Abstractions.Configuration;
 using RM.BLL.Abstractions.Services;
@@ -34,13 +33,11 @@ public class AuthenticationServiceFixture
             Port = 7121
         };
 
-        var authenticationSettingsOptions = Options.Create(authenticationSettings);
-
         AuthenticationServiceMock = new Mock<IdentityWebApp.Api.Services.IAuthenticationService>();  
 
         AuthenticationService = new BLL.Services.AuthenticationService(
             AuthenticationServiceMock.Object,
-            authenticationSettingsOptions,
+            authenticationSettings,
             authenticationCredentialsValidator);
     }
 }
