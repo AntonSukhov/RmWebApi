@@ -1,4 +1,5 @@
-﻿using Infrastructure.Mapping.AutoMapper;
+﻿using System;
+using Infrastructure.Mapping.AutoMapper;
 using Infrastructure.Mapping.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,17 +33,32 @@ public static class ServiceCollectionExtensions
     /// <param name="configuration">Конфигурация свойств API.</param>
     public static void RegisterDbContexts(this IServiceCollection services, IConfiguration configuration)
     {
-        if (configuration.GetValue<string>(Constants.DataStorageTypeString) == Constants.MsSqlServer)
+        var dataStorageType = configuration.GetValue<string>(Constants.DataStorageTypeString);
+
+        if (string.IsNullOrWhiteSpace(dataStorageType))
         {
-            //TODO: вынести UseSqlServer отсюда
-            services.AddDbContext<ContractGpdDbContextBase, DAL.MsSql.DbContexts.ContractGpdDbContext>(
-                options => options.UseSqlServer(configuration.GetConnectionString(Constants.MsSqlDbContractConnectionString)));
+            throw new InvalidOperationException($"Конфигурация {nameof(Constants.DataStorageTypeString)} не задана.");
         }
-        else if (configuration.GetValue<string>(Constants.DataStorageTypeString) == Constants.PostgreSql)
+
+        if (dataStorageType.Equals(Constants.MsSqlServer, StringComparison.OrdinalIgnoreCase))
         {
-            //TODO: вынести UseNpgsql отсюда
+            var connectionString = GetConnectionStringOrException(configuration, 
+                Constants.MsSqlDbContractConnectionString);
+            
+            services.AddDbContext<ContractGpdDbContextBase, DAL.MsSql.DbContexts.ContractGpdDbContext>(
+                options => options.UseSqlServer(connectionString));
+        }
+        else if (dataStorageType.Equals(Constants.PostgreSql, StringComparison.OrdinalIgnoreCase))
+        {
+            var connectionString = GetConnectionStringOrException(configuration, 
+                Constants.PostgreDbContractConnectionString);
+
             services.AddDbContext<ContractGpdDbContextBase, DAL.PostgreSql.DbContexts.ContractGpdDbContext>(
-                options => options.UseNpgsql(configuration.GetConnectionString(Constants.PostgreDbContractConnectionString)));
+                options => options.UseNpgsql(connectionString));
+        }
+        else
+        {
+            throw new InvalidOperationException($"Неподдерживаемый тип хранилища данных: {dataStorageType}");
         }
     }
 
@@ -117,5 +133,20 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(provider => 
             provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
+    }
+
+    private static string GetConnectionStringOrException(
+        IConfiguration configuration, 
+        string connectionStringName)
+    {
+        var connectionString = configuration.GetConnectionString(connectionStringName);
+
+        if(string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                $"Строка подключения '{connectionStringName}' не найдена в секции 'ConnectionStrings' конфигурации.");
+        }
+
+        return connectionString;
     }
 }
