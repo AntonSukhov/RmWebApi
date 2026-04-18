@@ -26,6 +26,8 @@ namespace RM.WebApi.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    private const string ConnectionStringsSection = "ConnectionStrings";
+
     /// <summary>
     /// Регистрация контекстов баз данных.
     /// </summary>
@@ -37,7 +39,8 @@ public static class ServiceCollectionExtensions
 
         if (string.IsNullOrWhiteSpace(dataStorageType))
         {
-            throw new InvalidOperationException($"Конфигурация {nameof(Constants.DataStorageTypeString)} не задана.");
+            throw new InvalidOperationException(
+                $"Конфигурация {nameof(Constants.DataStorageTypeString)} не задана.");
         }
 
         if (dataStorageType.Equals(Constants.MsSqlServer, StringComparison.OrdinalIgnoreCase))
@@ -139,12 +142,14 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration, 
         string connectionStringName)
     {
-        var connectionString = configuration.GetConnectionString(connectionStringName);
+        var connectionStringsSection = configuration.GetSection(ConnectionStringsSection);
+    
+        var connectionString = connectionStringsSection[connectionStringName];
 
         if(string.IsNullOrWhiteSpace(connectionString))
         {
             throw new InvalidOperationException(
-                $"Строка подключения '{connectionStringName}' не найдена в секции 'ConnectionStrings' конфигурации.");
+                $"Строка подключения '{connectionStringName}' не найдена в секции '{nameof(ConnectionStringsSection)}' конфигурации.");
         }
 
         return connectionString;
