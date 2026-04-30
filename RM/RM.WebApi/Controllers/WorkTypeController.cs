@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RM.Api.DTOs.Requests;
 using RM.Api.DTOs.Responses;
 using RM.BLL.Abstractions.Services;
 using RM.WebApi.Mapping.MapperSets;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace RM.WebApi.Controllers;
 
@@ -15,6 +17,7 @@ namespace RM.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/work-type")]
+[Tags("WorkTypes")]
 public class WorkTypeApiController : ControllerBase
 {
     private readonly IWorkTypeService _workTypeService;
@@ -42,6 +45,7 @@ public class WorkTypeApiController : ControllerBase
     /// <param name="pageOptions">Настройки страницы.</param>
     /// <returns>Виды работ.</returns>
     [HttpGet("all")]
+    [SwaggerOperation(OperationId = "GetWorkTypesAsync")]
     public async Task<IEnumerable<WorkTypeResponse>> GetAllAsync(
         [FromQuery] PageOptionsRequest pageOptions)
     {
@@ -60,6 +64,7 @@ public class WorkTypeApiController : ControllerBase
     /// <param name="workTypeId">ИД вида работ.</param>
     /// <returns>Вид работ.</returns>
     [HttpGet("{workTypeId:guid}")]
+    [SwaggerOperation(OperationId = "GetWorkTypeAsync")]
     public async Task<WorkTypeResponse?> GetByIdAsync(Guid workTypeId)
     {
         var workType = await _workTypeService.GetByIdAsync(workTypeId);
@@ -75,6 +80,7 @@ public class WorkTypeApiController : ControllerBase
     /// <param name="workTypeCreationRequest">Запрос на создание вида работ.</param>
     /// <returns>Созданный вид работ.</returns>
     [HttpPost]
+    [SwaggerOperation(OperationId = "CreateWorkTypeAsync")]
     public async Task<Guid> CreateAsync(WorkTypeCreationRequest workTypeCreationRequest)
     {
         var workTypeCreationModel = _workTypeApiMappers.ToWorkTypeCreationModel.Map(workTypeCreationRequest);
@@ -90,6 +96,7 @@ public class WorkTypeApiController : ControllerBase
     /// <param name="workTypeId">ИД удаляемого вида работ.</param>
     /// <returns/>
     [HttpDelete("{workTypeId:guid}")]
+    [SwaggerOperation(OperationId = "DeleteWorkTypeAsync")]
     public async Task DeleteAsync(Guid workTypeId)
     {
         await _workTypeService.DeleteAsync(workTypeId);
@@ -101,6 +108,7 @@ public class WorkTypeApiController : ControllerBase
     /// <param name="workTypeUpdationRequest">Запрос на обновление вида работ.</param>
     /// <returns>Созданный вид работ.</returns>
     [HttpPut]
+    [SwaggerOperation(OperationId = "UpdateWorkTypeAsync")]
     public async Task UpdateAsync(WorkTypeUpdationRequest workTypeUpdationRequest)
     {
         var workTypeUpdationModel = _workTypeApiMappers.ToWorkTypeUpdationModel.Map(workTypeUpdationRequest);

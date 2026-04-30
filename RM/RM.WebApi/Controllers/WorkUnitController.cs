@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Mapping.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RM.Api.DTOs.Responses;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace RM.WebApi.Controllers;
 
@@ -15,6 +17,7 @@ namespace RM.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/work-unit")]
+[Tags("WorkUnits")]
 public class WorkUnitApiController : ControllerBase
 {
     private readonly IWorkUnitService _workUnitService;
@@ -41,6 +44,7 @@ public class WorkUnitApiController : ControllerBase
     /// </summary>
     /// <returns>Единицы работ.</returns>
     [HttpGet]
+    [SwaggerOperation(OperationId = "GetWorkUnitsAsync")]
     public async Task<IEnumerable<WorkUnitResponse>> GetAllAsync()
     {
         var workUnits = await _workUnitService.GetAllAsync();
