@@ -110,7 +110,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPageOptionsValidator, PageOptionsValidator>();
         services.AddSingleton<IWorkTypeNameValidator, WorkTypeNameValidator>();
         services.AddSingleton<IWorkTypeUpdationModelValidator, WorkTypeUpdationModelValidator>();
-        services.AddSingleton<IAuthenticationCredentialsValidator, AuthenticationCredentialsValidator>();
         services.AddSingleton<WorkTypeNamePropertyValidator>();
 
         return services;
