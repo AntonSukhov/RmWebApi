@@ -1,7 +1,5 @@
 using Moq;
-using RM.BLL.Abstractions.Configuration;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Validators;
 
 namespace RM.BLL.Tests.Services.AuthenticationService;
 
@@ -25,19 +23,9 @@ public class AuthenticationServiceFixture
     /// </summary>
     public AuthenticationServiceFixture()
     {
-        var authenticationCredentialsValidator = new AuthenticationCredentialsValidator();
-
-        var authenticationSettings = new AuthenticationSettings
-        { 
-            ServerName = "localhost",
-            Port = 7121
-        };
-
         AuthenticationServiceMock = new Mock<IdentityWebApp.Api.Services.IAuthenticationService>();  
 
         AuthenticationService = new BLL.Services.AuthenticationService(
-            AuthenticationServiceMock.Object,
-            authenticationSettings,
-            authenticationCredentialsValidator);
+            AuthenticationServiceMock.Object);
     }
 }

@@ -1,9 +1,9 @@
+using IdentityWebApp.Api.Models;
 using Infrastructure.Testing.Common;
 using Infrastructure.Testing.TestCases;
 using Infrastructure.Testing.XUnit;
 using Moq;
 using RM.BLL.Abstractions.Services;
-using RM.BLL.Exceptions;
 using RM.BLL.Tests.Services.AuthenticationService.GetTokenAsync.Models;
 using RM.BLL.Tests.TestSupport.Constants;
 
@@ -27,7 +27,7 @@ public class GetTokenAsyncTests : BaseTest<AuthenticationServiceFixture>
     /// успешно выполняет аутентификацию пользователя и возвращает токен.
     /// </summary>
     [Theory]
-    [MemberData(nameof(GetTokenAsyncTestCases.SuccessTestCases),
+    [MemberData(nameof(GetTokenAsyncTestCases.Success),
                 MemberType = typeof(GetTokenAsyncTestCases))]
     public async Task SucceedsForValidInput(TestCaseWithStubs<UserCredentials, string> testCase)
     {
@@ -35,15 +35,12 @@ public class GetTokenAsyncTests : BaseTest<AuthenticationServiceFixture>
         var stubOutput = testCase.StubOutputs[new StubOutputKey(
             ServiceMethodNames.AuthenticationService.GetTokenAsync,
             StubSequenceConstants.First)];
-        var stubOutputData = stubOutput.GetOutputData<IdentityWebApp.Api.Models.TokenModel>()
-            ?? new IdentityWebApp.Api.Models.TokenModel { Value = string.Empty, Expires = default};
+        var stubOutputData = stubOutput.GetOutputData<TokenModel>()
+            ?? new TokenModel { Value = string.Empty, Expires = default};
 
         _fixture.AuthenticationServiceMock.Setup(p => p.LoginAsync(
             It.IsAny<string>(),
-            It.IsAny<int?>(),
             It.IsAny<string>(),
-            It.IsAny<string>(),
-            It.IsAny<bool>(),
             default
         )).ReturnsAsync(stubOutputData);
 
@@ -58,25 +55,52 @@ public class GetTokenAsyncTests : BaseTest<AuthenticationServiceFixture>
     }
 
     /// <summary>
-    /// Проверяет, что метод <see cref="IAuthenticationService.GetTokenAsync""/> 
-    /// не выполняет аутентификацию, а возвращает ошибку валидации.
+    /// Проверяет, что метод <see cref="IAuthenticationService.GetTokenAsync"/> 
+    /// не выполняет аутентификацию, а возвращает ошибку <see cref="HttpRequestException"/>
+    /// для некорректных входных данных.
     /// </summary>
     [Theory]
-    [MemberData(nameof(GetTokenAsyncTestCases.UnSuccessTestCases),
+    [MemberData(nameof(GetTokenAsyncTestCases.InvalidInputData),
                 MemberType = typeof(GetTokenAsyncTestCases))]
     public async Task FailsForInvalidInput(TestCaseInput<UserCredentials> testCase)
     {
-        // Arrange & Act & Assert:
-        var exception = await Assert.ThrowsAnyAsync<Exception>(
+        // Arrange:
+        _fixture.AuthenticationServiceMock.Setup(p => p.LoginAsync(
+            It.IsAny<string>(),
+            It.IsAny<string>(),
+            default
+        )).Throws<HttpRequestException>();
+
+        // Act & Assert:
+        await Assert.ThrowsAnyAsync<HttpRequestException>(
             async () => await _fixture.AuthenticationService.GetTokenAsync(
                 testCase.InputData.Login, 
                 testCase.InputData.Password)
         );
+    }
 
-        // Проверяем, что исключение относится к разрешённым типам
-        Assert.True(
-            exception is ValidationException || 
-            exception is ValidationAggregationException
+     /// <summary>
+    /// Проверяет, что метод <see cref="IAuthenticationService.GetTokenAsync"/> 
+    /// не выполняет аутентификацию, а возвращает ошибку <see cref="InvalidOperationException"/>
+    /// если пользователь не существует или для существующего пользователя указан неверный пароль.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(GetTokenAsyncTestCases.InvalidCredentials),
+                MemberType = typeof(GetTokenAsyncTestCases))]
+    public async Task FailsForInvalidCredentials(TestCaseInput<UserCredentials> testCase)
+    {
+        // Arrange:
+        _fixture.AuthenticationServiceMock.Setup(p => p.LoginAsync(
+            It.IsAny<string>(),
+            It.IsAny<string>(),
+            default
+        )).Throws<InvalidOperationException>();
+
+        // Act & Assert:
+        await Assert.ThrowsAnyAsync<InvalidOperationException>(
+            async () => await _fixture.AuthenticationService.GetTokenAsync(
+                testCase.InputData.Login, 
+                testCase.InputData.Password)
         );
     }
 }

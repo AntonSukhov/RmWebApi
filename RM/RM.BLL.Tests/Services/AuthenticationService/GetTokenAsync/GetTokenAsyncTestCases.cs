@@ -16,9 +16,10 @@ public static class GetTokenAsyncTestCases
     private static readonly string _token = "eyJhbGciOiJIUzUxMiIsIn";
 
     /// <summary>
-    /// Получает сценарии успешного выполнения метода <see cref="IAuthenticationService.GetTokenAsync"/>.
+    /// Получает сценарии успешного выполнения метода 
+    /// <see cref="IAuthenticationService.GetTokenAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseWithStubs<UserCredentials, string>> SuccessTestCases
+    public static TheoryData<TestCaseWithStubs<UserCredentials, string>> Success
     {
         get
         {
@@ -50,9 +51,11 @@ public static class GetTokenAsyncTestCases
     }
 
     /// <summary>
-    /// Получает сценарии неуспешного выполнения метода <see cref="IAuthenticationService.GetTokenAsync"/>.
+    /// Получает сценарии неуспешного выполнения метода 
+    /// <see cref="IAuthenticationService.GetTokenAsync"/>
+    /// для неверных входных данных.
     /// </summary>
-    public static TheoryData<TestCaseInput<UserCredentials>> UnSuccessTestCases
+    public static TheoryData<TestCaseInput<UserCredentials>> InvalidInputData
     {
         get
         {
@@ -72,8 +75,8 @@ public static class GetTokenAsyncTestCases
                 },
                 new() {
                     ScenarioNumber = 3,
-                    Description = "Проверка неуспешной аутентификации пользователя и получения токена. Длина логина равна 257.",
-                    InputData = new UserCredentials(new string('u', 257), _password)
+                    Description = $"Проверка неуспешной аутентификации пользователя и получения токена. Длина логина равна {short.MaxValue}.",
+                    InputData = new UserCredentials(new string('u', short.MaxValue), _password)
                 },
                 new() {
                     ScenarioNumber = 4,
@@ -90,5 +93,31 @@ public static class GetTokenAsyncTestCases
             return  theoryData;
         }
     }
-    
+
+    // <summary>
+    /// Получает сценарии неуспешного выполнения метода 
+    /// <see cref="IAuthenticationService.GetTokenAsync"/>
+    /// если пользователь не существует или для существующего пользователя указан неверный пароль.
+    /// </summary>
+    public static TheoryData<TestCaseInput<UserCredentials>> InvalidCredentials
+    {
+        get
+        {
+            var theoryData = new TheoryData<TestCaseInput<UserCredentials>>
+            {
+                new() {
+                    ScenarioNumber = 1,
+                    Description = "Проверка неуспешной аутентификации пользователя и получения токена. Пользователь с указанным логином не найден в системе.",
+                    InputData = new UserCredentials(Guid.NewGuid().ToString(), _password)
+                },
+                new() {
+                    ScenarioNumber = 2,
+                    Description = "Проверка неуспешной аутентификации пользователя и получения токена. Введён неверный пароль для указанного пользователя.",
+                    InputData = new UserCredentials(_login, Guid.NewGuid().ToString())
+                }
+            };
+
+            return  theoryData;
+        }
+    }  
 }
