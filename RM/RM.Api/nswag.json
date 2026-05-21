@@ -1,0 +1,19 @@
+{
+  "runtime": "Net90",
+  "documentGenerator": {
+    "fromDocument": {
+      "json": "OpenApiSpecs/RmWebApi.v1.json"
+    }
+  },
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "className": "RmWebApiClient",
+      "output": "GeneratedApiClients/RmWebApiClient.cs",
+      "clientClassAccessModifier": "internal",
+      "typeAccessModifier": "internal",
+      "generateNullableReferenceTypes": true,
+      "useBaseUrl": false,
+      "jsonLibrary": "SystemTextJson"
+    }
+  }
+}
