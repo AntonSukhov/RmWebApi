@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using RM.BLL.Abstractions.Errors;
-using RM.Common.Services;
+using RM.Common.Constants;
 using RM.WebApi.Extensions;
 
 namespace RM.WebApi.Middleware;
@@ -114,7 +114,7 @@ public class ErrorHandlingMiddleware : MiddlewareBase
     private async Task SetErrorResponseAsync(HttpContext context, int statusCode, ApiError apiError)
     {
         var result = JsonSerializer.Serialize(apiError, _jsonSerializerOptions);
-        context.Response.ContentType = Constants.ApplicationJsonContentType;
+        context.Response.ContentType = HttpConstants.ApplicationJsonContentType;
         context.Response.StatusCode = statusCode;
         await context.Response.WriteAsync(result);
     }

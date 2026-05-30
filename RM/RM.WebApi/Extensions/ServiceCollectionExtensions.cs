@@ -15,7 +15,7 @@ using RM.BLL.Mapping.MapperSets;
 using RM.BLL.Mapping.Profiles;
 using RM.BLL.Services;
 using RM.BLL.Validators;
-using RM.Common.Services;
+using RM.Common.Constants;
 using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
 using RM.DAL.Mapping.Profiles;
@@ -41,26 +41,26 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services, 
             IConfiguration configuration)
     {
-        var dataStorageType = configuration.GetValue<string>(Constants.DataStorageTypeString);
+        var dataStorageType = configuration.GetValue<string>(DatabaseConstants.DataStorageTypeString);
 
         if (string.IsNullOrWhiteSpace(dataStorageType))
         {
             throw new InvalidOperationException(
-                $"Конфигурация {nameof(Constants.DataStorageTypeString)} не задана.");
+                $"Конфигурация {nameof(DatabaseConstants.DataStorageTypeString)} не задана.");
         }
 
-        if (dataStorageType.Equals(Constants.MsSqlServer, StringComparison.OrdinalIgnoreCase))
+        if (dataStorageType.Equals(DatabaseConstants.DbmsTypes.MsSqlServer, StringComparison.OrdinalIgnoreCase))
         {
             var connectionString = GetConnectionStringOrException(configuration, 
-                Constants.MsSqlDbContractConnectionString);
+                DatabaseConstants.MsSqlDbContractConnectionString);
             
             services.AddDbContext<ContractGpdDbContextBase, DAL.MsSql.DbContexts.ContractGpdDbContext>(
                 options => options.UseSqlServer(connectionString));
         }
-        else if (dataStorageType.Equals(Constants.PostgreSql, StringComparison.OrdinalIgnoreCase))
+        else if (dataStorageType.Equals(DatabaseConstants.DbmsTypes.PostgreSql, StringComparison.OrdinalIgnoreCase))
         {
             var connectionString = GetConnectionStringOrException(configuration, 
-                Constants.PostgreDbContractConnectionString);
+                DatabaseConstants.PostgreDbContractConnectionString);
 
             services.AddDbContext<ContractGpdDbContextBase, DAL.PostgreSql.DbContexts.ContractGpdDbContext>(
                 options => options.UseNpgsql(connectionString));
@@ -154,7 +154,7 @@ public static class ServiceCollectionExtensions
              IConfiguration configuration)
     {
         services.Configure<AuthenticationSettings>(
-            configuration.GetSection(Constants.Authentication));
+            configuration.GetSection(HttpConstants.Headers.Authentication));
 
         services.AddSingleton(provider => 
             provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
