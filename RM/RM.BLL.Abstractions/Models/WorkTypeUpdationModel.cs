@@ -20,5 +20,5 @@ public class WorkTypeUpdationModel
     /// <summary>
     /// Получает или задает ИД единицы работ для вида работ.
     /// </summary>
-    public byte? WorkUnitId { get; set; }
+    public short? WorkUnitId { get; set; }
 }

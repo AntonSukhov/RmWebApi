@@ -20,7 +20,7 @@ public class WorkTypeEntity
     /// <summary>
     /// Получает или задает ИД единицы работ для вида работ.
     /// </summary>
-    public byte? WorkUnitId { get; set; }
+    public short? WorkUnitId { get; set; }
 
     /// <summary>
     /// Получает или задает единицу работ для вида работ.

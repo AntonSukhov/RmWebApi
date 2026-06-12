@@ -38,7 +38,7 @@ namespace RM.DAL.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<WorkUnitEntity?> GetByIdAsync(byte workUnitId)
+        public async Task<WorkUnitEntity?> GetByIdAsync(short workUnitId)
         {
             return await _dbContext.WorkUnits.AsNoTracking()
                                              .SingleOrDefaultAsync(p => p.Id == workUnitId);

@@ -8,7 +8,7 @@ public class WorkUnitEntity
     /// <summary>
     /// Получает или задает ИД единицы работ.
     /// </summary>
-    public byte Id { get; set; }
+    public short Id { get; set; }
 
     /// <summary>
     /// Получает или задает название единицы работ.

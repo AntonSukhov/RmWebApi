@@ -21,6 +21,6 @@ public interface IWorkUnitRepository : IDisposable, IAsyncDisposable
     /// </summary>
     /// <param name="workUnitId">ИД единицы работ.</param>
     /// <returns>Единица работ.</returns>
-    Task<WorkUnitEntity?> GetByIdAsync(byte workUnitId);
+    Task<WorkUnitEntity?> GetByIdAsync(short workUnitId);
 }
 
