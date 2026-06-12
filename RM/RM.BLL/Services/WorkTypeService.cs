@@ -69,7 +69,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
 
         if (workTypeByName != null)
         {
-            throw new DataNotFoundException(
+            throw new ConflictException(
                 $"Вид работ с названием '{workTypeCreationModel.Name}' (ИД '{workTypeByName.Id}') уже существует.");
         }
 
@@ -135,11 +135,17 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
 
         await _workTypeUpdationModelValidator.ValidateAndThrowAsync(workTypeUpdationModel);
 
+        if( await _workTypeRepository.GetByIdAsync(workTypeUpdationModel.Id) == null)
+        {
+            throw new DataNotFoundException(
+                $"Вида работ с ИД '{workTypeUpdationModel.Id}' не существует.");
+        }
+
         var workTypeByName = await _workTypeRepository.GetByNameAsync(workTypeUpdationModel.Name);
 
         if (workTypeByName != null && workTypeByName.Id != workTypeUpdationModel.Id)
         {
-            throw new DataNotFoundException(
+            throw new ConflictException(
                 $"Вид работ с названием '{workTypeUpdationModel.Name}' и ИД '{workTypeByName.Id}' уже существует.");
         }
 

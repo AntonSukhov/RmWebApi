@@ -22,6 +22,15 @@ public static class ErrorCodes
     public const string DataNotFound = "data_not_found";
     
     /// <summary>
+    /// Ошибка конфликта данных.
+    /// </summary>
+    /// <remarks>
+    /// Возникает при попытке создать запись, которая конфликтует с существующими данными 
+    /// (например, нарушение уникальности).
+    /// </remarks>
+    public const string Conflict = "conflict";
+
+    /// <summary>
     /// Ошибка конкурентного доступа.
     /// </summary>
     /// <remarks>
