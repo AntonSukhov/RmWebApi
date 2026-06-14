@@ -17,15 +17,15 @@ namespace RM.Api.Services;
 /// <summary>
 /// Реализация сервиса видов работ для работы с внешним API.
 /// </summary>
-public class WorkTypeApiService : IWorkTypeApiService
+public class WorkTypeService : IWorkTypeService
 {
     private readonly RmWebApiClient _rmWebApiClient;
 
     /// <summary>
-    /// Инициализирует новый экземпляр <see cref="WorkTypeApiService"/>.
+    /// Инициализирует новый экземпляр <see cref="WorkTypeService"/>.
     /// </summary>
     /// <param name="httpClientFactory">Фабрика для создания <see cref="HttpClient"/>.</param>
-    public WorkTypeApiService(IHttpClientFactory httpClientFactory)
+    public WorkTypeService(IHttpClientFactory httpClientFactory)
     {
         ArgumentNullException.ThrowIfNull(httpClientFactory);
 

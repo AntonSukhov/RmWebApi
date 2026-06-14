@@ -10,7 +10,7 @@ namespace RM.Api.Services;
 /// <summary>
 /// Сервис видов работ для работы с внешним API.
 /// </summary>
-public interface IWorkTypeApiService
+public interface IWorkTypeService
 {
     /// <summary>
     /// Предоставляет все виды работ с пагинацией.
