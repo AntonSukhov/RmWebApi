@@ -1,4 +1,3 @@
-using IdentityWebApp.Api.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -34,9 +33,7 @@ internal class Startup: Infrastructure.AspNetCore.StartupBase
         base.ConfigureServices(services);
 
         services.RegisterDbContexts(Configuration);
-        services.RegisterSettings(Configuration);
-        services.RegisterRepositories(); 
-        services.AddIdentityWebAppAuthentication(Configuration);        
+        services.RegisterRepositories();       
         services.RegisterServices();
         services.RegisterValidators();
         services.RegisterAutoMapperProfiles();
