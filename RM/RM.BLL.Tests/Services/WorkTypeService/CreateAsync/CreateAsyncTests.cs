@@ -41,7 +41,7 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByNameAsync(It.IsAny<string>()))
                                        .ReturnsAsync((WorkTypeEntity?)null);
 
-        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<byte>()))
+        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<short>()))
                                        .ReturnsAsync(stubOutputData);
 
         // Act:         
@@ -73,7 +73,7 @@ public class CreateAsyncTests : BaseTest<WorkTypeServiceFixture>
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByNameAsync(It.IsAny<string>()))
                                        .ReturnsAsync(secondStubOutputData);
 
-        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<byte>()))
+        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<short>()))
                                        .ReturnsAsync(firstStubOutputData);
 
         // Act & Assert: 

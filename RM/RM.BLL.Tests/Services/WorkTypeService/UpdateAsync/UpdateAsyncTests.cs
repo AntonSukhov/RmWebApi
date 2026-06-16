@@ -30,17 +30,28 @@ public class UpdateAsyncTests: BaseTest<WorkTypeServiceFixture>
     public async Task SucceedsForValidInput(TestCaseInputWithStubs<WorkTypeUpdationModel> testCase)
     {
         // Arrange:
-        var getByIdAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
+        var getWorkUnitByIdAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
-        var getByIdAsyncStubOutputData = getByIdAsyncStubOutput.GetOutputData<WorkUnitEntity>();
+        var getWorkUnitByIdAsyncStubOutputData = getWorkUnitByIdAsyncStubOutput
+                .GetOutputData<WorkUnitEntity>();
+
+        var getWorkTypeByIdAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkTypeRepository.GetByIdAsync,
+            StubSequenceConstants.First)];
+        var getWorkTypeByIdAsyncStubOutputData = getWorkTypeByIdAsyncStubOutput
+                .GetOutputData<WorkTypeEntity>();
+
         var getByNameAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkTypeRepository.GetByNameAsync,
             StubSequenceConstants.First)];
         var getByNameAsyncStubOutputData = getByNameAsyncStubOutput.GetOutputData<WorkTypeEntity>();
 
-        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<byte>()))
-                                       .ReturnsAsync(getByIdAsyncStubOutputData);
+        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<short>()))
+                                       .ReturnsAsync(getWorkUnitByIdAsyncStubOutputData);
+
+        _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<Guid>()))
+                                       .ReturnsAsync(getWorkTypeByIdAsyncStubOutputData );
         
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByNameAsync(It.IsAny<string>()))
                                        .ReturnsAsync(getByNameAsyncStubOutputData);
@@ -61,7 +72,7 @@ public class UpdateAsyncTests: BaseTest<WorkTypeServiceFixture>
     public async Task FailsForInvalidInput(TestCaseInputWithStubs<WorkTypeUpdationModel> testCase)
     {
 
-          // Arrange:
+        // Arrange:
         var getByIdAsyncStubOutput = testCase.StubOutputs[new StubOutputKey(
             RepositoryMethodNames.WorkUnitRepository.GetByIdAsync,
             StubSequenceConstants.First)];
@@ -71,7 +82,7 @@ public class UpdateAsyncTests: BaseTest<WorkTypeServiceFixture>
             StubSequenceConstants.First)];
         var getByNameAsyncStubOutputData = getByNameAsyncStubOutput.GetOutputData<WorkTypeEntity>();
 
-        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<byte>()))
+        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<short>()))
                                        .ReturnsAsync(getByIdAsyncStubOutputData);
         
         _fixture.WorkTypeRepositoryMock.Setup(p => p.GetByNameAsync(It.IsAny<string>()))

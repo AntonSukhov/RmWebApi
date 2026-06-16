@@ -146,7 +146,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
         if (workTypeByName != null && workTypeByName.Id != workTypeUpdationModel.Id)
         {
             throw new ConflictException(
-                $"Вид работ с названием '{workTypeUpdationModel.Name}' и ИД '{workTypeByName.Id}' уже существует.");
+                $"Вид работ с названием '{workTypeUpdationModel.Name}' уже существует для другого ИД '{workTypeByName.Id}'.");
         }
 
         if( workTypeUpdationModel.WorkUnitId.HasValue && 

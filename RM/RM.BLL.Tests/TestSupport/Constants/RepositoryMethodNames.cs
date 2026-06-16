@@ -15,12 +15,12 @@ public static class RepositoryMethodNames
         /// <summary>
         /// Имя метода <see cref="IWorkUnitRepository.GetAllAsync"/>.
         /// </summary>
-        public const string GetAllAsync = nameof(IWorkUnitRepository.GetAllAsync);
+        public const string GetAllAsync = $"{nameof(IWorkUnitRepository)}.{nameof(IWorkUnitRepository.GetAllAsync)}";
 
         /// <summary>
         /// Имя метода <see cref="IWorkUnitRepository.GetByIdAsync"/>.
         /// </summary>
-        public const string GetByIdAsync = nameof(IWorkUnitRepository.GetByIdAsync);
+        public const string GetByIdAsync = $"{nameof(IWorkUnitRepository)}.{nameof(IWorkUnitRepository.GetByIdAsync)}";
     }
 
     /// <summary>
@@ -31,17 +31,17 @@ public static class RepositoryMethodNames
         /// <summary>
         /// Имя метода <see cref="IWorkTypeRepository.GetByNameAsync"/>.
         /// </summary>
-        public const string GetByNameAsync = nameof(IWorkTypeRepository.GetByNameAsync);
+        public const string GetByNameAsync = $"{nameof(IWorkTypeRepository)}.{nameof(IWorkTypeRepository.GetByNameAsync)}";
 
         /// <summary>
         /// Имя метода <see cref="IWorkTypeRepository.GetByIdAsync"/>.
         /// </summary>
-        public const string GetByIdAsync = nameof(IWorkTypeRepository.GetByIdAsync);
+        public const string GetByIdAsync = $"{nameof(IWorkTypeRepository)}.{nameof(IWorkTypeRepository.GetByIdAsync)}";
 
         /// <summary>
         /// Имя метода <see cref="IWorkTypeRepository.GetAllAsync"/>.
         /// </summary>
-        public const string GetAllAsync = nameof(IWorkTypeRepository.GetAllAsync);
+        public const string GetAllAsync = $"{nameof(IWorkTypeRepository)}.{nameof(IWorkTypeRepository.GetAllAsync)}";
 
     }
 }

@@ -30,10 +30,23 @@ public static class UpdateAsyncTestCases
                     {  
                         Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1
                     },
-                    StubOutputs =new Dictionary<StubOutputKey, StubOutput>
+                    StubOutputs = new Dictionary<StubOutputKey, StubOutput>
                     {
 
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  new WorkTypeEntity 
+                            { 
+                                Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1,
+                                WorkUnit = new WorkUnitEntity 
+                                { 
+                                    Id = 1, Name = "WorkUnit1"
+                                }
+                            },
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
+                        [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  new WorkTypeEntity 
@@ -61,10 +74,23 @@ public static class UpdateAsyncTestCases
                     {  
                         Id = _workTypeId, Name = "WorkType1", WorkUnitId = null
                     },
-                    StubOutputs =new Dictionary<StubOutputKey, StubOutput>
+                    StubOutputs = new Dictionary<StubOutputKey, StubOutput>
                     {
 
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  new WorkTypeEntity 
+                            { 
+                                Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1,
+                                WorkUnit = new WorkUnitEntity 
+                                { 
+                                    Id = 1, Name = "WorkUnit1"
+                                }
+                            },
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
+                        [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  new WorkTypeEntity 
@@ -102,11 +128,17 @@ public static class UpdateAsyncTestCases
             {
                 new() {
                     ScenarioNumber = 1,
-                    Description = "Проверка неуспешного обновления вида работ.",
+                    Description = $"Проверка неуспешного обновления вида работ.",
                     InputData = new WorkTypeUpdationModel(),
                     StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  null,
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
+                        [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
@@ -132,6 +164,12 @@ public static class UpdateAsyncTestCases
                             OutputData =  null,
                             ExpectedType = typeof(WorkTypeEntity)
                         },
+                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  null,
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
@@ -150,6 +188,19 @@ public static class UpdateAsyncTestCases
                             StubSequenceConstants.First)] = new StubOutput
                         {
                             OutputData =  null,
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
+                        [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  new WorkTypeEntity 
+                            { 
+                                Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1,
+                                WorkUnit = new WorkUnitEntity 
+                                { 
+                                    Id = 1, Name = "WorkUnit1"
+                                }
+                            },
                             ExpectedType = typeof(WorkTypeEntity)
                         },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
@@ -172,6 +223,19 @@ public static class UpdateAsyncTestCases
                             OutputData =  null,
                             ExpectedType = typeof(WorkTypeEntity)
                         },
+                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  new WorkTypeEntity 
+                            { 
+                                Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1,
+                                WorkUnit = new WorkUnitEntity 
+                                { 
+                                    Id = 1, Name = "WorkUnit1"
+                                }
+                            },
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
@@ -189,10 +253,20 @@ public static class UpdateAsyncTestCases
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync, 
                             StubSequenceConstants.First)] = new StubOutput
                         {
+                            OutputData = null, 
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
+                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
                             OutputData =  new WorkTypeEntity 
                             { 
-                                Id = _workTypeId, Name = "WorkType1"
-                            }, 
+                                Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1,
+                                WorkUnit = new WorkUnitEntity 
+                                { 
+                                    Id = 1, Name = "WorkUnit1"
+                                }
+                            },
                             ExpectedType = typeof(WorkTypeEntity)
                         },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
@@ -206,7 +280,7 @@ public static class UpdateAsyncTestCases
                 new() {
                     ScenarioNumber = 6,
                     Description = "Проверка неуспешного обновления вида работ. Вид работ с указанным новым названием уже существует в БД.",
-                    InputData = new WorkTypeUpdationModel { Id = Guid.NewGuid(), Name = "WorkType1" },
+                    InputData = new WorkTypeUpdationModel { Id = _workTypeId, Name = "WorkType1" },
                     StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                     {
                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByNameAsync, 
@@ -216,6 +290,19 @@ public static class UpdateAsyncTestCases
                             {
                                 Id = Guid.NewGuid(), Name = "WorkType1"
                             }, 
+                            ExpectedType = typeof(WorkTypeEntity)
+                        },
+                         [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetByIdAsync, 
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData =  new WorkTypeEntity 
+                            { 
+                                Id = _workTypeId, Name = "WorkType1", WorkUnitId = 1,
+                                WorkUnit = new WorkUnitEntity 
+                                { 
+                                    Id = 1, Name = "WorkUnit1"
+                                }
+                            },
                             ExpectedType = typeof(WorkTypeEntity)
                         },
                         [new StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, 
