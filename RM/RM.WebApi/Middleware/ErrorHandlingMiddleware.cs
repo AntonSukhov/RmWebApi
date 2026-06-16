@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using RM.BLL.Abstractions.Errors;
 using RM.Common.Constants;
-using RM.WebApi.Extensions;
 
 namespace RM.WebApi.Middleware;
 
@@ -67,16 +66,6 @@ public class ErrorHandlingMiddleware : MiddlewareBase
             // Бизнес-ошибка:
             apiError = apiException.ToApiError();
             statusCode = (int)HttpStatusCode.BadRequest;
-        }
-        else if( exception.IsAuthenticationFailure())
-        {
-            // Ошибка аутентификации
-            apiError = new ApiError
-            {
-                Code = ErrorCodes.AuthenticationFailed,
-                Message = "Неверный логин или пароль"
-            };
-            statusCode = (int)HttpStatusCode.Unauthorized;
         }
         else if (exception is DbUpdateConcurrencyException)
         {

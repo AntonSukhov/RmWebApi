@@ -6,9 +6,7 @@ using Infrastructure.Mapping.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
-using RM.BLL.Abstractions.Configuration;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
 using RM.BLL.Mapping.MapperSets;
@@ -95,7 +93,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IWorkUnitService, WorkUnitService>();
         services.AddScoped<IWorkTypeService, WorkTypeService>();
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
 
         return services;
     }
@@ -141,25 +138,6 @@ public static class ServiceCollectionExtensions
          services.AddSingleton<IWorkTypeBllMappers, WorkTypeBllMappers>();
 
          return services;
-    }
-
-    /// <summary>
-    /// Регистрация настроек API.
-    /// </summary>
-    /// <param name="services">Коллекция сервисов.</param>
-    /// <param name="configuration">Конфигурация свойств API.</param>
-    /// <returns>Обновленная коллекция сервисов.</returns>
-    public static IServiceCollection RegisterSettings(
-        this IServiceCollection services, 
-             IConfiguration configuration)
-    {
-        services.Configure<AuthenticationSettings>(
-            configuration.GetSection(HttpConstants.Headers.Authentication));
-
-        services.AddSingleton(provider => 
-            provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
-
-        return services;
     }
 
     /// <summary>
