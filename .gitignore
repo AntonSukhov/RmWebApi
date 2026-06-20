@@ -399,3 +399,5 @@ FodyWeavers.xsd
 
 # Folder with classes of generated client APIs
 GeneratedApiClients/
+# Project context files
+KODA.md
