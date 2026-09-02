@@ -10,14 +10,22 @@ namespace RM.DAL.DbContexts;
 public abstract class ContractGpdDbContextBase : DbContextBase
 {
     /// <summary>
-    /// Единицы работ.
+    /// Получает или задает единицы работ.
     /// </summary>
+    /// <value>Единицы работ.</value>
     public DbSet<WorkUnitEntity> WorkUnits { get; set; }
 
     /// <summary>
-    /// Виды работ.
+    /// Получает или задает виды работ.
     /// </summary>
+    /// <value>Виды работ.</value>
     public DbSet<WorkTypeEntity> WorkTypes { get; set; }
+
+    /// <summary>
+    /// Получает или задает исполнителей договоров.
+    /// </summary>
+    /// <value>Исполнители договоров.</value>
+    public DbSet<PerformerEntity> Performers { get; set; }
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="ContractGpdDbContextBase"/>.

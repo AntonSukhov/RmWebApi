@@ -80,6 +80,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IWorkUnitRepository, WorkUnitRepository>();
         services.AddScoped<IWorkTypeRepository, WorkTypeRepository>();
+        services.AddScoped<IPerformerRepository, PerformerRepository>();
 
         return services;
     }
@@ -93,6 +94,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IWorkUnitService, WorkUnitService>();
         services.AddScoped<IWorkTypeService, WorkTypeService>();
+        services.AddScoped<IPerformerService, PerformerService>();
 
         return services;
     }
@@ -121,8 +123,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddAutoMapper(config => {}, 
             typeof(Mapping.Profiles.WorkUnitMappingProfile), 
+            typeof(Mapping.Profiles.PerformerMappingProfile), 
             typeof(WorkUnitMappingProfile), 
-            typeof(WorkTypeShortMappingProfile));
+            typeof(WorkTypeShortMappingProfile),
+            typeof(PerformerMappingProfile));
 
         return services;
     }
@@ -136,6 +140,10 @@ public static class ServiceCollectionExtensions
          services.AddSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
          services.AddSingleton<IWorkTypeApiMappers, WorkTypeApiMappers>();
          services.AddSingleton<IWorkTypeBllMappers, WorkTypeBllMappers>();
+         services.AddSingleton<IPageOptionsApiMappers, PageOptionsApiMappers>();
+         services.AddSingleton<IPageOptionsBllMappers, PageOptionsBllMappers>();
+         services.AddSingleton<IPerformerApiMappers, PerformerApiMappers>();
+         services.AddSingleton<IPerformerBllMappers, PerformerBllMappers>();
 
          return services;
     }

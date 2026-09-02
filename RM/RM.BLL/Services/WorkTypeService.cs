@@ -24,6 +24,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
     private readonly IWorkTypeUpdationModelValidator _workTypeUpdationModelValidator;
     private readonly IPageOptionsValidator _pageOptionsValidator;
     private readonly IWorkTypeBllMappers _workTypeBllMappers;
+    private readonly IPageOptionsBllMappers _pageOptionsBllMappers;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeService"/>.
@@ -34,12 +35,14 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
     /// <param name="workTypeUpdationModelValidator">Валидатор модели обновления вида работ.</param>
     /// <param name="pageOptionsValidator">Валидатор настроек страницы.</param>
     /// <param name="workTypeBllMappers">Контейнер мапперов для работы с видами работ.</param>
+    /// <param name="pageOptionsBllMappers"></param>
     public WorkTypeService(IWorkTypeRepository workTypeRepository, 
                             IWorkUnitRepository workUnitRepository,
                             IWorkTypeNameValidator workTypeNameValidator,
                             IWorkTypeUpdationModelValidator workTypeUpdationModelValidator,
                             IPageOptionsValidator pageOptionsValidator,
-                            IWorkTypeBllMappers workTypeBllMappers)
+                            IWorkTypeBllMappers workTypeBllMappers,
+                            IPageOptionsBllMappers pageOptionsBllMappers)
     {
         ArgumentNullException.ThrowIfNull(workTypeRepository, nameof(workTypeRepository));
         ArgumentNullException.ThrowIfNull(workUnitRepository, nameof(workUnitRepository));
@@ -47,6 +50,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
         ArgumentNullException.ThrowIfNull(workTypeUpdationModelValidator, nameof(workTypeUpdationModelValidator));
         ArgumentNullException.ThrowIfNull(pageOptionsValidator, nameof(pageOptionsValidator));
         ArgumentNullException.ThrowIfNull(workTypeBllMappers, nameof(workTypeBllMappers));
+        ArgumentNullException.ThrowIfNull(pageOptionsBllMappers, nameof(pageOptionsBllMappers));
 
         _workTypeRepository = workTypeRepository;
         _workUnitRepository = workUnitRepository;
@@ -54,6 +58,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
         _workTypeUpdationModelValidator = workTypeUpdationModelValidator;
         _pageOptionsValidator = pageOptionsValidator;
         _workTypeBllMappers = workTypeBllMappers;
+        _pageOptionsBllMappers = pageOptionsBllMappers;
     }
 
     /// <inheritdoc/>
@@ -106,7 +111,7 @@ public class WorkTypeService : DisposableBase, IWorkTypeService
         {
              await _pageOptionsValidator.ValidateAndThrowAsync(pageOptions);
 
-             pageOptionsLocal = _workTypeBllMappers.ToPageOptionsModel.Map(pageOptions);
+             pageOptionsLocal = _pageOptionsBllMappers.ToPageOptionsModel.Map(pageOptions);
         }
         
         var workTypes = await _workTypeRepository.GetAllAsync(pageOptionsLocal);

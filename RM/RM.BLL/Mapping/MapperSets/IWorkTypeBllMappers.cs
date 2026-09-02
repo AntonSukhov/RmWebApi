@@ -17,23 +17,26 @@ public interface IWorkTypeBllMappers
     /// Получает маппер для преобразования <see cref="WorkTypeCreationModel"/> 
     /// в <see cref="WorkTypeShortEntity"/>.
     /// </summary>
+    /// <value>
+    /// Маппер для преобразования <see cref="WorkTypeCreationModel"/> в <see cref="WorkTypeShortEntity"/>.
+    /// </value>
     public IMapper<WorkTypeCreationModel, WorkTypeShortEntity> ToWorkTypeShortEntity { get; }
 
     /// <summary>
     /// Получает маппер для преобразования <see cref="WorkTypeUpdationModel"/> 
     /// в <see cref="WorkTypeShortEntity"/>.
     /// </summary>
+    /// <value>
+    /// Маппер для преобразования <see cref="WorkTypeUpdationModel"/> в <see cref="WorkTypeShortEntity"/>.
+    /// </value>
     public IMapper<WorkTypeUpdationModel, WorkTypeShortEntity> ToWorkTypeShortEntityForUpdate { get; }
 
     /// <summary>
     /// Получает маппер для преобразования <see cref="WorkTypeEntity"/> 
     /// в <see cref="WorkTypeModel"/>.
     /// </summary>
+    /// <value>
+    /// Маппер для преобразования <see cref="WorkTypeEntity"/> в <see cref="WorkTypeModel"/>.
+    /// </value>
     public IMapper<WorkTypeEntity, WorkTypeModel> ToWorkTypeModel { get; }
-
-    /// <summary>
-    /// Получает маппер для преобразования <see cref="WorkTypeCreationModel"/> 
-    /// в <see cref="Infrastructure.Shared.Models.PageOptionsModel"/>.
-    /// </summary>
-    public IMapper<PageOptionsModel, Infrastructure.Shared.Models.PageOptionsModel> ToPageOptionsModel{ get; }
 }

@@ -16,26 +16,23 @@ public class WorkTypeBllMappers: IWorkTypeBllMappers
     /// <inheritdoc/>
     public IMapper<WorkTypeEntity, WorkTypeModel> ToWorkTypeModel { get; }
 
-    /// <inheritdoc/>
-    public IMapper<PageOptionsModel, Infrastructure.Shared.Models.PageOptionsModel> ToPageOptionsModel{ get; }
-
     /// <summary>
     /// Инициализация экземпляра <see cref="WorkTypeBllMappers"/>.
     /// </summary>
+    /// <param name="creationMapper"></param>
+    /// <param name="updateMapper"></param>
+    /// <param name="entityToModelMapper"></param>
     public WorkTypeBllMappers(
         IMapper<WorkTypeCreationModel, WorkTypeShortEntity> creationMapper,
         IMapper<WorkTypeUpdationModel, WorkTypeShortEntity> updateMapper,
-        IMapper<WorkTypeEntity, WorkTypeModel> entityToModelMapper,
-        IMapper<PageOptionsModel, Infrastructure.Shared.Models.PageOptionsModel> pageOptionsMapper)
+        IMapper<WorkTypeEntity, WorkTypeModel> entityToModelMapper)
     {
         ArgumentNullException.ThrowIfNull(creationMapper, nameof(creationMapper));
         ArgumentNullException.ThrowIfNull(updateMapper, nameof(updateMapper));
         ArgumentNullException.ThrowIfNull(entityToModelMapper, nameof(entityToModelMapper));
-        ArgumentNullException.ThrowIfNull(pageOptionsMapper, nameof(pageOptionsMapper));
 
         ToWorkTypeShortEntity = creationMapper;
         ToWorkTypeShortEntityForUpdate = updateMapper;
         ToWorkTypeModel = entityToModelMapper;
-        ToPageOptionsModel = pageOptionsMapper;
     }
 }

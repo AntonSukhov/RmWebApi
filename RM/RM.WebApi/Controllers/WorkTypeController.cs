@@ -22,21 +22,26 @@ public class WorkTypeApiController : ControllerBase
 {
     private readonly IWorkTypeService _workTypeService;
     private readonly IWorkTypeApiMappers _workTypeApiMappers;
+    private readonly IPageOptionsApiMappers _pageOptionsApiMappers;
 
     /// <summary>
     /// Инициализирует экземпляр <see cref="WorkTypeApiController"/>.
     /// </summary>
     /// <param name="workTypeService">Сервис работы с видами работ.</param>
     /// <param name="workTypeApiMappers">Контейнер мапперов для работы с видами работ.</param>
+    /// <param name="pageOptionsApiMappers"></param>
     public WorkTypeApiController(
         IWorkTypeService workTypeService,
-        IWorkTypeApiMappers workTypeApiMappers)
+        IWorkTypeApiMappers workTypeApiMappers,
+        IPageOptionsApiMappers pageOptionsApiMappers)
     {
         ArgumentNullException.ThrowIfNull(workTypeService, nameof(workTypeService));
         ArgumentNullException.ThrowIfNull(workTypeApiMappers, nameof(workTypeApiMappers));
+        ArgumentNullException.ThrowIfNull(pageOptionsApiMappers, nameof(pageOptionsApiMappers));
 
         _workTypeService = workTypeService;
         _workTypeApiMappers = workTypeApiMappers;
+        _pageOptionsApiMappers = pageOptionsApiMappers;
     }
 
     /// <summary>
@@ -49,7 +54,7 @@ public class WorkTypeApiController : ControllerBase
     public async Task<IEnumerable<WorkTypeResponse>> GetAllAsync(
         [FromQuery] PageOptionsRequest pageOptions)
     {
-        var pageOptionsModel = _workTypeApiMappers.ToPageOptionsModel.Map(pageOptions);
+        var pageOptionsModel = _pageOptionsApiMappers.ToPageOptionsModel.Map(pageOptions);
 
         var workTypes = await _workTypeService.GetAllAsync(pageOptionsModel);
 

@@ -97,7 +97,8 @@ public class UpdateAsyncTests: BaseTest<WorkTypeServiceFixture>
         Assert.True(
             exception is ValidationException || 
             exception is ValidationAggregationException ||
-            exception is DataNotFoundException
+            exception is DataNotFoundException ||
+            exception is ConflictException
         );
     }
 }

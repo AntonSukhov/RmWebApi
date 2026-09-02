@@ -15,11 +15,6 @@ namespace RM.WebApi.Mapping.MapperSets;
 public interface IWorkTypeApiMappers
 {
    /// <summary>
-   /// Получает маппер для преобразования <see cref="PageOptionsRequest"/> в <see cref="PageOptionsModel"/>.
-   /// </summary>
-   public IMapper<PageOptionsRequest, PageOptionsModel> ToPageOptionsModel { get; }
-
-   /// <summary>
    /// Получает маппер для преобразования <see cref="WorkTypeModel"/> (из BLL) 
    /// в <see cref="WorkTypeResponse"/> (для API).
    /// </summary>
