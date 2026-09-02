@@ -1,109 +1,107 @@
 # RM WebApi
 
-ASP.NET Core Web API-приложение (.NET 9) для управления **видами работ** (WorkType), **единицами работ** (WorkUnit) и **исполнителями договоров** (Performer).
-
-> Подробный контекст проекта (для AI-агентов) — см. [KODA.md](KODA.md).
+ASP.NET Core Web API application (.NET 9) for managing **work types** (WorkType), **work units** (WorkUnit) and **contract performers** (Performer).
 
 ---
 
-## Содержание
+## Table of Contents
 
-1. [Общая архитектура](#общая-архитектура)
-2. [Слои и назначение проектов](#слои-и-назначение-проектов)
-3. [Диаграмма зависимостей проектов](#диаграмма-зависимостей-проектов)
-4. [Поток запроса (Sequence Diagram)](#поток-запроса-sequence-diagram)
-5. [UML-диаграмма классов домена Performer](#uml-диаграмма-классов-домена-performer)
-6. [Модель данных БД (ER-диаграмма)](#модель-данных-бд-er-диаграмма)
-7. [Выбор СУБД](#выбор-субд)
-8. [Сборка и запуск](#сборка-и-запуск)
-9. [Тестирование](#тестирование)
+1. [General Architecture](#general-architecture)
+2. [Layers and Project Purpose](#layers-and-project-purpose)
+3. [Project Dependency Diagram](#project-dependency-diagram)
+4. [Request Flow (Sequence Diagram)](#request-flow-sequence-diagram)
+5. [UML Class Diagram of the Performer Domain](#uml-class-diagram-of-the-performer-domain)
+6. [Database Model (ER Diagram)](#database-model-er-diagram)
+7. [Database Selection](#database-selection)
+8. [Build and Run](#build-and-run)
+9. [Testing](#testing)
 
 ---
 
-## Общая архитектура
+## General Architecture
 
-Проект построен по слоистой архитектуре в стиле **Clean Architecture**. Каждый слой знает только о слое *ниже* через его **абстракции** (интерфейсы). Конкретные реализации подключаются только в точке сборки — корневом проекте `RM.WebApi` (Composition Root).
+The project follows a layered **Clean Architecture** style. Each layer only knows about the layer *below* it through its **abstractions** (interfaces). Concrete implementations are wired only at the composition point — the root project `RM.WebApi` (Composition Root).
 
 ```mermaid
 flowchart TB
-    Client["👤 Клиент<br/>(HTTP / Swagger)"]
+    Client["👤 Client<br/>(HTTP / Swagger)"]
 
-    subgraph Presentation ["Слой представления"]
+    subgraph Presentation ["Presentation Layer"]
         WebApi["RM.WebApi<br/>(Controllers, Middleware, DI)"]
         Api["RM.Api<br/>(DTO + typed HttpClient)"]
     end
 
-    subgraph Business ["Слой бизнес-логики"]
+    subgraph Business ["Business Logic Layer"]
         BLL["RM.BLL<br/>(Services, Validators)"]
-        BLLAbstractions["RM.BLL.Abstractions<br/>(интерфейсы сервисов, модели)"]
+        BLLAbstractions["RM.BLL.Abstractions<br/>(service interfaces, models)"]
     end
 
-    subgraph Data ["Слой доступа к данным"]
-        DAL["RM.DAL<br/>(базовые репозитории, DbContext)"]
+    subgraph Data ["Data Access Layer"]
+        DAL["RM.DAL<br/>(base repositories, DbContext)"]
         DALMsSql["RM.DAL.MsSql<br/>(EF Core: SqlServer)"]
         DALPostgreSql["RM.DAL.PostgreSql<br/>(EF Core: Npgsql)"]
-        DALAbstractions["RM.DAL.Abstractions<br/>(сущности, интерфейсы репозиториев)"]
+        DALAbstractions["RM.DAL.Abstractions<br/>(entities, repository interfaces)"]
     end
 
-    Common["RM.Common<br/>(константы, утилиты)"]
+    Common["RM.Common<br/>(constants, helpers)"]
 
     Client -->|HTTP| WebApi
-    WebApi -->|использует| Api
-    WebApi -->|вызывает через интерфейсы| BLLAbstractions
-    BLL -.->|реализует| BLLAbstractions
-    BLL -->|использует через интерфейсы| DALAbstractions
-    DAL -.->|реализует| DALAbstractions
-    DALMsSql -.->|наследует| DAL
-    DALPostgreSql -.->|наследует| DAL
-    WebApi -->|"Composition Root:<br/>выбирает реализацию"| DALMsSql
-    WebApi -->|"Composition Root:<br/>выбирает реализацию"| DALPostgreSql
+    WebApi -->|uses| Api
+    WebApi -->|calls via interfaces| BLLAbstractions
+    BLL -.->|implements| BLLAbstractions
+    BLL -->|uses via interfaces| DALAbstractions
+    DAL -.->|implements| DALAbstractions
+    DALMsSql -.->|inherits| DAL
+    DALPostgreSql -.->|inherits| DAL
+    WebApi -->|"Composition Root:<br/>chooses implementation"| DALMsSql
+    WebApi -->|"Composition Root:<br/>chooses implementation"| DALPostgreSql
     Common --- WebApi
     Common --- BLL
     Common --- DAL
 ```
 
-**Ключевые принципы:**
+**Key principles:**
 
-| Принцип | Как реализован |
+| Principle | How it is implemented |
 |---|---|
-| Инверсия зависимостей | BLL и DAL зависят от абстракций, а не реализаций |
-| Composition Root | Все привязки «интерфейс → реализация» — в `RM.WebApi/Extensions/` (`ServiceCollectionExtensions.cs`) |
-| Изоляция контрактов | У каждого слоя свои DTO: `Entity` → `Model` → `Response` |
-| Сменяемость СУБД | Выбор MS SQL / PostgreSQL по конфигурации `DataStorageType` |
+| Dependency Inversion | BLL and DAL depend on abstractions, not implementations |
+| Composition Root | All «interface → implementation» bindings live in `RM.WebApi/Extensions/` (`ServiceCollectionExtensions.cs`) |
+| Contract isolation | Each layer has its own DTOs: `Entity` → `Model` → `Response` |
+| Swappable database | MS SQL / PostgreSQL is selected via the `DataStorageType` configuration |
 
 ---
 
-## Слои и назначение проектов
+## Layers and Project Purpose
 
-| Проект | Слой | Назначение |
+| Project | Layer | Purpose |
 |---|---|---|
-| `RM.WebApi` | Presentation | Контроллеры, Startup, DI-регистрации, Swagger, мидлвар ошибок |
-| `RM.Api` | Presentation (клиент) | Request/Response DTO, сгенерированный NSwag-клиент |
-| `RM.BLL` | Business Logic | Сервисы (`WorkType`, `WorkUnit`, `Performer`), FluentValidation-валидаторы, AutoMapper-профили |
-| `RM.BLL.Abstractions` | Business Logic | Интерфейсы сервисов, модели (`PerformerModel`, `PageOptionsModel`), интерфейсы валидаторов |
-| `RM.DAL` | Data Access | Базовый `ContractGpdDbContextBase`, базовые реализации репозиториев |
-| `RM.DAL.MsSql` | Data Access | Конкретный EF Core DbContext для MS SQL Server |
-| `RM.DAL.PostgreSql` | Data Access | Конкретный EF Core DbContext для PostgreSQL |
-| `RM.DAL.Abstractions` | Data Access | Сущности (`WorkTypeEntity`, `WorkUnitEntity`, `PerformerEntity`), интерфейсы репозиториев |
-| `RM.Common` | Общее | Константы (`DatabaseConstants`, `ApiConstants`), хелперы |
-| `RM.BLL.Tests` | Тесты | xUnit-тесты BLL с моками (Moq) |
+| `RM.WebApi` | Presentation | Controllers, Startup, DI registrations, Swagger, error-handling middleware |
+| `RM.Api` | Presentation (client) | Request/Response DTOs, generated NSwag client |
+| `RM.BLL` | Business Logic | Services (`WorkType`, `WorkUnit`, `Performer`), FluentValidation validators, AutoMapper profiles |
+| `RM.BLL.Abstractions` | Business Logic | Service interfaces, models (`PerformerModel`, `PageOptionsModel`), validator interfaces |
+| `RM.DAL` | Data Access | Base `ContractGpdDbContextBase`, base repository implementations |
+| `RM.DAL.MsSql` | Data Access | Concrete EF Core DbContext for MS SQL Server |
+| `RM.DAL.PostgreSql` | Data Access | Concrete EF Core DbContext for PostgreSQL |
+| `RM.DAL.Abstractions` | Data Access | Entities (`WorkTypeEntity`, `WorkUnitEntity`, `PerformerEntity`), repository interfaces |
+| `RM.Common` | Shared | Constants (`DatabaseConstants`, `ApiConstants`), helpers |
+| `RM.BLL.Tests` | Tests | xUnit tests for BLL with mocks (Moq) |
 
 ---
 
-## Диаграмма зависимостей проектов
+## Project Dependency Diagram
 
-Направление стрелок — «зависит от». Все зависимости идут строго «вниз», циклов нет.
+Arrow direction means «depends on». All dependencies point strictly «downward», there are no cycles.
 
 ```mermaid
 flowchart TD
     WebApi["RM.WebApi"]
 
-    subgraph Abstractions ["Абстракции (контракты)"]
+    subgraph Abstractions ["Abstractions (contracts)"]
         BLLA["RM.BLL.Abstractions"]
         DALA["RM.DAL.Abstractions"]
     end
 
-    subgraph Implementations ["Реализации"]
+    subgraph Implementations ["Implementations"]
         BLL["RM.BLL"]
         DAL["RM.DAL"]
         DALMs["RM.DAL.MsSql"]
@@ -139,14 +137,14 @@ flowchart TD
 
 ---
 
-## Поток запроса (Sequence Diagram)
+## Request Flow (Sequence Diagram)
 
-Пример: `GET /api/performer/all?pageNumber=1&pageSize=100`
+Example: `GET /api/performer/all?pageNumber=1&pageSize=100`
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor C as Клиент
+    actor C as Client
     participant MW as ErrorHandlingMiddleware
     participant Ctrl as PerformerApiController<br/>(RM.WebApi)
     participant Svc as PerformerService<br/>(RM.BLL)
@@ -155,11 +153,11 @@ sequenceDiagram
     participant DB as PostgreSQL / MS SQL
 
     C->>MW: GET /api/performer/all
-    MW->>Ctrl: вызов действия GetAllAsync
+    MW->>Ctrl: calls the GetAllAsync action
     Ctrl->>Ctrl: PageOptionsRequest → PageOptionsModel<br/>(IPageOptionsApiMappers)
     Ctrl->>Svc: GetAllAsync(pageOptions)
     Svc->>Val: ValidateAndThrowAsync(pageOptions)
-    Val-->>Svc: OK (или ValidationException → 400)
+    Val-->>Svc: OK (or ValidationException → 400)
     Svc->>Svc: PageOptionsModel → Shared.PageOptionsModel<br/>(IPageOptionsBllMappers)
     Svc->>Repo: GetAllAsync(pageOptions)
     Repo->>DB: SELECT ... LIMIT/OFFSET (AsNoTracking)
@@ -172,13 +170,13 @@ sequenceDiagram
     MW-->>C: 200 OK (JSON)
 ```
 
-Обработка ошибок: исключения BLL (`ConflictException`, `DataNotFoundException`, `ValidationException`) перехватываются `ErrorHandlingMiddleware` и преобразуются в соответствующие HTTP-коды (400/404/409/500).
+Error handling: BLL exceptions (`ConflictException`, `DataNotFoundException`, `ValidationException`) are caught by `ErrorHandlingMiddleware` and converted into the corresponding HTTP status codes (400/404/409/500).
 
 ---
 
-## UML-диаграмма классов домена Performer
+## UML Class Diagram of the Performer Domain
 
-Сквозной путь данных через слои: `PerformerEntity` → `PerformerModel` → `PerformerResponse`. Каждый класс живёт в своём слое и не зависит от соседних напрямую — связывает их AutoMapper.
+End-to-end data path through the layers: `PerformerEntity` → `PerformerModel` → `PerformerResponse`. Each class lives in its own layer and does not depend on its neighbors directly — AutoMapper connects them.
 
 ```mermaid
 classDiagram
@@ -210,7 +208,7 @@ classDiagram
         +string Name
         +string Patronymic
         +GenderEnum Gender
-        +... паспортные данные (8 полей)
+        +... passport data (8 fields)
     }
 
     class IPerformerService {
@@ -233,7 +231,7 @@ classDiagram
         +string Surname
         +string Name
         +string Patronymic
-        +... паспортные данные
+        +... passport data
     }
 
     class PerformerApiController {
@@ -250,16 +248,16 @@ classDiagram
         +string Surname
         +string Name
         +string Patronymic
-        +... паспортные данные
+        +... passport data
     }
 
     IPerformerRepository <|.. PerformerRepository : implements
     IPerformerService <|.. PerformerService : implements
-    PerformerRepository --> PerformerEntity : возвращает
-    PerformerService --> IPerformerRepository : зависит от
-    PerformerService --> PerformerModel : возвращает
-    PerformerApiController --> IPerformerService : зависит от
-    PerformerApiController --> PerformerResponse : возвращает
+    PerformerRepository --> PerformerEntity : returns
+    PerformerService --> IPerformerRepository : depends on
+    PerformerService --> PerformerModel : returns
+    PerformerApiController --> IPerformerService : depends on
+    PerformerApiController --> PerformerResponse : returns
 
     style IPerformerRepository fill:#70ad47,color:#fff
     style IPerformerService fill:#70ad47,color:#fff
@@ -270,9 +268,9 @@ classDiagram
 
 ---
 
-## Модель данных БД (ER-диаграмма)
+## Database Model (ER Diagram)
 
-База данных `DbContracts` (PostgreSQL / MS SQL):
+The `DbContracts` database (PostgreSQL / MS SQL):
 
 ```mermaid
 erDiagram
@@ -308,61 +306,61 @@ erDiagram
     }
 ```
 
-**Связи:**
+**Relationships:**
 
-- `WorkUnits` (1) ──< `WorkTypes` (M): одна единица работы используется во многих видах работ; `WorkTypes.WorkUnitId` может быть `NULL`.
-- `Performers` — самостоятельная сущность (исполнители договоров).
+- `WorkUnits` (1) ──< `WorkTypes` (M): one work unit is used by many work types; `WorkTypes.WorkUnitId` can be `NULL`.
+- `Performers` — a standalone entity (contract performers).
 
 ---
 
-## Выбор СУБД
+## Database Selection
 
-Хранилище выбирается один раз при старте приложения по конфигурации:
+The storage backend is selected once at application startup from configuration:
 
 ```mermaid
 flowchart LR
-    Start["Startup.RegisterDbContexts"] --> Read{"DataStorageType<br/>из конфигурации"}
+    Start["Startup.RegisterDbContexts"] --> Read{"DataStorageType<br/>from configuration"}
     Read -->|MSSQL| MsSql["ContractGpdDbContext<br/>(UseSqlServer)"]
     Read -->|PostgreSQL| Pg["ContractGpdDbContext<br/>(UseNpgsql)"]
-    Read -->|другое| Err["InvalidOperationException"]
-    MsSql --> DI["AddDbContext<br/>(базовый → конкретный контекст)"]
+    Read -->|other| Err["InvalidOperationException"]
+    MsSql --> DI["AddDbContext<br/>(base → concrete context)"]
     Pg --> DI
 ```
 
-Значение `DataStorageType` (`"MSSQL"` / `"PostgreSQL"`) и строки подключения задаются в `appsettings*.json` / User Secrets.
+The `DataStorageType` value (`"MSSQL"` / `"PostgreSQL"`) and connection strings are set in `appsettings*.json` / User Secrets.
 
 ---
 
-## Сборка и запуск
+## Build and Run
 
 ```bash
-# Сборка
+# Build
 cd RM
 dotnet build RM.sln
 
-# Запуск (Development, порты 5000/5001)
+# Run (Development, ports 5000/5001)
 cd RM.WebApi
 dotnet run
 
-# Swagger (в Development)
+# Swagger (in Development)
 # https://localhost:5001/swagger
 ```
 
-### Конфигурация
+### Configuration
 
-| Параметр | Описание |
+| Setting | Description |
 |---|---|
-| `DataStorageType` | Тип хранилища: `"MSSQL"` или `"PostgreSQL"` |
-| `ConnectionStrings:MsSqlDbContractConnection` | Строка подключения к MS SQL |
-| `ConnectionStrings:PostgreDbContractConnection` | Строка подключения к PostgreSQL |
+| `DataStorageType` | Storage type: `"MSSQL"` or `"PostgreSQL"` |
+| `ConnectionStrings:MsSqlDbContractConnection` | MS SQL connection string |
+| `ConnectionStrings:PostgreDbContractConnection` | PostgreSQL connection string |
 
 ---
 
-## Тестирование
+## Testing
 
 ```bash
 cd RM.BLL.Tests
 dotnet test
 ```
 
-Тесты BLL изолированы от БД: репозитории мокаются через Moq, AutoMapper-профили подключаются реально.
+BLL tests are isolated from the database: repositories are mocked with Moq, while AutoMapper profiles are used for real.
