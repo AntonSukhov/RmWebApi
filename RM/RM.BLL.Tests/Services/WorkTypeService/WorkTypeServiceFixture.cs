@@ -35,14 +35,6 @@ public class WorkTypeServiceFixture
     public Mock<IWorkUnitRepository> WorkUnitRepositoryMock { get; }
 
     /// <summary>
-    /// Получает мок-объект репозитория исполнителей договоров.
-    /// </summary>
-    /// <value>
-    /// Мок-объект репозитория исполнителей договоров.
-    /// </value>
-    public Mock<IPerformerRepository> PerformerRepositoryMock { get; }
-
-    /// <summary>
     /// Получает сервис единицы работ.
     /// </summary>
     /// <value>
@@ -57,14 +49,6 @@ public class WorkTypeServiceFixture
     /// Сервис вида работ.
     /// </value>
     public IWorkTypeService WorkTypeService { get; }
-
-    /// <summary>
-    /// Получает сервис исполнителей договоров.
-    /// </summary>
-    /// <value>
-    /// Сервис исполнителей договоров.
-    /// </value>
-    public IPerformerService PerformerService  { get; }
 
     /// <summary>
     /// Получает компаратор для сравнения объектов <see cref="WorkTypeModel"/>.
@@ -86,7 +70,6 @@ public class WorkTypeServiceFixture
             cfg.AddProfile<PageOptionsMappingProfile>();
             cfg.AddProfile<WorkTypeCreationMappingProfile>();
             cfg.AddProfile<WorkTypeUpdationMappingProfile>();
-            cfg.AddProfile<PerformerMappingProfile>();
         }, 
         NullLoggerFactory.Instance);
 
@@ -95,7 +78,6 @@ public class WorkTypeServiceFixture
         var mapper = config.CreateMapper();
         var pageOptionsMapper = new Mapper<PageOptionsModel, Infrastructure.Shared.Models.PageOptionsModel>(mapper);
         var workUnitMapper = new Mapper<WorkUnitEntity, WorkUnitModel>(mapper);
-        var performerMapper = new Mapper<PerformerEntity, PerformerModel>(mapper);
         
         var pageOptionsBllMappers = new PageOptionsBllMappers( pageOptionsMapper );
         var workTypeBllMappers = new WorkTypeBllMappers(
@@ -103,11 +85,9 @@ public class WorkTypeServiceFixture
             new Mapper<WorkTypeUpdationModel, WorkTypeShortEntity>(mapper),
             new Mapper<WorkTypeEntity, WorkTypeModel>(mapper)
         );
-        var performerBllMappers = new PerformerBllMappers(performerMapper);
         
         WorkTypeRepositoryMock = new Mock<IWorkTypeRepository>();
         WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
-        PerformerRepositoryMock = new Mock<IPerformerRepository>();
 
         WorkTypeModelEqualityComparer = new WorkTypeModelEqualityComparer();
 
@@ -122,9 +102,5 @@ public class WorkTypeServiceFixture
             pageOptionsValidator, 
             workTypeBllMappers,
             pageOptionsBllMappers);
-        PerformerService = new PerformerService(PerformerRepositoryMock.Object,
-            pageOptionsValidator,
-            pageOptionsBllMappers,
-            performerBllMappers);
         }     
 }
