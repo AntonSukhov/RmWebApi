@@ -6,7 +6,7 @@ using RM.BLL.Abstractions.Models;
 namespace RM.BLL.Abstractions.Services
 {
     /// <summary>
-    /// Сервис испольнителей договоров.
+    /// Сервис исполнителей договоров.
     /// </summary>
     public interface IPerformerService
     {

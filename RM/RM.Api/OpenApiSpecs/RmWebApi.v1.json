@@ -5,6 +5,107 @@
     "version": "v1"
   },
   "paths": {
+    "/api/performer/all": {
+      "get": {
+        "tags": [
+          "Performers"
+        ],
+        "summary": "Предоставляет всех испольнителей договоров.",
+        "operationId": "GetPerformersAsync",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PerformerResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PerformerResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PerformerResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/performer/{performerId}": {
+      "get": {
+        "tags": [
+          "Performers"
+        ],
+        "summary": "Предоставляет исполнителя договоров по его ИД.",
+        "operationId": "GetPerformerAsync",
+        "parameters": [
+          {
+            "name": "performerId",
+            "in": "path",
+            "description": "ИД исполнителя договоров.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerformerResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerformerResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerformerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/work-type/all": {
       "get": {
         "tags": [
@@ -259,6 +360,117 @@
   },
   "components": {
     "schemas": {
+      "GenderEnum": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32",
+        "x-enumNames": [
+          "Male",
+          "Female"
+        ]
+      },
+      "PerformerResponse": {
+        "required": [
+          "creator",
+          "name",
+          "passportBirthPlace",
+          "passportDepartmentCode",
+          "passportIssuePlace",
+          "passportNumber",
+          "passportRegistrationPlace",
+          "passportSeries",
+          "patronymic",
+          "snils",
+          "surname"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "editDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "creator": {
+            "type": "string",
+            "nullable": true
+          },
+          "editor": {
+            "type": "string",
+            "nullable": true
+          },
+          "snils": {
+            "type": "string",
+            "nullable": true
+          },
+          "inn": {
+            "type": "string",
+            "nullable": true
+          },
+          "surname": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "patronymic": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "$ref": "#/components/schemas/GenderEnum"
+          },
+          "passportNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "passportSeries": {
+            "type": "string",
+            "nullable": true
+          },
+          "passportIssuePlace": {
+            "type": "string",
+            "nullable": true
+          },
+          "passportIssueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "passportDepartmentCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "passportBirthPlace": {
+            "type": "string",
+            "nullable": true
+          },
+          "passportBirthDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "passportRegistrationPlace": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "WorkTypeCreationRequest": {
         "type": "object",
         "properties": {
@@ -327,6 +539,9 @@
     }
   },
   "tags": [
+    {
+      "name": "Performers"
+    },
     {
       "name": "WorkTypes"
     },

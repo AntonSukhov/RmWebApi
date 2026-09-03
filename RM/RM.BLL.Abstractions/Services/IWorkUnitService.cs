@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace RM.BLL.Abstractions.Services;
 
 /// <summary>
-/// Сервис единицы работ.
+/// Сервис единиц работ.
 /// </summary>
 public interface IWorkUnitService: IDisposable, IAsyncDisposable
 {

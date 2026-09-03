@@ -18,6 +18,7 @@ using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
 using RM.DAL.Mapping.Profiles;
 using RM.DAL.Repositories;
+using RM.WebApi.Filters;
 using RM.WebApi.Mapping.MapperSets;
 
 namespace RM.WebApi.Extensions;
@@ -168,6 +169,8 @@ public static class ServiceCollectionExtensions
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileCurrentProject));
 
             options.EnableAnnotations();
+
+            options.DocumentFilter<EnumNamesDocumentFilter>();
         });
 
         return services;
