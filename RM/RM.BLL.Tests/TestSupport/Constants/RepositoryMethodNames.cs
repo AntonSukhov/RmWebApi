@@ -44,4 +44,20 @@ public static class RepositoryMethodNames
         public const string GetAllAsync = $"{nameof(IWorkTypeRepository)}.{nameof(IWorkTypeRepository.GetAllAsync)}";
 
     }
+
+    /// <summary>
+    /// Константы для методов репозитория <see cref="IPerformerRepository"/>.
+    /// </summary>
+    public static class PerformerRepository
+    {
+        /// <summary>
+        /// Имя метода <see cref="IPerformerRepository.GetAllAsync"/>.
+        /// </summary>
+        public const string GetAllAsync = $"{nameof(IPerformerRepository)}.{nameof(IPerformerRepository.GetAllAsync)}";
+
+        /// <summary>
+        /// Имя метода <see cref="IPerformerRepository.GetByIdAsync"/>.
+        /// </summary>
+        public const string GetByIdAsync = $"{nameof(IPerformerRepository)}.{nameof(IPerformerRepository.GetByIdAsync)}";
+    }
 }
