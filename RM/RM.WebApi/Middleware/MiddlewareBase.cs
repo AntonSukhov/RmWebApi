@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 namespace RM.WebApi.Middleware;
 
 /// <summary>
-/// Базовое промежуточное программное обеспечение.
+/// Базовое промежуточное программное обеспечение (middleware).
 /// </summary>
 public abstract class MiddlewareBase
 {
@@ -15,10 +15,10 @@ public abstract class MiddlewareBase
     protected readonly RequestDelegate _next;
 
     /// <summary>
-    /// Конструктор по умолчанию.
+    /// Инициализирует экземпляр <see cref="MiddlewareBase"/>.
     /// </summary>
     /// <param name="next">Делегат обработки Http-запроса на следующем этапе конвейера обработки запроса.</param>
-    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="ArgumentNullException">Возникает, если <paramref name="next"/> равен <c>null</c>.</exception>
     protected MiddlewareBase(RequestDelegate next)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
@@ -28,5 +28,6 @@ public abstract class MiddlewareBase
     /// Выполняет обработку Http-запроса.
     /// </summary>
     /// <param name="context">Контекст Http-запроса.</param>
+    /// <returns>Задача, представляющая асинхронную обработку Http-запроса.</returns>
     public abstract Task Invoke(HttpContext context);
 }

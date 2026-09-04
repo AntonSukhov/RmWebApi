@@ -13,10 +13,20 @@ namespace RM.WebApi.Middleware;
 /// <summary>
 /// Промежуточное программное обеспечение обработки ошибок.
 /// </summary>
+/// <remarks>
+/// Перехватывает исключения, возникшие в конвейере обработки Http-запроса, и формирует
+/// JSON-ответ с описанием ошибки (<see cref="ApiError"/>) и соответствующим HTTP-статусом:
+/// <list type="bullet">
+/// <item><description>исключения, реализующие <see cref="IApiException"/>, — <c>400 Bad Request</c>;</description></item>
+/// <item><description><see cref="DbUpdateConcurrencyException"/> — <c>409 Conflict</c>;</description></item>
+/// <item><description>остальные исключения — <c>500 Internal Server Error</c> с обобщённым сообщением.</description></item>
+/// </list>
+/// Регистрируется в конвейере первым (см. <c>Startup.Configure</c>), чтобы охватить все последующие этапы.
+/// </remarks>
 public class ErrorHandlingMiddleware : MiddlewareBase
-{ 
+{
     /// <summary>
-    /// Опции JSON-сериализации.
+    /// Опции JSON-сериализации, применяемые при формировании тела ответа с ошибкой.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
@@ -24,7 +34,7 @@ public class ErrorHandlingMiddleware : MiddlewareBase
     /// Инициализирует экземпляр <see cref="ErrorHandlingMiddleware"/>.
     /// </summary>
     /// <param name="next">Делегат обработки Http-запроса на следующем этапе конвейера обработки запроса.</param>
-    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="ArgumentNullException">Возникает, если <paramref name="next"/> равен <c>null</c>.</exception>
     public ErrorHandlingMiddleware(RequestDelegate next) : base(next)
     {
         _jsonSerializerOptions = new JsonSerializerOptions
@@ -49,11 +59,11 @@ public class ErrorHandlingMiddleware : MiddlewareBase
     }
 
     /// <summary>
-    /// Метод обработки исключения.
+    /// Преобразует возникшее исключение в ошибку API и записывает её в ответ.
     /// </summary>
     /// <param name="context">Контекст Http-запроса.</param>
-    /// <param name="exception">Исключение.</param>
-    /// <returns/>
+    /// <param name="exception">Возникшее исключение.</param>
+    /// <returns>Задача, представляющая асинхронную обработку исключения.</returns>
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         ArgumentNullException.ThrowIfNull(exception);
@@ -94,12 +104,12 @@ public class ErrorHandlingMiddleware : MiddlewareBase
     }
 
     /// <summary>
-    /// Устанавливает свойства ответа, которые соответствуют возникшей ошибке.
+    /// Формирует и записывает в ответ JSON-представление ошибки API.
     /// </summary>
     /// <param name="context">Контекст Http-запроса.</param>
-    /// <param name="statusCode">Сообщение об ошибке.</param>
-    /// <param name="apiError"></param>
-    /// <returns/>
+    /// <param name="statusCode">HTTP-статус-код ответа.</param>
+    /// <param name="apiError">Ошибка API, сериализуемая в тело ответа.</param>
+    /// <returns>Задача, представляющая асинхронную запись ответа.</returns>
     private async Task SetErrorResponseAsync(HttpContext context, int statusCode, ApiError apiError)
     {
         var result = JsonSerializer.Serialize(apiError, _jsonSerializerOptions);
