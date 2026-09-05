@@ -59,5 +59,10 @@ public static class RepositoryMethodNames
         /// Имя метода <see cref="IPerformerRepository.GetByIdAsync"/>.
         /// </summary>
         public const string GetByIdAsync = $"{nameof(IPerformerRepository)}.{nameof(IPerformerRepository.GetByIdAsync)}";
+
+        /// <summary>
+        /// Имя метода <see cref="IPerformerRepository.DeleteAsync"/>.
+        /// </summary>
+        public const string DeleteAsync = $"{nameof(IPerformerRepository)}.{nameof(IPerformerRepository.DeleteAsync)}";
     }
 }
