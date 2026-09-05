@@ -46,6 +46,13 @@ namespace RM.DAL.Repositories
         }
 
         /// <inheritdoc/>
+        public async Task<int> DeleteAsync(Guid performerId)
+        {
+            return await _dbContext.Performers.Where(p => p.Id == performerId)
+                                              .ExecuteDeleteAsync();
+        }
+
+        /// <inheritdoc/>
         protected override void DisposeManagedResources()
         {
             _dbContext?.Dispose();

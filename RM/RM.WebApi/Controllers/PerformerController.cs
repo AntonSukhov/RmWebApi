@@ -18,19 +18,19 @@ namespace RM.WebApi.Controllers;
 [ApiController]
 [Route("api/performer")]
 [Tags("Performers")]
-public class PerformerApiController : ControllerBase
+public class PerformerController : ControllerBase
 {
     private readonly IPerformerService _performerService;
     private readonly IPerformerApiMappers _performerApiMappers;
     private readonly IPageOptionsApiMappers _pageOptionsApiMappers;
 
     /// <summary>
-    /// Инициализирует экземпляр <see cref="PerformerApiController"/>.
+    /// Инициализирует экземпляр <see cref="PerformerController"/>.
     /// </summary>
     /// <param name="performerService">Сервис работы с исполнителями договоров.</param>
     /// <param name="performerApiMappers">Контейнер мапперов для работы с исполнителями договоров.</param>
     /// <param name="pageOptionsApiMappers">Контейнер мапперов для работы с настройками страницы.</param>
-    public PerformerApiController(
+    public PerformerController(
         IPerformerService performerService,
         IPerformerApiMappers performerApiMappers,
         IPageOptionsApiMappers pageOptionsApiMappers)
@@ -77,5 +77,17 @@ public class PerformerApiController : ControllerBase
         var result = workType is not null? _performerApiMappers.ToPerformerResponse.Map(workType): null;
 
         return result;
+    }
+
+    /// <summary>
+    /// Удаляет исполнителя договоров.
+    /// </summary>
+    /// <param name="performerId">ИД удаляемого исполнителя договоров.</param>
+    /// <returns/>
+    [HttpDelete("{performerId:guid}")]
+    [SwaggerOperation(OperationId = "DeletePerformerAsync")]
+    public async Task DeleteAsync(Guid performerId)
+    {
+        await _performerService.DeleteAsync(performerId);
     }
 }

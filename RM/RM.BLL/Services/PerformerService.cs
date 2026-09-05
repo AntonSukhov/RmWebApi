@@ -6,6 +6,7 @@ using Infrastructure.Disposable;
 using RM.BLL.Abstractions.Models;
 using RM.BLL.Abstractions.Services;
 using RM.BLL.Abstractions.Validators;
+using RM.BLL.Exceptions;
 using RM.BLL.Mapping.MapperSets;
 using RM.DAL.Abstractions.Repositories;
 
@@ -75,6 +76,17 @@ namespace RM.BLL.Services
                 _performerBllMappers.ToPerformerModel.Map(performerEntity) : null;
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteAsync(Guid performerId)
+        {
+            var deletedCount = await _performerRepository.DeleteAsync(performerId);
+
+            if (deletedCount == 0)
+            {
+                throw new DataNotFoundException($"Исполнитель договоров по ИД '{performerId}' не существует.");
+            }
         }
 
         /// <inheritdoc/>

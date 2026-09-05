@@ -25,4 +25,11 @@ public interface IPerformerRepository: IDisposable, IAsyncDisposable
     /// <param name="performerId">ИД исполнителя договоров.</param>
     /// <returns>Исполнитель договоров.</returns>
     Task<PerformerEntity?> GetByIdAsync(Guid performerId);
+
+    /// <summary>
+    /// Удаляет исполнителя договоров по ИД.
+    /// </summary>
+    /// <param name="performerId">ИД исполнителя договоров.</param>
+    /// <returns>Количество удалённых строк.</returns>
+    Task<int> DeleteAsync(Guid performerId);
 }

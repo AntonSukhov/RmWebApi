@@ -24,5 +24,11 @@ namespace RM.BLL.Abstractions.Services
         /// <param name="performerId">ИД исполнителя договоров.</param>
         /// <returns>Исполнитель договоров.</returns>
         Task<PerformerModel?> GetByIdAsync(Guid performerId);
+
+        /// <summary>
+        /// Удаляет исполнителя договоров по ИД.
+        /// </summary>
+        /// <param name="performerId">ИД исполнителя договоров.</param>
+        Task DeleteAsync(Guid performerId);
     }
 }
