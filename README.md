@@ -9,12 +9,11 @@ ASP.NET Core Web API application (.NET 9) for managing **work types** (WorkType)
 1. [General Architecture](#general-architecture)
 2. [Layers and Project Purpose](#layers-and-project-purpose)
 3. [Project Dependency Diagram](#project-dependency-diagram)
-4. [Request Flow (Sequence Diagram)](#request-flow-sequence-diagram)
-5. [UML Class Diagram of the Performer Domain](#uml-class-diagram-of-the-performer-domain)
-6. [Database Model (ER Diagram)](#database-model-er-diagram)
-7. [Database Selection](#database-selection)
-8. [Build and Run](#build-and-run)
-9. [Testing](#testing)
+4. [UML Class Diagram of the Performer Domain](#uml-class-diagram-of-the-performer-domain)
+5. [Database Model (ER Diagram)](#database-model-er-diagram)
+6. [Database Selection](#database-selection)
+7. [Build and Run](#build-and-run)
+8. [Testing](#testing)
 
 ---
 
@@ -75,7 +74,7 @@ flowchart TB
 
 | Project | Layer | Purpose |
 |---|---|---|
-| `RM.WebApi` | Presentation | Controllers, Startup, DI registrations, Swagger, error-handling middleware |
+| `RM.WebApi` | Presentation | Controllers, Startup, DI registrations, Swagger, error-handling middleware (BLL exceptions → HTTP status codes: 400/404/409/500) |
 | `RM.Api` | Presentation (client) | Request/Response DTOs, generated NSwag client |
 | `RM.BLL` | Business Logic | Services (`WorkType`, `WorkUnit`, `Performer`), FluentValidation validators, AutoMapper profiles |
 | `RM.BLL.Abstractions` | Business Logic | Service interfaces, models (`PerformerModel`, `PageOptionsModel`), validator interfaces |
@@ -137,43 +136,6 @@ flowchart TD
 
 ---
 
-## Request Flow (Sequence Diagram)
-
-Example: `GET /api/performer/all?pageNumber=1&pageSize=100`
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor C as Client
-    participant MW as ErrorHandlingMiddleware
-    participant Ctrl as PerformerApiController<br/>(RM.WebApi)
-    participant Svc as PerformerService<br/>(RM.BLL)
-    participant Val as PageOptionsValidator<br/>(RM.BLL)
-    participant Repo as PerformerRepository<br/>(RM.DAL)
-    participant DB as PostgreSQL / MS SQL
-
-    C->>MW: GET /api/performer/all
-    MW->>Ctrl: calls the GetAllAsync action
-    Ctrl->>Ctrl: PageOptionsRequest → PageOptionsModel<br/>(IPageOptionsApiMappers)
-    Ctrl->>Svc: GetAllAsync(pageOptions)
-    Svc->>Val: ValidateAndThrowAsync(pageOptions)
-    Val-->>Svc: OK (or ValidationException → 400)
-    Svc->>Svc: PageOptionsModel → Shared.PageOptionsModel<br/>(IPageOptionsBllMappers)
-    Svc->>Repo: GetAllAsync(pageOptions)
-    Repo->>DB: SELECT ... LIMIT/OFFSET (AsNoTracking)
-    DB-->>Repo: IReadOnlyCollection&lt;PerformerEntity&gt;
-    Repo-->>Svc: entities
-    Svc->>Svc: PerformerEntity → PerformerModel<br/>(IPerformerBllMappers)
-    Svc-->>Ctrl: IReadOnlyCollection&lt;PerformerModel&gt;
-    Ctrl->>Ctrl: PerformerModel → PerformerResponse<br/>(IPerformerApiMappers)
-    Ctrl-->>MW: IEnumerable&lt;PerformerResponse&gt;
-    MW-->>C: 200 OK (JSON)
-```
-
-Error handling: BLL exceptions (`ConflictException`, `DataNotFoundException`, `ValidationException`) are caught by `ErrorHandlingMiddleware` and converted into the corresponding HTTP status codes (400/404/409/500).
-
----
-
 ## UML Class Diagram of the Performer Domain
 
 End-to-end data path through the layers: `PerformerEntity` → `PerformerModel` → `PerformerResponse`. Each class lives in its own layer and does not depend on its neighbors directly — AutoMapper connects them.
@@ -187,12 +149,14 @@ classDiagram
         <<RM.DAL.Abstractions>>
         +GetAllAsync(pageOptions)
         +GetByIdAsync(performerId)
+        +DeleteAsync(performerId) int
     }
     class PerformerRepository {
         <<RM.DAL>>
         -dbContext : ContractGpdDbContextBase
         +GetAllAsync(pageOptions)
         +GetByIdAsync(performerId)
+        +DeleteAsync(performerId) int
     }
     class PerformerEntity {
         <<RM.DAL.Abstractions>>
@@ -216,6 +180,7 @@ classDiagram
         <<RM.BLL.Abstractions>>
         +GetAllAsync(pageOptions)
         +GetByIdAsync(performerId)
+        +DeleteAsync(performerId)
     }
     class PerformerService {
         <<RM.BLL>>
@@ -223,6 +188,7 @@ classDiagram
         -pageOptionsValidator : IPageOptionsValidator
         +GetAllAsync(pageOptions)
         +GetByIdAsync(performerId)
+        +DeleteAsync(performerId)
     }
     class PerformerModel {
         <<RM.BLL.Abstractions>>
@@ -240,6 +206,7 @@ classDiagram
         -performerApiMappers : IPerformerApiMappers
         +GetAllAsync(pageOptions)
         +GetByIdAsync(performerId)
+        +DeleteAsync(performerId)
     }
     class PerformerResponse {
         <<RM.Api>>
