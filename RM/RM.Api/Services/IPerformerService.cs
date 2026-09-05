@@ -31,5 +31,15 @@ namespace RM.Api.Services
         Task<PerformerResponse?> GetByIdAsync(
             Guid performerId, 
             CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Удаляет исполнителя договоров.
+        /// </summary>
+        /// <param name="performerId">ИД удаляемого исполнителя договоров.</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns>Задача, завершаемая после удаления.</returns>
+        Task DeleteAsync(
+            Guid performerId, 
+            CancellationToken? cancellationToken = null);
     }
 }

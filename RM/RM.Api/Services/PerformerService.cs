@@ -56,5 +56,12 @@ namespace RM.Api.Services
 
             return performer?.ToPerformerResponse();
         }
+
+        /// <inheritdoc/>
+        public async Task DeleteAsync(Guid performerId, CancellationToken? cancellationToken = null)
+        {
+            var cancellationTokenLocal = cancellationToken ?? CancellationToken.None;
+            await _rmWebApiClient.DeletePerformerAsync(performerId, cancellationTokenLocal);
+        }
     }
 }

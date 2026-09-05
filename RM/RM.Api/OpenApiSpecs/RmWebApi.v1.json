@@ -104,6 +104,30 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Performers"
+        ],
+        "summary": "Удаляет исполнителя договоров.",
+        "operationId": "DeletePerformerAsync",
+        "parameters": [
+          {
+            "name": "performerId",
+            "in": "path",
+            "description": "ИД удаляемого исполнителя договоров.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/work-type/all": {
