@@ -104,6 +104,10 @@ try
         Console.WriteLine($"Passport: {performer.PassportSeries} {performer.PassportNumber}");
     }
 
+    // Delete a performer by ID
+    await performerService.DeleteAsync(performerId);
+    Console.WriteLine($"Deleted performer with ID: {performerId}");
+
     // Create work type
     var workTypeId = await workTypeService.CreateAsync(new WorkTypeCreationRequest
     {
@@ -185,6 +189,61 @@ The main types provided by this library are:
 | `RM.Api.Services.WorkUnitService` | Implementation for work units |
 | `RM.Api.Services.IPerformerService` | Interface for performer operations |
 | `RM.Api.Services.PerformerService` | Implementation for performers |
+
+#### 📋 Service Methods
+
+<table>
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th>Method</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="5"><code>WorkTypeService</code></td>
+      <td><code>GetAllAsync</code></td>
+      <td>Gets all work types with pagination</td>
+    </tr>
+    <tr>
+      <td><code>GetByIdAsync</code></td>
+      <td>Gets a work type by ID</td>
+    </tr>
+    <tr>
+      <td><code>CreateAsync</code></td>
+      <td>Creates a work type</td>
+    </tr>
+    <tr>
+      <td><code>DeleteAsync</code></td>
+      <td>Deletes a work type by ID</td>
+    </tr>
+    <tr>
+      <td><code>UpdateAsync</code></td>
+      <td>Updates a work type</td>
+    </tr>
+    <tr>
+      <td><code>WorkUnitService</code></td>
+      <td><code>GetAllAsync</code></td>
+      <td>Gets all work units</td>
+    </tr>
+    <tr>
+      <td rowspan="3"><code>PerformerService</code></td>
+      <td><code>GetAllAsync</code></td>
+      <td>Gets all contract performers with pagination</td>
+    </tr>
+    <tr>
+      <td><code>GetByIdAsync</code></td>
+      <td>Gets a contract performer by ID</td>
+    </tr>
+    <tr>
+      <td><code>DeleteAsync</code></td>
+      <td>Deletes a contract performer by ID</td>
+    </tr>
+  </tbody>
+</table>
+
+> 💡 **Note:** All methods accept an optional `CancellationToken?` parameter. For detailed signatures and XML documentation, see the corresponding interfaces (`IWorkTypeService`, `IWorkUnitService`, `IPerformerService`) in your IDE.
 
 ### 📥 Requests
 
