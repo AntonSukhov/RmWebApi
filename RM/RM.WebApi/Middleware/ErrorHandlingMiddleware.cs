@@ -91,104 +91,166 @@ public class ErrorHandlingMiddleware : MiddlewareBase
         Exception exception, 
         HttpContext context)
     {
-        int statusCode;
-        ProblemDetails problemDetails;
-
-        switch (exception)
+        return exception switch
         {
-            case ValidationAggregationException vae:
-                statusCode = (int)HttpStatusCode.UnprocessableEntity;
-                
-                var vaeErrors = vae.InnerValidationExceptions
-                    .GroupBy(v => v.FieldName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(v => v.Message).ToArray());
+            ValidationAggregationException vae => MapValidationAggregationException(vae, context),
+            ValidationException ve => MapValidationException(ve, context),
+            DataNotFoundException dnfe => MapDataNotFoundException(dnfe, context),
+            ConflictException ce => MapConflictException(ce, context),
+            DbUpdateConcurrencyException => MapConcurrencyException(context),
+            _ when exception is IApiException api => MapApiException(exception, api, context),
+            _ => MapDefaultException(context)
+        };
+    }
 
-                problemDetails = new ValidationProblemDetails(vaeErrors)
-                {
-                    Status = statusCode,
-                    Title = vae.Message,
-                    Instance = context.Request.Path
-                };
+    /// <summary>
+    /// Формирует ответ для агрегированной ошибки валидации.
+    /// </summary>
+    /// <param name="ex">Исключение валидации.</param>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом <c>422 Unprocessable Entity</c> и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapValidationAggregationException(
+        ValidationAggregationException ex, HttpContext context)
+    {
+        var statusCode = (int)HttpStatusCode.UnprocessableEntity;
+        var errors = ex.InnerValidationExceptions
+            .GroupBy(v => v.FieldName)
+            .ToDictionary(g => g.Key, g => g.Select(v => v.Message).ToArray());
 
-                problemDetails.Extensions[Code] = vae.Code; 
-                break;
+        var problem = new ValidationProblemDetails(errors)
+        {
+            Status = statusCode,
+            Title = ex.Message,
+            Instance = context.Request.Path
+        };
+        problem.Extensions[Code] = ex.Code;
 
-            case ValidationException ve:
-                statusCode = (int)HttpStatusCode.UnprocessableEntity;
+        return (statusCode, problem);
+    }
 
-                var veErrors = new Dictionary<string, string[]>
-                {
-                    { ve.FieldName, new[] { ve.Message } }
-                };
-                
-                problemDetails = new ValidationProblemDetails(veErrors)
-                {
-                    Status = statusCode,
-                    Title = ErrorMessages.Validation,
-                    Instance = context.Request.Path
-                };
-                problemDetails.Extensions[Code] = ve.Code;
-                break;
+    /// <summary>
+    /// Формирует ответ для ошибки валидации.
+    /// </summary>
+    /// <param name="ex">Исключение валидации.</param>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом <c>422 Unprocessable Entity</c> и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapValidationException(
+        ValidationException ex, HttpContext context)
+    {
+        var statusCode = (int)HttpStatusCode.UnprocessableEntity;
+        var errors = new Dictionary<string, string[]> { { ex.FieldName, [ex.Message] } };
 
-            case DataNotFoundException dnfe:
-                statusCode = (int)HttpStatusCode.NotFound;
-                problemDetails = new ProblemDetails
-                {
-                    Status = statusCode,
-                    Title = dnfe.Message,
-                    Instance = context.Request.Path
-                };
-                problemDetails.Extensions[Code] = dnfe.Code;
-                break;
+        var problem = new ValidationProblemDetails(errors)
+        {
+            Status = statusCode,
+            Title = ErrorMessages.Validation,
+            Instance = context.Request.Path
+        };
+        problem.Extensions[Code] = ex.Code;
 
-            case ConflictException ce:
-                statusCode = (int)HttpStatusCode.Conflict;
-                problemDetails = new ProblemDetails
-                {
-                    Status = statusCode,
-                    Title = ce.Message,
-                    Instance = context.Request.Path
-                };
-                problemDetails.Extensions[Code] = ce.Code;
-                break;
+        return (statusCode, problem);
+    }
 
-            case IApiException apiException:
-                statusCode = (int)HttpStatusCode.BadRequest;
-                problemDetails = new ProblemDetails
-                {
-                    Status = statusCode,
-                    Title = exception.Message,
-                    Instance = context.Request.Path
-                };
-                problemDetails.Extensions[Code] = apiException.Code;
-                break;
+    /// <summary>
+    /// Формирует ответ при отсутствии запрашиваемых данных.
+    /// </summary>
+    /// <param name="ex">Исключение отсутствия данных.</param>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом <c>404 Not Found</c> и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapDataNotFoundException(
+        DataNotFoundException ex, HttpContext context)
+    {
+        var statusCode = (int)HttpStatusCode.NotFound;
+        var problem = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = ex.Message,
+            Instance = context.Request.Path
+        };
+        problem.Extensions[Code] = ex.Code;
 
-            case DbUpdateConcurrencyException:
-                statusCode = (int)HttpStatusCode.Conflict;
-                problemDetails = new ProblemDetails
-                {
-                    Status = statusCode,
-                    Title = "Данные были изменены или удалены другим процессом.",
-                    Instance = context.Request.Path
-                };
-                problemDetails.Extensions[Code] = ErrorCodes.Concurrency;
-                break;
+        return (statusCode, problem);
+    }
 
-            default:
-                statusCode = (int)HttpStatusCode.InternalServerError;
-                problemDetails = new ProblemDetails
-                {
-                    Status = statusCode,
-                    Title = "Произошла непредвиденная ошибка при обработке запроса.",
-                    Instance = context.Request.Path
-                };
-                problemDetails.Extensions[Code] = ErrorCodes.Generic;
-                break;
-        }
+    /// <summary>
+    /// Формирует ответ при конфликте данных.
+    /// </summary>
+    /// <param name="ex">Исключение конфликта.</param>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом <c>409 Conflict</c> и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapConflictException(
+        ConflictException ex, HttpContext context)
+    {
+        var statusCode = (int)HttpStatusCode.Conflict;
+        var problem = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = ex.Message,
+            Instance = context.Request.Path
+        };
+        problem.Extensions[Code] = ex.Code;
 
-        return (statusCode, problemDetails);
+        return (statusCode, problem);
+    }
+
+    /// <summary>
+    /// Формирует ответ для остальных ошибок API.
+    /// </summary>
+    /// <param name="exception">Исключение.</param>
+    /// <param name="api">Интерфейс ошибки API для получения кода.</param>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом <c>400 Bad Request</c> и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapApiException(
+        Exception exception, IApiException api, HttpContext context)
+    {
+        var statusCode = (int)HttpStatusCode.BadRequest;
+        var problem = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = exception.Message,
+            Instance = context.Request.Path
+        };
+        problem.Extensions[Code] = api.Code;
+
+        return (statusCode, problem);
+    }
+
+    /// <summary>
+    /// Формирует ответ при конфликте параллельного изменения данных.
+    /// </summary>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом <c>409 Conflict</c> и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapConcurrencyException(HttpContext context)
+    {
+        var statusCode = (int)HttpStatusCode.Conflict;
+        var problem = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = "Данные были изменены или удалены другим процессом.",
+            Instance = context.Request.Path
+        };
+        problem.Extensions[Code] = ErrorCodes.Concurrency;
+
+        return (statusCode, problem);
+    }
+
+    /// <summary>
+    /// Формирует ответ для непредвиденных ошибок.
+    /// </summary>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом <c>500 Internal Server Error</c> и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapDefaultException(HttpContext context)
+    {
+        var statusCode = (int)HttpStatusCode.InternalServerError;
+        var problem = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = "Произошла непредвиденная ошибка при обработке запроса.",
+            Instance = context.Request.Path
+        };
+        problem.Extensions[Code] = ErrorCodes.Generic;
+
+        return (statusCode, problem);
     }
 
     /// <summary>
