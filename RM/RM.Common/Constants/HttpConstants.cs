@@ -11,6 +11,11 @@ public static class HttpConstants
     public const string ApplicationJsonContentType = "application/json";
 
     /// <summary>
+    /// MIME‑тип для ответов ошибок в формате Problem Details (RFC 7807/9457).
+    /// </summary>
+    public const string ApplicationProblemJsonContentType = "application/problem+json";
+
+    /// <summary>
     /// Название заголовка.
     /// </summary>
     public static class Headers

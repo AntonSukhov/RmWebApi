@@ -6,8 +6,8 @@ namespace RM.BLL.Abstractions.Errors;
 public interface IApiException
 {
     /// <summary>
-    /// Проводит <see cref="IApiException"/> к <see cref="ApiError"/>.
+    /// Получает код ошибки.
     /// </summary>
-    /// <returns>Экземпляр <see cref="ApiError"/>.</returns>
-    public ApiError ToApiError();
+    /// <value>Код ошибки.</value>
+    public string Code { get; }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using RM.BLL.Abstractions.Errors;
 
 namespace RM.BLL.Exceptions;
@@ -14,6 +13,8 @@ namespace RM.BLL.Exceptions;
 /// </remarks>
 public class ValidationAggregationException : Exception, IApiException
 {
+    /// <inheritdoc/>
+    public string Code => ErrorCodes.Validation;
     
     /// <summary>
     /// Получает коллекцию вложенных исключений <see cref="ValidationException"/>.
@@ -24,26 +25,22 @@ public class ValidationAggregationException : Exception, IApiException
     /// Инициализирует новый экземпляр <see cref="ValidationAggregationException"/>.
     /// </summary>
     /// <param name="message">Сообщение, описывающее ошибку.</param>
-    /// <param name="innerValidationExceptions">Коллекция вложенных исключений <see cref="ValidationException"/>.</param>
-    public ValidationAggregationException(string? message, IReadOnlyCollection<ValidationException> innerValidationExceptions)
-        : base(message)
+    /// <param name="innerValidationExceptions">
+    /// Коллекция вложенных исключений <see cref="ValidationException"/>.
+    /// </param>
+    public ValidationAggregationException(
+        string? message, 
+        IReadOnlyCollection<ValidationException> innerValidationExceptions): base(message)
     {
-        ArgumentNullException.ThrowIfNull(innerValidationExceptions, nameof(innerValidationExceptions));
+        ArgumentNullException.ThrowIfNull(innerValidationExceptions, 
+            nameof(innerValidationExceptions));
 
         if (innerValidationExceptions.Count == 0)
         {
-            throw new ArgumentException("Коллекция не должна быть пустой.", nameof(innerValidationExceptions));
+            throw new ArgumentException("Коллекция не должна быть пустой.", 
+                nameof(innerValidationExceptions));
         }
 
         InnerValidationExceptions = innerValidationExceptions;
     }
-
-     /// <inheritdoc/>
-    public ApiError ToApiError() => new()
-    {
-        Code = ErrorCodes.Validation,
-        Message = Message,
-        Details = InnerValidationExceptions.Select(p=>p.Message)
-                                           .ToList()
-    };
 }

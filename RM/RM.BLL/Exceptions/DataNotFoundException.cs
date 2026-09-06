@@ -9,6 +9,9 @@ namespace RM.BLL.Exceptions;
 /// <remarks>Исключение возникает при отсутствии требуемых данных.</remarks>
 public class DataNotFoundException : InvalidOperationException, IApiException
 {
+    /// <inheritdoc/>
+    public string Code => ErrorCodes.DataNotFound;
+
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="DataNotFoundException"/>.
     /// </summary>
@@ -22,11 +25,4 @@ public class DataNotFoundException : InvalidOperationException, IApiException
     /// <param name="innerException">Исключение, которое вызвало текущее исключение.</param>
     public DataNotFoundException(string message, Exception innerException) 
         : base(message, innerException) { }
-
-    /// <inheritdoc/>
-    public ApiError ToApiError()=> new()
-    {
-        Code = ErrorCodes.DataNotFound,
-        Message = Message
-    };
 }

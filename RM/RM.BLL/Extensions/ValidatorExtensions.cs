@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
 using RM.BLL.Exceptions;
+using RM.Common.Constants;
 using ValidationException = RM.BLL.Exceptions.ValidationException;
 
 namespace RM.BLL.Extensions;
@@ -47,16 +48,14 @@ public static class ValidatorExtensions
     {
         if (errors.Count == 1)
         {
-            var errorMessage = errors.First().ErrorMessage;
-            throw new ValidationException(errorMessage);
+            var error = errors.First();
+            throw new ValidationException(error.PropertyName, error.ErrorMessage);
         }
 
         var innerExceptions = errors
-            .Select(error => new ValidationException(error.ErrorMessage))
+            .Select(error => new ValidationException(error.PropertyName, error.ErrorMessage))
             .ToList();
 
-        throw new ValidationAggregationException(
-            "Обнаружены ошибки валидации.",
-            innerExceptions);
+        throw new ValidationAggregationException(ErrorMessages.Validation,innerExceptions);
     }
 }

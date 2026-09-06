@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RM.BLL.Abstractions.Errors;
+using RM.BLL.Exceptions;
 using RM.Common.Constants;
 
 namespace RM.WebApi.Middleware;
@@ -14,17 +18,21 @@ namespace RM.WebApi.Middleware;
 /// Промежуточное программное обеспечение обработки ошибок.
 /// </summary>
 /// <remarks>
-/// Перехватывает исключения, возникшие в конвейере обработки Http-запроса, и формирует
-/// JSON-ответ с описанием ошибки (<see cref="ApiError"/>) и соответствующим HTTP-статусом:
+/// Перехватывает исключения, возникшие в конвейере обработки HTTP-запроса, и формирует
+/// ответ в формате <see cref="ProblemDetails"/> (RFC 7807/9457) с соответствующим HTTP-статусом:
 /// <list type="bullet">
-/// <item><description>исключения, реализующие <see cref="IApiException"/>, — <c>400 Bad Request</c>;</description></item>
-/// <item><description><see cref="DbUpdateConcurrencyException"/> — <c>409 Conflict</c>;</description></item>
-/// <item><description>остальные исключения — <c>500 Internal Server Error</c> с обобщённым сообщением.</description></item>
+/// <item><description><see cref="ValidationException"/> и <see cref="ValidationAggregationException"/> — <c>422 Unprocessable Entity</c>;</description></item>
+/// <item><description><see cref="DataNotFoundException"/> — <c>404 Not Found</c>;</description></item>
+/// <item><description><see cref="ConflictException"/> и <see cref="DbUpdateConcurrencyException"/> — <c>409 Conflict</c>;</description></item>
+/// <item><description>остальные <see cref="IApiException"/> — <c>400 Bad Request</c>;</description></item>
+/// <item><description>непредвиденные исключения — <c>500 Internal Server Error</c> с обобщённым сообщением.</description></item>
 /// </list>
-/// Регистрируется в конвейере первым (см. <c>Startup.Configure</c>), чтобы охватить все последующие этапы.
+/// Регистрируется в конвейере первым, чтобы охватить все последующие этапы.
 /// </remarks>
 public class ErrorHandlingMiddleware : MiddlewareBase
 {
+    private const string Code = "code";
+
     /// <summary>
     /// Опции JSON-сериализации, применяемые при формировании тела ответа с ошибкой.
     /// </summary>
@@ -68,39 +76,119 @@ public class ErrorHandlingMiddleware : MiddlewareBase
     {
         ArgumentNullException.ThrowIfNull(exception);
 
-        ApiError apiError;
+        var mappingResult = MapException(exception, context);
+
+        await SetErrorResponseAsync(context, mappingResult.StatusCode, mappingResult.ProblemDetails);
+    }
+
+    /// <summary>
+    /// Сопоставляет тип исключения с HTTP-статусом и описанием ошибки <see cref="ProblemDetails"/>.
+    /// </summary>
+    /// <param name="exception">Возникшее исключение.</param>
+    /// <param name="context">Контекст HTTP-запроса.</param>
+    /// <returns>Кортеж с HTTP-статусом и описанием ошибки.</returns>
+    private static (int StatusCode, ProblemDetails ProblemDetails) MapException(
+        Exception exception, 
+        HttpContext context)
+    {
         int statusCode;
+        ProblemDetails problemDetails;
 
-        if (exception is IApiException apiException)
+        switch (exception)
         {
-            // Бизнес-ошибка:
-            apiError = apiException.ToApiError();
-            statusCode = (int)HttpStatusCode.BadRequest;
-        }
-        else if (exception is DbUpdateConcurrencyException)
-        {
-            // Ошибка "Конфликт параллельного изменения данных":
-            apiError = new ApiError
-            {
-                Code = ErrorCodes.Concurrency,
-                Message = "Данные были изменены или удалены другим процессом."
-            };
-            statusCode = (int)HttpStatusCode.Conflict;
-        }
-        else
-        {
-            // Непредвиденная ошибка (клиенту — обобщённое сообщение)
-            apiError = new ApiError
-            {
-                Code = ErrorCodes.Generic,
-                Message = "Произошла непредвиденная ошибка при обработке запроса."
-            };
-            statusCode = (int)HttpStatusCode.InternalServerError;
+            case ValidationAggregationException vae:
+                statusCode = (int)HttpStatusCode.UnprocessableEntity;
+                
+                var vaeErrors = vae.InnerValidationExceptions
+                    .GroupBy(v => v.FieldName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(v => v.Message).ToArray());
 
-            // TODO: Добавить логирование полной информации для разработчиков.
+                problemDetails = new ValidationProblemDetails(vaeErrors)
+                {
+                    Status = statusCode,
+                    Title = vae.Message,
+                    Instance = context.Request.Path
+                };
+
+                problemDetails.Extensions[Code] = vae.Code; 
+                break;
+
+            case ValidationException ve:
+                statusCode = (int)HttpStatusCode.UnprocessableEntity;
+
+                var veErrors = new Dictionary<string, string[]>
+                {
+                    { ve.FieldName, new[] { ve.Message } }
+                };
+                
+                problemDetails = new ValidationProblemDetails(veErrors)
+                {
+                    Status = statusCode,
+                    Title = ErrorMessages.Validation,
+                    Instance = context.Request.Path
+                };
+                problemDetails.Extensions[Code] = ve.Code;
+                break;
+
+            case DataNotFoundException dnfe:
+                statusCode = (int)HttpStatusCode.NotFound;
+                problemDetails = new ProblemDetails
+                {
+                    Status = statusCode,
+                    Title = dnfe.Message,
+                    Instance = context.Request.Path
+                };
+                problemDetails.Extensions[Code] = dnfe.Code;
+                break;
+
+            case ConflictException ce:
+                statusCode = (int)HttpStatusCode.Conflict;
+                problemDetails = new ProblemDetails
+                {
+                    Status = statusCode,
+                    Title = ce.Message,
+                    Instance = context.Request.Path
+                };
+                problemDetails.Extensions[Code] = ce.Code;
+                break;
+
+            case IApiException apiException:
+                statusCode = (int)HttpStatusCode.BadRequest;
+                problemDetails = new ProblemDetails
+                {
+                    Status = statusCode,
+                    Title = exception.Message,
+                    Instance = context.Request.Path
+                };
+                problemDetails.Extensions[Code] = apiException.Code;
+                break;
+
+            case DbUpdateConcurrencyException:
+                statusCode = (int)HttpStatusCode.Conflict;
+                problemDetails = new ProblemDetails
+                {
+                    Status = statusCode,
+                    Title = "Данные были изменены или удалены другим процессом.",
+                    Instance = context.Request.Path
+                };
+                problemDetails.Extensions[Code] = ErrorCodes.Concurrency;
+                break;
+
+            default:
+                statusCode = (int)HttpStatusCode.InternalServerError;
+                problemDetails = new ProblemDetails
+                {
+                    Status = statusCode,
+                    Title = "Произошла непредвиденная ошибка при обработке запроса.",
+                    Instance = context.Request.Path
+                };
+                problemDetails.Extensions[Code] = ErrorCodes.Generic;
+                break;
         }
 
-        await SetErrorResponseAsync(context, statusCode, apiError);
+        return (statusCode, problemDetails);
     }
 
     /// <summary>
@@ -108,13 +196,19 @@ public class ErrorHandlingMiddleware : MiddlewareBase
     /// </summary>
     /// <param name="context">Контекст Http-запроса.</param>
     /// <param name="statusCode">HTTP-статус-код ответа.</param>
-    /// <param name="apiError">Ошибка API, сериализуемая в тело ответа.</param>
+    /// <param name="problemDetails">Описание ошибок.</param>
     /// <returns>Задача, представляющая асинхронную запись ответа.</returns>
-    private async Task SetErrorResponseAsync(HttpContext context, int statusCode, ApiError apiError)
+    private async Task SetErrorResponseAsync(
+        HttpContext context, 
+        int statusCode, 
+        ProblemDetails problemDetails)
     {
-        var result = JsonSerializer.Serialize(apiError, _jsonSerializerOptions);
-        context.Response.ContentType = HttpConstants.ApplicationJsonContentType;
+        var result = JsonSerializer.Serialize(problemDetails, problemDetails.GetType(),
+           _jsonSerializerOptions);
+
+        context.Response.ContentType = HttpConstants.ApplicationProblemJsonContentType;
         context.Response.StatusCode = statusCode;
+
         await context.Response.WriteAsync(result);
     }
 }

@@ -12,6 +12,9 @@ namespace RM.BLL.Exceptions;
 /// </remarks>
 public class ConflictException : Exception, IApiException
 {
+    /// <inheritdoc/>
+    public string Code => ErrorCodes.Conflict;
+
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="ConflictException"/>.
     /// </summary>
@@ -25,11 +28,4 @@ public class ConflictException : Exception, IApiException
     /// <param name="innerException">Исключение, которое вызвало текущее исключение.</param>
     public ConflictException(string message, Exception innerException) 
         : base(message, innerException) { }
-
-    /// <inheritdoc/>
-    public ApiError ToApiError() => new()
-    {
-        Code = ErrorCodes.Conflict,
-        Message = Message
-    };
 }

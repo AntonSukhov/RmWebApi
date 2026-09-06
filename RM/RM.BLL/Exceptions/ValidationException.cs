@@ -9,27 +9,25 @@ namespace RM.BLL.Exceptions;
 public class ValidationException : Exception, IApiException
 {  
     /// <summary>
-    /// Инициализирует экземпляр <see cref="ValidationException"/>.
+    /// Получает имя поля, в котором обнаружена ошибка валидации.
     /// </summary>
-    public ValidationException(): base() {}
+    /// <value>Имя поля, в котором обнаружена ошибка валидации.</value>
+    public string FieldName { get; }
 
-    /// <summary>
-    /// Инициализирует экземпляр <see cref="ValidationException"/>.
-    /// </summary>
-    /// <param name="message">Сообщение об ошибки.</param>
-    public ValidationException(string message) : base(message) { }
+    /// <inheritdoc/>
+    public string Code => ErrorCodes.Validation;
 
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="ValidationException"/>.
     /// </summary>
+    /// <param name="fieldName">Имя поля, в котором обнаружена ошибка валидации.</param>
     /// <param name="message">Сообщение, описывающее ошибку.</param>
     /// <param name="innerException">Исключение, которое вызвало текущее исключение.</param>
-    public ValidationException(string message, Exception innerException) : base(message, innerException) { }
-
-    /// <inheritdoc/>
-    public ApiError ToApiError() => new()
+    public ValidationException(string fieldName, string message, Exception? innerException = null) 
+        : base(message, innerException)
     {
-        Code = ErrorCodes.Validation,
-        Message = Message
-    };
+        ArgumentException.ThrowIfNullOrWhiteSpace(fieldName, nameof(fieldName));
+
+        FieldName = fieldName;
+    }
 }
