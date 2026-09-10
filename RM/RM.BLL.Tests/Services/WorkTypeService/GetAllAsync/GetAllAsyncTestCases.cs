@@ -81,48 +81,96 @@ public static class GetAllAsyncTestCases
                         InputData = default,
                         OutputData =
                         [
-                            new WorkTypeModel 
-                            { 
-                                Id = _workTypeId1, Name = "WorkType1", 
-                                WorkUnit = new WorkUnitModel { Id = 1, Name = "WorkUnit1"} 
+                            new WorkTypeModel
+                            {
+                                Id = _workTypeId1, Name = "WorkType1",
+                                WorkUnit = new WorkUnitModel { Id = 1, Name = "WorkUnit1"}
                             },
-                            new WorkTypeModel 
+                            new WorkTypeModel
                             {
                                 Id = _workTypeId2, Name = "WorkType2"
                             },
-                            new WorkTypeModel 
+                            new WorkTypeModel
                             {
                                 Id = _workTypeId3, Name = "WorkType3"
                             }
                         ],
                         StubOutputs =new Dictionary<StubOutputKey, StubOutput>
                         {
-                            [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetAllAsync, 
+                            [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetAllAsync,
                                 StubSequenceConstants.First)] = new StubOutput
                             {
                                 OutputData =  new []
                                 {
-                                    new WorkTypeEntity 
-                                    { 
-                                        Id = _workTypeId1, Name = "WorkType1", WorkUnitId = 1, 
-                                        WorkUnit = new WorkUnitEntity 
-                                        { 
+                                    new WorkTypeEntity
+                                    {
+                                        Id = _workTypeId1, Name = "WorkType1", WorkUnitId = 1,
+                                        WorkUnit = new WorkUnitEntity
+                                        {
                                             Id = 1, Name = "WorkUnit1"
                                         }
                                     },
-                                    new WorkTypeEntity 
-                                    { 
+                                    new WorkTypeEntity
+                                    {
                                         Id = _workTypeId2, Name = "WorkType2"
                                     },
-                                    new WorkTypeEntity 
-                                    { 
+                                    new WorkTypeEntity
+                                    {
                                         Id = _workTypeId3, Name = "WorkType3"
                                     }
                                 },
                                 ExpectedType = typeof(IReadOnlyCollection<WorkTypeEntity>)
                             }
                         }
-                    }
+                    },
+                    new() {
+                        ScenarioNumber = 3,
+                        Description = "Проверка успешного постраничного получения видов работ. PageSize равен 1000 (граничное значение).",
+                        InputData = new PageOptionsModel { PageNumber = 1, PageSize = 1000},
+                        OutputData =
+                        [
+                            new WorkTypeModel
+                            {
+                                Id = _workTypeId1, Name = "WorkType1",
+                                WorkUnit = new WorkUnitModel { Id = 1, Name = "WorkUnit1"}
+                            },
+                            new WorkTypeModel
+                            {
+                                Id = _workTypeId2, Name = "WorkType2"
+                            },
+                            new WorkTypeModel
+                            {
+                                Id = _workTypeId3, Name = "WorkType3"
+                            }
+                        ],
+                        StubOutputs =new Dictionary<StubOutputKey, StubOutput>
+                        {
+                            [new StubOutputKey(RepositoryMethodNames.WorkTypeRepository.GetAllAsync,
+                                StubSequenceConstants.First)] = new StubOutput
+                            {
+                                OutputData =  new []
+                                {
+                                    new WorkTypeEntity
+                                    {
+                                        Id = _workTypeId1, Name = "WorkType1", WorkUnitId = 1,
+                                        WorkUnit = new WorkUnitEntity
+                                        {
+                                            Id = 1, Name = "WorkUnit1"
+                                        }
+                                    },
+                                    new WorkTypeEntity
+                                    {
+                                        Id = _workTypeId2, Name = "WorkType2"
+                                    },
+                                    new WorkTypeEntity
+                                    {
+                                        Id = _workTypeId3, Name = "WorkType3"
+                                    }
+                                },
+                                ExpectedType = typeof(IReadOnlyCollection<WorkTypeEntity>)
+                            }
+                        }
+                    },
                 };
 
                 return theoryData;
@@ -168,7 +216,12 @@ public static class GetAllAsyncTestCases
                 new() {
                     ScenarioNumber = 6,
                     Description = "Проверка неуспешного постраничного получения видов работ. PageNumber и PageSize равны -1.",
-                    InputData = new PageOptionsModel { PageNumber = -1, PageSize = -1},            
+                    InputData = new PageOptionsModel { PageNumber = -1, PageSize = -1},
+                },
+                new() {
+                    ScenarioNumber = 7,
+                    Description = "Проверка неуспешного постраничного получения видов работ. PageSize больше 1000.",
+                    InputData = new PageOptionsModel { PageNumber = 1, PageSize = 1001},
                 }
             };
             

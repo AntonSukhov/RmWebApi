@@ -139,6 +139,29 @@ public static class GetAllAsyncTestCases
                             ExpectedType = typeof(IReadOnlyCollection<PerformerEntity>)
                         }
                     }
+                },
+                new() {
+                    ScenarioNumber = 3,
+                    Description = "Проверка успешного постраничного получения исполнителей договоров. PageSize равен 1000 (граничное значение).",
+                    InputData = new PageOptionsModel { PageNumber = 1, PageSize = 1000},
+                    OutputData =
+                    [
+                        CreatePerformerModel(_performerId1, _performerEntityId1, "Ivanov", "Ivan"),
+                        CreatePerformerModel(_performerId2, _performerEntityId2, "Petrov", "Petr")
+                    ],
+                    StubOutputs = new Dictionary<StubOutputKey, StubOutput>
+                    {
+                        [new StubOutputKey(RepositoryMethodNames.PerformerRepository.GetAllAsync,
+                            StubSequenceConstants.First)] = new StubOutput
+                        {
+                            OutputData = new []
+                            {
+                                CreatePerformerEntity(_performerId1, _performerEntityId1, "Ivanov", "Ivan"),
+                                CreatePerformerEntity(_performerId2, _performerEntityId2, "Petrov", "Petr")
+                            },
+                            ExpectedType = typeof(IReadOnlyCollection<PerformerEntity>)
+                        }
+                    }
                 }
             };
 
@@ -186,6 +209,11 @@ public static class GetAllAsyncTestCases
                     ScenarioNumber = 6,
                     Description = "Проверка неуспешного постраничного получения исполнителей договоров. PageNumber и PageSize равны -1.",
                     InputData = new PageOptionsModel { PageNumber = -1, PageSize = -1},
+                },
+                new() {
+                    ScenarioNumber = 7,
+                    Description = "Проверка неуспешного постраничного получения исполнителей договоров. PageSize больше 1000.",
+                    InputData = new PageOptionsModel { PageNumber = 1, PageSize = 1001},
                 }
             };
 

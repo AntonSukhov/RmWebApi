@@ -11,6 +11,12 @@ public class ValidationMessages
     public const string NotLessThanOne = "Значение поля '{PropertyName}' не должно быть меньше единицы.";
 
     /// <summary>
+    /// Сообщение для проверки, что значение находится в допустимом диапазоне.
+    /// </summary>
+    public const string ValueOutOfRange =
+        "Значение поля '{PropertyName}' должно быть в диапазоне от {From} до {To}.";
+
+    /// <summary>
     /// Сообщение для проверки на непустое значение.
     /// </summary>
     public const string NotEmpty = "Значение поля '{PropertyName}' не может быть пустым.";

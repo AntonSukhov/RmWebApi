@@ -22,8 +22,8 @@ public class PageOptionsValidator: AbstractValidator<PageOptionsModel>, IPageOpt
                                   .WithMessage(ValidationMessages.NotLessThanOne)
                                   .WithName(FieldNames.PageNumber);
 
-        RuleFor(p => p.PageSize).GreaterThan(0)
-                                .WithMessage(ValidationMessages.NotLessThanOne)
+        RuleFor(p => p.PageSize).InclusiveBetween(1, 1000)
+                                .WithMessage(ValidationMessages.ValueOutOfRange)
                                 .WithName(FieldNames.PageSize);
     }
 
