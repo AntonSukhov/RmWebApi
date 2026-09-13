@@ -27,7 +27,7 @@ public class GetAllAsyncTests : BaseTest<WorkUnitServiceFixture>
     [MemberData(nameof(GetAllAsyncTestCases.SuccessTestCases), 
                 MemberType = typeof(GetAllAsyncTestCases))]
     public async Task ReturnsDataWhenRepositoryHasEntries(
-        TestCaseResultWithStubs<IEnumerable<WorkUnitModel>> testCase)
+        TestCaseResultWithStubs<IReadOnlyCollection<WorkUnitModel>> testCase)
     {
         // Arrange:
         var stubOutput = testCase.StubOutputs[new StubOutputKey(

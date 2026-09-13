@@ -17,11 +17,11 @@ public static class GetAllAsyncTestCases
     /// <summary>
     /// Получает сценарии успешного выполнения метода <see cref="IWorkUnitService.GetAllAsync"/>.
     /// </summary>
-    public static TheoryData<TestCaseResultWithStubs<IEnumerable<WorkUnitModel>>> SuccessTestCases
+    public static TheoryData<TestCaseResultWithStubs<IReadOnlyCollection<WorkUnitModel>>> SuccessTestCases
     {
         get
         {
-            var theoryData = new TheoryData<TestCaseResultWithStubs<IEnumerable<WorkUnitModel>>>
+            var theoryData = new TheoryData<TestCaseResultWithStubs<IReadOnlyCollection<WorkUnitModel>>>
             {
                  new() {
                     ScenarioNumber = 1,

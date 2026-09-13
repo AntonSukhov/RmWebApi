@@ -4,7 +4,7 @@ using RM.BLL.Abstractions.Errors;
 
 namespace RM.BLL.Exceptions;
 
-// <summary>
+/// <summary>
 /// Агрегированное исключение валидации данных.
 /// </summary>
 /// <remarks>

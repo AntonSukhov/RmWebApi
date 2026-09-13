@@ -44,11 +44,11 @@ public static class ValidatorExtensions
     /// Формирует и выбрасывает исключение на основе списка ошибок.
     /// </summary>
     /// <param name="errors">Список ошибок</param>
-    private static void ThrowValidationException(List<ValidationFailure> errors)
+    private static void ThrowValidationException(IReadOnlyList<ValidationFailure> errors)
     {
         if (errors.Count == 1)
         {
-            var error = errors.First();
+            var error = errors[0];
             throw new ValidationException(error.PropertyName, error.ErrorMessage);
         }
 

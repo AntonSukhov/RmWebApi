@@ -1,6 +1,6 @@
 namespace RM.BLL.Tests.TestSupport.Constants;
 
-    // <summary>
+    /// <summary>
     /// Константы для указания порядкового номера вызова метода в stub‑настройках (Moq).
     /// </summary>
     public static class StubSequenceConstants
