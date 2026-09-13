@@ -51,14 +51,14 @@ public class WorkTypeApiController : ControllerBase
     /// <returns>Виды работ.</returns>
     [HttpGet("all")]
     [SwaggerOperation(OperationId = "GetWorkTypesAsync")]
-    public async Task<IEnumerable<WorkTypeResponse>> GetAllAsync(
+    public async Task<IReadOnlyList<WorkTypeResponse>> GetAllAsync(
         [FromQuery] PageOptionsRequest pageOptions)
     {
         var pageOptionsModel = _pageOptionsApiMappers.ToPageOptionsModel.Map(pageOptions);
 
         var workTypes = await _workTypeService.GetAllAsync(pageOptionsModel);
 
-        var result = workTypes?.Select(_workTypeApiMappers.ToWorkTypeResponse.Map)?? [];
+        var result = workTypes?.Select(_workTypeApiMappers.ToWorkTypeResponse.Map).ToList() ?? [];
 
         return result;
     }

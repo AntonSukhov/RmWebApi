@@ -45,11 +45,11 @@ public class WorkUnitApiController : ControllerBase
     /// <returns>Единицы работ.</returns>
     [HttpGet]
     [SwaggerOperation(OperationId = "GetWorkUnitsAsync")]
-    public async Task<IEnumerable<WorkUnitResponse>> GetAllAsync()
+    public async Task<IReadOnlyList<WorkUnitResponse>> GetAllAsync()
     {
         var workUnits = await _workUnitService.GetAllAsync();
 
-        var result = workUnits?.Select(_workUnitMapper.Map) ?? [];
+        var result = workUnits?.Select(_workUnitMapper.Map).ToList() ?? [];
 
         return result;
     }

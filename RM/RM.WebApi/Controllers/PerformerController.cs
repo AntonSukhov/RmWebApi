@@ -51,14 +51,14 @@ public class PerformerController : ControllerBase
     /// <returns>Испольнители договоров.</returns>
     [HttpGet("all")]
     [SwaggerOperation(OperationId = "GetPerformersAsync")]
-    public async Task<IEnumerable<PerformerResponse>> GetAllAsync(
+    public async Task<IReadOnlyList<PerformerResponse>> GetAllAsync(
         [FromQuery] PageOptionsRequest pageOptions)
     {
         var pageOptionsModel = _pageOptionsApiMappers.ToPageOptionsModel.Map(pageOptions);
 
         var performers = await _performerService.GetAllAsync(pageOptionsModel);
 
-        var result = performers?.Select(_performerApiMappers.ToPerformerResponse.Map)?? [];
+        var result = performers?.Select(_performerApiMappers.ToPerformerResponse.Map).ToList() ?? [];
 
         return result;
     }
