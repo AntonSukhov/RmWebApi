@@ -294,6 +294,7 @@ document-фильтр.
 - **Конфликты и исключения** — кастомные исключения (`ConflictException`, `DataNotFoundException`)
 - **Swagger Annotations** — используются атрибуты для документирования API
 - **Слоистая DI-регистрация** — все сервисы регистрируются в `ServiceCollectionExtensions`
+- **Типы возврата коллекций** — контроллеры возвращают `IReadOnlyList<T>` с материализацией LINQ (`ToList()`) внутри action; BLL-сервисы и DAL-репозитории возвращают `IReadOnlyCollection<T>` (без индексации); `IEnumerable<T>` для возврата данных не используется
 
 ---
 
