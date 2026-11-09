@@ -64,7 +64,7 @@ RM/
 ├── RM.Api/                         # Клиентская библиотека для потребления API
 │   ├── DTOs/                       # Request/Response DTO (подпапки Requests/Responses)
 │   ├── Enums/                      # Enum-модели клиента (GenderEnum)
-│   ├── GeneratedApiClients/        # Сгенерированный NSwag клиент (в .gitignore)
+│   ├── GeneratedApiClients/        # Сгенерированный NSwag клиент (commit-ится в репозиторий)
 │   ├── Mapping/Extensions/         # Мапперы DTO
 │   ├── Services/                   # API-сервисы (typed HttpClient)
 │   ├── Scripts/                    # generate-client.sh
@@ -241,10 +241,21 @@ cd RM/RM.Api/Scripts
 ./generate-client.sh
 ```
 
-Скрипт:
-1. Восстанавливает .NET tools
-2. Генерирует клиент из `OpenApiSpecs/RmWebApi.v1.json` через NSwag
-3. Результат записывается в `GeneratedApiClients/RmWebApiClient.cs`
+Скрипт (самодостаточен, не требует глобальной установки NSwag):
+1. Определяет установленную major-версию .NET и подбирает runtime NSwag (`Net80`/`Net90`/`Net100`)
+2. Восстанавливает .NET tools из локального манифеста `RM.Api/.config/dotnet-tools.json`
+3. Генерирует клиент из `OpenApiSpecs/RmWebApi.v1.json` через `dotnet tool run nswag`
+4. Результат записывается в `GeneratedApiClients/RmWebApiClient.cs`
+5. Возвращает `nswag.json` в исходное состояние
+
+Сгенерированный клиент **хранится в репозитории** (исключён из `.gitignore`),
+поэтому для сборки решения генерация не требуется — скрипт запускают только
+при изменении OpenAPI-спецификации.
+
+**Почему `runtime` не зафиксирован в `nswag.json`:** NSwag отказывается выполнять
+конфиг, чей `runtime` отличается от runtime процесса (например, `Net90` под
+тулчейном `net10.0`), а параметр `/runtime:` команда `nswag run` не принимает.
+Поэтому значение `runtime` временно добавляется скриптом и удаляется после генерации.
 
 ### Имена значений enum в сгенерированном клиенте (x-enumNames)
 

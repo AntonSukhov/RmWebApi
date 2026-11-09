@@ -158,18 +158,59 @@ builder.Services.AddRmApiServices(
 
 [](#api-client-generation)
 
-The generated API client (`RmWebApiClient`) is created using **NSwag** from the OpenAPI specification. To regenerate the client:
+The typed client `GeneratedApiClients/RmWebApiClient.cs` is **committed to the repository** and is part of the build — no code generation is required to compile or use the library. You only need to regenerate it when the OpenAPI specification changes (new/renamed endpoints, DTOs or enums).
+
+### When to regenerate
+
+1. Add or change a controller/DTO/enum in `RM.WebApi`.
+2. Start the API and save the updated spec:
+   `/swagger/v1/swagger.json` → `RM.Api/OpenApiSpecs/RmWebApi.v1.json`
+3. Run the generation script and commit the new `RmWebApiClient.cs`.
+
+### Running the script
 
 ```bash
 cd RM/RM.Api/Scripts
 ./generate-client.sh
 ```
 
-**What the script does:**
+The script is self-contained and performs these steps:
 
-1. 📦 Restores .NET tools
-2. 🏗 Generates the client from `OpenApiSpecs/RmWebApi.v1.json`
-3. 📄 Output to `GeneratedApiClients/RmWebApiClient.cs`
+1. 📌 Detects the installed .NET major version and selects the matching NSwag runtime (`Net80` / `Net90` / `Net100`).
+2. 📦 Restores .NET tools from the local manifest `.config/dotnet-tools.json` (pinned `NSwag.ConsoleCore`).
+3. 🏗 Generates the client from `OpenApiSpecs/RmWebApi.v1.json` via `dotnet tool run nswag run nswag.json`.
+4. 📄 Writes the output to `GeneratedApiClients/RmWebApiClient.cs`.
+5. 🧹 Restores `nswag.json` to its committed state.
+
+### Prerequisites
+
+- **.NET SDK 8, 9 or 10** — any one is enough; the script picks the runtime automatically.
+- **NuGet access** — `dotnet tool restore` downloads `NSwag.ConsoleCore` on first run.
+
+No global NSwag installation is needed: the tool is restored locally per the manifest, so the script behaves identically on developer machines and CI agents.
+
+### Version pinning
+
+The NSwag version is fixed in `RM/RM.Api/.config/dotnet-tools.json`:
+
+```json
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "nswag.consolecore": {
+      "version": "14.7.1",
+      "commands": ["nswag"]
+    }
+  }
+}
+```
+
+> ⚠️ **Why the runtime is not pinned in `nswag.json`:** NSwag refuses to run a config whose `runtime` differs from the process runtime (e.g. `Net90` config under a `net10.0` toolchain), and the `/runtime:` command-line override is not accepted by `nswag run`. The script therefore injects the correct `runtime` value temporarily and removes it afterwards, keeping `nswag.json` runtime-agnostic in version control.
+
+### Enum member names (`x-enumNames`)
+
+By default Swashbuckle 10 serializes enums as raw numbers, which makes NSwag emit members named `_0`, `_1`. The document filter `RM.WebApi/Filters/EnumNamesDocumentFilter.cs` adds `x-enumNames` to the spec, so the generated client keeps readable names (e.g. `GenderEnum.Male` / `GenderEnum.Female`). See the project `KODA.md` for the full explanation and its limitations.
 
 ---
 
@@ -284,15 +325,18 @@ The main types provided by this library are:
 
 ```
 RM.Api/
+├── .config/
+│   └── dotnet-tools.json   # Pinned NSwag.ConsoleCore version for the script
 ├── DTOs/
 │   ├── Requests/           # Request DTOs
 │   └── Responses/          # Response DTOs
-├── GeneratedApiClients/    # NSwag generated clients
+├── GeneratedApiClients/    # NSwag generated clients (committed to the repo)
 ├── Mapping/
 │   └── Extensions/         # Mapper extensions
 ├── Services/               # API service implementations
 ├── Scripts/                # Client generation scripts
-└── OpenApiSpecs/           # OpenAPI specifications
+├── OpenApiSpecs/           # OpenAPI specifications
+└── nswag.json              # NSwag generation settings
 ```
 
 ---

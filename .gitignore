@@ -396,5 +396,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Folder with classes of generated client APIs
-GeneratedApiClients/
+# Folder with classes of generated client APIs (tracked in repo)
+!GeneratedApiClients/

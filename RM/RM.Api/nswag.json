@@ -1,5 +1,4 @@
 {
-  "runtime": "Net90",
   "documentGenerator": {
     "fromDocument": {
       "json": "OpenApiSpecs/RmWebApi.v1.json"
