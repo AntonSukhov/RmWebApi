@@ -1,26 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <IsPackable>true</IsPackable>
+
     <PackageId>RM.Api</PackageId>
     <Version>1.0.0</Version>
-    <Authors>RM Team</Authors>
-    <Description>Typed HTTP client library for the RM Web API. Provides service classes, DTOs and mappers for working with work types, work units and contract performers.</Description>
+    <Authors>Sukhov A.A.</Authors>
+    <Description>An ASP.NET Core client library for the RM Web API — a service that manages work types, work units and contract performers. Provides typed service interfaces (IWorkTypeService, IWorkUnitService, IPerformerService) over a NSwag-generated HTTP client, request and response DTOs, and mappers that convert generated models into the library's own DTOs. Register the services with a single AddRmWebApi call and resolve them through IHttpClientFactory; the underlying client, its name and timeout are configured for you. The generated client and its models are internal, so the public surface stays limited to interfaces and DTOs and can be replaced without breaking consumers. Targets .NET 9 with a single external dependency on Microsoft.Extensions.Http.</Description>
+    <PackageTags>rm;webapi;rest;client;httpclient;nswag;openapi;dto;performer;work-type;work-unit</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/your-org/RM</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/your-org/RM.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/AntonSukhov/RmWebApi.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/AntonSukhov/RmWebApi</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>RM;WebApi;Client;NSwag</PackageTags>
+    <Copyright>© 2026 Sukhov A.A. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.14" />
   </ItemGroup>
+
 </Project>
