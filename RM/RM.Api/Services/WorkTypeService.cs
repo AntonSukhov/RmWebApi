@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using RM.Api.DTOs.Requests;
 using RM.Api.GeneratedApiClients;
 using RM.Api.Mapping.Extensions;
-using RM.Common.Constants;
+using RM.Api.Constants;
 using WorkTypeCreationRequest = RM.Api.DTOs.Requests.WorkTypeCreationRequest;
 using WorkTypeResponse = RM.Api.DTOs.Responses.WorkTypeResponse;
 using WorkTypeUpdationRequest = RM.Api.DTOs.Requests.WorkTypeUpdationRequest;
@@ -30,7 +30,7 @@ public class WorkTypeService : IWorkTypeService
         ArgumentNullException.ThrowIfNull(httpClientFactory);
 
         _rmWebApiClient = new RmWebApiClient(httpClientFactory.CreateClient(
-            ApiConstants.RmWebApiClientName));
+            ApiClientConstants.RmWebApiClientName));
     }
 
     /// <inheritdoc/>

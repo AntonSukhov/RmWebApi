@@ -20,6 +20,9 @@ public static class HttpConstants
     /// </summary>
     public static class Headers
     {
+        /// <summary>
+        /// Имя заголовка аутентификации.
+        /// </summary>
         public const string Authentication = "Authentication";
     }
 }

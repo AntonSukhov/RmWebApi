@@ -2,11 +2,25 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageId>RM.Api</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>RM Team</Authors>
+    <Description>Typed HTTP client library for the RM Web API. Provides service classes, DTOs and mappers for working with work types, work units and contract performers.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/your-org/RM</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/your-org/RM.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>RM;WebApi;Client;NSwag</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RM.Common\RM.Common.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
   </ItemGroup>
 </Project>

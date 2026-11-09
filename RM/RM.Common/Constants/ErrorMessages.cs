@@ -5,6 +5,9 @@ namespace RM.Common.Constants
     /// </summary>
     public static class ErrorMessages
     {
+        /// <summary>
+        /// Сообщение об ошибке валидации.
+        /// </summary>
         public const string Validation = "Обнаружены ошибки валидации.";
     }
 }

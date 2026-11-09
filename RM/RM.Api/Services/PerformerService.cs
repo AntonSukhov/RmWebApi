@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using RM.Api.DTOs.Requests;
 using RM.Api.GeneratedApiClients;
 using RM.Api.Mapping.Extensions;
-using RM.Common.Constants;
+using RM.Api.Constants;
 using PerformerResponse = RM.Api.DTOs.Responses.PerformerResponse;
 
 namespace RM.Api.Services
@@ -28,7 +28,7 @@ namespace RM.Api.Services
             ArgumentNullException.ThrowIfNull(httpClientFactory);
 
             _rmWebApiClient = new RmWebApiClient(httpClientFactory.CreateClient(
-                ApiConstants.RmWebApiClientName));
+                ApiClientConstants.RmWebApiClientName));
         }
         
         /// <inheritdoc/>

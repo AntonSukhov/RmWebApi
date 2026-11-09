@@ -154,6 +154,17 @@ builder.Services.AddRmApiServices(
 
 ---
 
+## 📥 Install via NuGet
+
+[](#install-via-nuget)
+
+```bash
+# Install the client library with all dependencies
+dotnet add package RM.Api
+```
+
+---
+
 ## 🔄 API Client Generation
 
 [](#api-client-generation)

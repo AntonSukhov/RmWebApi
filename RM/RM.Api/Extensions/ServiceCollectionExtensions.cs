@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using RM.Api.Services;
-using RM.Common.Constants;
+using RM.Api.Constants;
 
 namespace RM.Api.Extensions;
 
@@ -10,13 +10,19 @@ namespace RM.Api.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Регистрирует сервисы RM Web API в контейнере зависимостей.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="serviceLifetime">Время жизни регистрируемых сервисов.</param>
+    /// <returns>Коллекция сервисов для дальнейшей конфигурации.</returns>
     public static IServiceCollection AddRmWebApi (
         this IServiceCollection services,
         ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
     {
-        services.AddHttpClient(ApiConstants.RmWebApiClientName, client =>
+        services.AddHttpClient(ApiClientConstants.RmWebApiClientName, client =>
         {          
-            client.Timeout = TimeSpan.FromSeconds(ApiConstants.DefaultHttpClientTimeoutSeconds);
+            client.Timeout = TimeSpan.FromSeconds(ApiClientConstants.DefaultHttpClientTimeoutSeconds);
         });
 
         var serviceDescriptor = new ServiceDescriptor(

@@ -398,3 +398,6 @@ FodyWeavers.xsd
 
 # Folder with classes of generated client APIs (tracked in repo)
 !GeneratedApiClients/
+
+# Local development settings may contain connection strings and secrets
+appsettings.Development.json

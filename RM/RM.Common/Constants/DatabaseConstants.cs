@@ -25,7 +25,14 @@ public static class DatabaseConstants
     /// </summary>
     public static class DbmsTypes
     {
+        /// <summary>
+        /// Идентификатор MS SQL Server.
+        /// </summary>
         public const string MsSqlServer = "MSSQL";
+
+        /// <summary>
+        /// Идентификатор PostgreSQL.
+        /// </summary>
         public const string PostgreSql = "PostgreSQL";
     }
 }

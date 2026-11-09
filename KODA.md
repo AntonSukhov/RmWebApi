@@ -292,6 +292,32 @@ document-фильтр.
 - Не сработает для nested enum (вложенного в класс) и при кастомном
   `SchemaIdSelector`, переименовывающем схемы.
 
+### Публикация NuGet-пакетов
+
+Клиентская библиотека **RM.Api** упаковывается как единый NuGet-пакет, не имеющий зависимостей от внутренних проектов решения. Все константы, ранее вынесенные в `RM.Common`, инкапсулированы внутри `RM.Api`.
+
+| Пакет | ID | Зависимости в nuspec |
+|-------|----|----------------------|
+| RM.Api | `RM.Api` | `Microsoft.Extensions.Http` |
+
+Настройки упаковки (`PackageId`, `Version`, `Authors`, `PackageLicenseExpression`,
+`PackageReadmeFile`, `GenerateDocumentationFile`, `IncludeSymbols`) находятся
+в `RM.Api.csproj`.
+
+```bash
+cd RM
+dotnet pack RM.Api/RM.Api.csproj -c Release
+```
+
+Пакет и `.snupkg` (символы) создаются в `bin/Release/`.
+
+**Важно:** `RmWebApiClient` и DTO из `GeneratedApiClients/` объявлены как `internal`
+(настройка `typeAccessModifier` в `nswag.json`), поэтому они **не попадают в публичный
+API пакета** — внешние потребители используют только `IWorkTypeService`,
+`IWorkUnitService`, `IPerformerService` и DTO из `RM.Api.DTOs`.
+
+**При изменении контракта API** обновляйте `Version` в `RM.Api.csproj` перед упаковкой.
+
 ---
 
 ## Стиль кодирования и практики

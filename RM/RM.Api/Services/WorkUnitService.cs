@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using RM.Api.GeneratedApiClients;
 using RM.Api.Mapping.Extensions;
-using RM.Common.Constants;
+using RM.Api.Constants;
 using WorkUnitResponse = RM.Api.DTOs.Responses.WorkUnitResponse;
 
 namespace RM.Api.Services;
@@ -27,7 +27,7 @@ public class WorkUnitService : IWorkUnitService
         ArgumentNullException.ThrowIfNull(httpClientFactory);
 
         _rmWebApiClient = new RmWebApiClient(httpClientFactory.CreateClient(
-            ApiConstants.RmWebApiClientName));
+            ApiClientConstants.RmWebApiClientName));
     }
 
 
