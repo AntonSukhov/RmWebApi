@@ -14,7 +14,8 @@ namespace RM.Api.Mapping.Extensions
         public static PerformerResponse ToPerformerResponse (
             this GeneratedApiClients.PerformerResponse performerResponse)
         {
-            ArgumentNullException.ThrowIfNull(performerResponse, nameof(performerResponse));
+            if (performerResponse is null)
+                throw new ArgumentNullException(nameof(performerResponse));
 
             return new PerformerResponse
             {

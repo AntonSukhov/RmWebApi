@@ -18,7 +18,8 @@ internal static class WorkTypeMapper
     public static WorkTypeResponse ToWorkTypeResponse(
         this GeneratedApiClients.WorkTypeResponse workTypeResponse)
     {
-        ArgumentNullException.ThrowIfNull(workTypeResponse, nameof(workTypeResponse));
+        if (workTypeResponse is null)
+            throw new ArgumentNullException(nameof(workTypeResponse));
 
         return new WorkTypeResponse
         {
@@ -36,7 +37,8 @@ internal static class WorkTypeMapper
     public static GeneratedApiClients.WorkTypeCreationRequest ToWorkTypeCreationRequest(
         this WorkTypeCreationRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        if (request is null)
+            throw new ArgumentNullException(nameof(request));
 
         return new GeneratedApiClients.WorkTypeCreationRequest
         {
@@ -54,7 +56,8 @@ internal static class WorkTypeMapper
     public static GeneratedApiClients.WorkTypeUpdationRequest ToWorkTypeUpdationRequest(
         this WorkTypeUpdationRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        if (request is null)
+            throw new ArgumentNullException(nameof(request));
 
         return new GeneratedApiClients.WorkTypeUpdationRequest
         {

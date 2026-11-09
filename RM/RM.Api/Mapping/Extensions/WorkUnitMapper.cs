@@ -17,7 +17,8 @@ internal static class WorkUnitMapper
     public static WorkUnitResponse ToWorkUnitResponse(
         this GeneratedApiClients.WorkUnitResponse workUnitResponse)
     {
-        ArgumentNullException.ThrowIfNull(workUnitResponse, nameof(workUnitResponse));
+        if (workUnitResponse is null)
+            throw new ArgumentNullException(nameof(workUnitResponse));
 
         return new WorkUnitResponse
         {

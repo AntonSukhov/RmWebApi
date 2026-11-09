@@ -1,14 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 
     <PackageId>RM.Api</PackageId>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Sukhov A.A.</Authors>
-    <Description>An ASP.NET Core client library for the RM Web API — a service that manages work types, work units and contract performers. Provides typed service interfaces (IWorkTypeService, IWorkUnitService, IPerformerService) over a NSwag-generated HTTP client, request and response DTOs, and mappers that convert generated models into the library's own DTOs. Register the services with a single AddRmWebApi call and resolve them through IHttpClientFactory; the underlying client, its name and timeout are configured for you. The generated client and its models are internal, so the public surface stays limited to interfaces and DTOs and can be replaced without breaking consumers. Targets .NET 9 with a single external dependency on Microsoft.Extensions.Http.</Description>
-    <PackageTags>rm;webapi;rest;client;httpclient;nswag;openapi;dto;performer;work-type;work-unit</PackageTags>
+    <Description>An HTTP client library for the RM Web API — a service that manages work types, work units and contract performers. Provides typed service interfaces (IWorkTypeService, IWorkUnitService, IPerformerService) over a NSwag-generated HTTP client, request and response DTOs, and mappers that convert generated models into the library's own DTOs. Register the services with a single AddRmWebApi call and resolve them through IHttpClientFactory; the underlying client, its name and timeout are configured for you. The generated client and its models are internal, so the public surface stays limited to interfaces and DTOs and can be replaced without breaking consumers. Targets .NET Standard 2.0, so it is usable from .NET Framework 4.6.1+ (including 4.8), .NET Core 2.0+ and .NET 5+ applications.</Description>
+    <PackageTags>rm;webapi;rest;client;httpclient;nswag;openapi;dto;performer;work-type;work-unit;netstandard;netstandard2.0;net48;dotnetframework</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/AntonSukhov/RmWebApi.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/AntonSukhov/RmWebApi</PackageProjectUrl>
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.14" />
+    <PackageReference Include="System.Text.Json" Version="10.0.14" />
   </ItemGroup>
 
 </Project>

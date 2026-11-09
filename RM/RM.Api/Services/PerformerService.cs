@@ -25,7 +25,8 @@ namespace RM.Api.Services
         /// <param name="httpClientFactory">Фабрика для создания <see cref="HttpClient"/>.</param>
         public PerformerService(IHttpClientFactory httpClientFactory)
         {
-            ArgumentNullException.ThrowIfNull(httpClientFactory);
+            if (httpClientFactory is null)
+                throw new ArgumentNullException(nameof(httpClientFactory));
 
             _rmWebApiClient = new RmWebApiClient(httpClientFactory.CreateClient(
                 ApiClientConstants.RmWebApiClientName));

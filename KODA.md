@@ -61,11 +61,14 @@ RM/
 │   ├── Startup.cs                  # Конфигурация приложения (Startup-паттерн)
 │   ├── Program.cs                  # Точка входа (minimal hosting)
 │   └── appsettings*.json           # Конфигурация (Dev/Prod)
-├── RM.Api/                         # Клиентская библиотека для потребления API
+├── RM.Api/                         # Клиентская библиотека для потребления API (netstandard2.0)
+│   ├── Constants/                  # Внутренние константы клиента (имя HttpClient, таймаут)
 │   ├── DTOs/                       # Request/Response DTO (подпапки Requests/Responses)
 │   ├── Enums/                      # Enum-модели клиента (GenderEnum)
+│   ├── Extensions/                 # ServiceCollectionExtensions (AddRmWebApi)
 │   ├── GeneratedApiClients/        # Сгенерированный NSwag клиент (commit-ится в репозиторий)
 │   ├── Mapping/Extensions/         # Мапперы DTO
+│   ├── Polyfills/                  # Polyfill-атрибуты для netstandard2.0 (required members)
 │   ├── Services/                   # API-сервисы (typed HttpClient)
 │   ├── Scripts/                    # generate-client.sh
 │   ├── nswag.json                  # Конфигурация NSwag
@@ -108,6 +111,7 @@ RM/
 ### Фреймворк
 - **.NET 9** (net9.0)
 - **ASP.NET Core** (Web API + Razor Pages)
+- **RM.Api** — **netstandard2.0** (для потребления из .NET Framework 4.6.1+, включая 4.8)
 
 ### ORM / Данные
 - **Entity Framework Core 9.0.16**
@@ -294,11 +298,11 @@ document-фильтр.
 
 ### Публикация NuGet-пакетов
 
-Клиентская библиотека **RM.Api** упаковывается как единый NuGet-пакет, не имеющий зависимостей от внутренних проектов решения. Все константы, ранее вынесенные в `RM.Common`, инкапсулированы внутри `RM.Api`.
+Клиентская библиотека **RM.Api** (v2.0.0) упаковывается как единый NuGet-пакет, не имеющий зависимостей от внутренних проектов решения. Все константы, ранее вынесенные в `RM.Common`, инкапсулированы внутри `RM.Api`.
 
 | Пакет | ID | Зависимости в nuspec |
 |-------|----|----------------------|
-| RM.Api | `RM.Api` | `Microsoft.Extensions.Http` |
+| RM.Api | `RM.Api` | `Microsoft.Extensions.Http`, `System.Text.Json` |
 
 Настройки упаковки (`PackageId`, `Version`, `Authors`, `PackageLicenseExpression`,
 `PackageReadmeFile`, `GenerateDocumentationFile`, `IncludeSymbols`) находятся
@@ -311,10 +315,12 @@ dotnet pack RM.Api/RM.Api.csproj -c Release
 
 Пакет и `.snupkg` (символы) создаются в `bin/Release/`.
 
-**Важно:** `RmWebApiClient` и DTO из `GeneratedApiClients/` объявлены как `internal`
+**Важно:** `RmWebApiClient` и модели из `GeneratedApiClients/` объявлены как `internal`
 (настройка `typeAccessModifier` в `nswag.json`), поэтому они **не попадают в публичный
 API пакета** — внешние потребители используют только `IWorkTypeService`,
 `IWorkUnitService`, `IPerformerService` и DTO из `RM.Api.DTOs`.
+
+**System.Text.Json** добавлен как явная зависимость, потому что на .NET Standard 2.0 этот пакет не включён в платформу — он необходим сгенерированному клиенту для сериализации/десериализации JSON.
 
 **При изменении контракта API** обновляйте `Version` в `RM.Api.csproj` перед упаковкой.
 

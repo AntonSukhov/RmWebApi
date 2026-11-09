@@ -7,12 +7,15 @@
 ## 📋 Table of Contents
 
 - [About](#about)
-- [Quick Start](#how-to-use)
+- [Install](#install)
+- [How to Use](#how-to-use)
   - [Manual Setup](#example-for-regular-applications-manual-setup)
   - [ASP.NET Core (DI)](#example-for-web-applications-aspnet-core)
+- [Target Framework & Compatibility](#target-framework--compatibility)
 - [API Client Generation](#api-client-generation)
 - [Main Types](#main-types)
 - [Project Structure](#project-structure)
+- [Version History](#version-history)
 
 ---
 
@@ -20,7 +23,28 @@
 
 [](#about)
 
-The RM.Api package provides a comprehensive set of tools for interacting with the RM Web API. It offers a clean and modern API for handling work types, work units, and other modules through typed HTTP clients.
+The RM.Api package provides a comprehensive set of tools for interacting with the RM Web API. It offers a clean and modern API for handling work types, work units, and contract performers through typed HTTP clients.
+
+The package targets **.NET Standard 2.0**, so it is usable from **.NET Framework 4.6.1+** (including **4.8**), **.NET Core 2.0+** and **.NET 5+** applications.
+
+
+---
+
+## 🚀 Install
+
+[](#install)
+
+```bash
+dotnet add package RM.Api
+```
+
+For a **.NET Framework 4.8** project (packages.config or `PackageReference`):
+
+```powershell
+Install-Package RM.Api
+```
+
+The package brings `Microsoft.Extensions.Http` and `System.Text.Json` as its only dependencies.
 
 ---
 
@@ -43,6 +67,10 @@ The `WorkTypeService`, `WorkUnitService`, and `PerformerService` classes are use
 
 > ⚠️ **Important:** The services must be created via dependency injection or with a properly configured `IHttpClientFactory`.
 
+> 💡 **Named client:** all services resolve a named `HttpClient` registered under the name `"RmWebApi"`. This name is a fixed part of the contract — the internal constant holding it is not exposed publicly, so use the literal string when configuring the client yourself.
+
+> ⚠️ **Base address:** the library does **not** set `HttpClient.BaseAddress`. The generated client sends relative URIs (`api/work-type`, `api/performer/...`), so a base address must always be configured by the consumer — otherwise requests fail with `InvalidOperationException: ... BaseAddress must be set.`
+
 ---
 
 ### 🛠 Example for Regular Applications (Manual Setup)
@@ -50,30 +78,35 @@ The `WorkTypeService`, `WorkUnitService`, and `PerformerService` classes are use
 [](#example-for-regular-applications-manual-setup)
 
 ```csharp
-using RM.Api.Services;
-using RM.Api.Mapping.Extensions;
+using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
-using RM.Common.Constants;
+using RM.Api.DTOs.Requests;
+using RM.Api.Services;
 
-// Create service collection and HttpClientFactory
+// 1. Create service collection and register the named HttpClient used by the services.
 var services = new ServiceCollection();
 
-services.AddHttpClient(ApiConstants.RmWebApiClientName, client =>
+services.AddHttpClient("RmWebApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7121/");
+    client.BaseAddress = new Uri("https://localhost:7121/"); // required
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
+// 2. Register the services (AddRmWebApi covers WorkType and WorkUnit; Performer is registered explicitly).
+services.AddScoped<IWorkTypeService, WorkTypeService>();
+services.AddScoped<IWorkUnitService, WorkUnitService>();
+services.AddScoped<IPerformerService, PerformerService>();
+
 var serviceProvider = services.BuildServiceProvider();
-var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-// Create services instances
-var workTypeService = new WorkTypeService(httpClientFactory);
-var workUnitService = new WorkUnitService(httpClientFactory);
-var performerService = new PerformerService(httpClientFactory);
+// 3. Resolve services in a scope (they are Scoped).
+using var scope = serviceProvider.CreateScope();
+var workTypeService = scope.ServiceProvider.GetRequiredService<IWorkTypeService>();
+var workUnitService = scope.ServiceProvider.GetRequiredService<IWorkUnitService>();
+var performerService = scope.ServiceProvider.GetRequiredService<IPerformerService>();
 
-// Execute operations
+// 4. Execute operations
 try
 {
     // Get all work types
@@ -123,45 +156,63 @@ catch (Exception ex)
 }
 ```
 
+> 💡 On **.NET Framework** the same code works as shown; `IHttpClientFactory` is provided by the `Microsoft.Extensions.Http` dependency.
+
 ---
 
 ### 🔌 Example for Web Applications (ASP.NET Core)
 
-[](#using-the-servicecollectionextensions-class)
-
-For web applications, use the `ServiceCollectionExtensions` class to register the API services with the DI container.
-
 [](#example-for-web-applications-aspnet-core)
+
+`AddRmWebApi` registers the named `HttpClient`, `IWorkTypeService` and `IWorkUnitService`. The base address and `IPerformerService` must be configured explicitly:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-// Add RM API services with default Scoped lifetime
-builder.Services.AddRmApiServices();
+// Registers HttpClient "RmWebApi" + IWorkTypeService + IWorkUnitService (Scoped by default).
+builder.Services.AddRmWebApi();
 
-// Or specify different service lifetime:
+// Base address is not set by the library — configure the named client.
+builder.Services.AddHttpClient("RmWebApi")
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://localhost:7121/"));
 
+// Performer services are not registered by AddRmWebApi — add them explicitly.
+builder.Services.AddScoped<IPerformerService, PerformerService>();
+```
+
+Service lifetime can be changed:
+
+```csharp
 // Transient
-builder.Services.AddRmApiServices(
-    ServiceLifetime.Transient
-);
+builder.Services.AddRmWebApi(ServiceLifetime.Transient);
 
 // Singleton
-builder.Services.AddRmApiServices(
-    ServiceLifetime.Singleton
-);
+builder.Services.AddRmWebApi(ServiceLifetime.Singleton);
 ```
 
 ---
 
-## 📥 Install via NuGet
+## 🎯 Target Framework & Compatibility
 
-[](#install-via-nuget)
+[](#target-framework--compatibility)
 
-```bash
-# Install the client library with all dependencies
-dotnet add package RM.Api
-```
+The assembly is built for **.NET Standard 2.0** (`lib/netstandard2.0/RM.Api.dll`), which makes it consumable from a wide range of runtimes:
+
+| Consumer | Supported | Notes |
+|----------|-----------|-------|
+| .NET Framework 4.6.1+ (incl. 4.8) | ✅ | Primary target for legacy desktop clients |
+| .NET Core 2.0+ | ✅ | |
+| .NET 5 / 6 / 7 / 8 / 9 / 10 | ✅ | |
+| Xamarin / Unity (netstandard2.0) | ✅ | Depends on runtime profile |
+
+Dependency versions required by the package:
+
+| Dependency | Version |
+|------------|---------|
+| `Microsoft.Extensions.Http` | 10.0.14 |
+| `System.Text.Json` | 10.0.14 |
+
+> 💡 `System.Text.Json` is referenced explicitly because .NET Standard 2.0 does not include it in the platform — it is required by the generated client for serialization.
 
 ---
 
@@ -297,6 +348,8 @@ The main types provided by this library are:
 
 > 💡 **Note:** All methods accept an optional `CancellationToken?` parameter. For detailed signatures and XML documentation, see the corresponding interfaces (`IWorkTypeService`, `IWorkUnitService`, `IPerformerService`) in your IDE.
 
+> ⚠️ **DI registration:** `AddRmWebApi()` registers `IWorkTypeService` and `IWorkUnitService` only. `IPerformerService` has to be registered explicitly — see [ASP.NET Core example](#example-for-web-applications-aspnet-core).
+
 ### 📥 Requests
 
 | Type | Description |
@@ -313,20 +366,26 @@ The main types provided by this library are:
 | `RM.Api.DTOs.Responses.WorkUnitResponse` | Work unit response DTO |
 | `RM.Api.DTOs.Responses.PerformerResponse` | Performer response DTO |
 
-### 🗺 Mappers
+### 🎚 Enums
 
 | Type | Description |
 |------|-------------|
-| `RM.Api.Mapping.Extensions.WorkTypeMapper` | Mapper for work types |
-| `RM.Api.Mapping.Extensions.WorkUnitMapper` | Mapper for work units |
-| `RM.Api.Mapping.Extensions.PerformerMapper` | Mapper for performers |
+| `RM.Api.Enums.GenderEnum` | Gender of a contract performer (`Male`, `Female`) |
 
-### 🏗 Others
+### 🔒 Internal Types
 
-| Type | Description |
-|------|-------------|
-| `RM.Api.GeneratedApiClients.RmWebApiClient` | Generated typed HTTP client |
-| `RM.Common.Constants.ApiConstants` | API-related constants |
+The following types are part of the assembly but **not** of its public API — they are implementation details and must not be referenced from consumer code:
+
+| Type | Role |
+|------|------|
+| `RM.Api.GeneratedApiClients.RmWebApiClient` | NSwag-generated HTTP client wrapped by the services |
+| `RM.Api.GeneratedApiClients.*` | Generated request/response models |
+| `RM.Api.Mapping.Extensions.WorkTypeMapper`, `WorkUnitMapper`, `PerformerMapper` | Converters between generated models and DTOs |
+| `RM.Api.Constants.ApiClientConstants` | Named client `"RmWebApi"` and default timeout |
+
+> 💡 Because the generated models are internal, the public surface stays limited to service interfaces and DTOs, and the client can be regenerated or replaced without breaking consumers.
+
+---
 
 ---
 
@@ -338,17 +397,32 @@ The main types provided by this library are:
 RM.Api/
 ├── .config/
 │   └── dotnet-tools.json   # Pinned NSwag.ConsoleCore version for the script
+├── Constants/              # Internal client constants (named client, timeout)
 ├── DTOs/
 │   ├── Requests/           # Request DTOs
 │   └── Responses/          # Response DTOs
+├── Enums/                  # Public enums (GenderEnum)
+├── Extensions/             # IServiceCollection extensions (AddRmWebApi)
 ├── GeneratedApiClients/    # NSwag generated clients (committed to the repo)
 ├── Mapping/
-│   └── Extensions/         # Mapper extensions
+│   └── Extensions/         # Internal mappers between generated models and DTOs
+├── Polyfills/              # Compiler attribute polyfills for .NET Standard 2.0
 ├── Services/               # API service implementations
 ├── Scripts/                # Client generation scripts
 ├── OpenApiSpecs/           # OpenAPI specifications
 └── nswag.json              # NSwag generation settings
 ```
+
+---
+
+## 🕓 Version History
+
+[](#version-history)
+
+| Version | Target framework | Notes |
+|---------|------------------|-------|
+| **2.0.0** | `netstandard2.0` | Retargeted from `net9.0` to .NET Standard 2.0 — usable from **.NET Framework 4.6.1+** (incl. 4.8). Added explicit `System.Text.Json` dependency (required by the generated client on .NET Standard). Public API (service interfaces, DTOs, `AddRmWebApi`) is unchanged. |
+| 1.0.0 | `net9.0` | First packaged release. |
 
 ---
 
@@ -360,4 +434,4 @@ RM.Api is released as open source under the [MIT license](https://opensource.org
 
 ---
 
-*Generated for **RM Web API** • .NET 9*
+*Generated for **RM Web API** • .NET Standard 2.0*
