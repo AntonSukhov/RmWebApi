@@ -5,6 +5,7 @@ using RM.DAL.Abstractions.Repositories;
 using RM.DAL.DbContexts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RM.DAL.Repositories
@@ -33,8 +34,9 @@ namespace RM.DAL.Repositories
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<WorkUnitEntity>> GetAllAsync()
         {
-            return await _dbContext.WorkUnits.AsNoTracking()
-                                             .ToListAsync();
+            return await _dbContext.WorkUnits.OrderBy(wu => wu.Id)
+                                                .AsNoTracking()
+                                                .ToListAsync();
         }
 
         /// <inheritdoc/>
