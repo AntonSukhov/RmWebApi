@@ -114,12 +114,12 @@ RM/
 - **RM.Api** — **netstandard2.0** (для потребления из .NET Framework 4.6.1+, включая 4.8)
 
 ### ORM / Данные
-- **Entity Framework Core 9.0.16**
-- **Microsoft.EntityFrameworkCore.SqlServer 9.0.16** (MS SQL)
+- **Entity Framework Core 9.0.23**
+- **Microsoft.EntityFrameworkCore.SqlServer 9.0.23** (MS SQL)
 - **Npgsql.EntityFrameworkCore.PostgreSQL 9.0.4** (PostgreSQL)
 
 ### Маппинг
-- **AutoMapper 16.1.1**
+- **AutoMapper 17.0.0**
 - Собственные интерфейсы мапперов (`IMapper<TFrom, TTo>`)
 
 ### Валидация
@@ -130,17 +130,17 @@ RM/
 
 ### Тестирование
 - **xUnit 2.9.3**
-- **Moq 4.20.72**
-- **xunit.runner.visualstudio 3.1.5**
-- **coverlet.collector 10.0.1**
-- **Microsoft.NET.Test.Sdk 18.5.1**
+- **Moq 4.21.0**
+- **xunit.runner.visualstudio 4.0.1**
+- **coverlet.collector 10.1.1**
+- **Microsoft.NET.Test.Sdk 18.12.0**
 
 ### Клиент API
 - **NSwag** — генерация typed HTTP-клиента из OpenAPI spec
 
 ### Внутренние пакеты-обёртки (Infrastructure.*)
 - `Infrastructure.AspNetCore 1.0.1` — базовый Startup, Swagger
-- `Infrastructure.Mapping.AutoMapper 1.0.0` — маппер `IMapper<TFrom, TTo>`
+- `Infrastructure.Mapping.AutoMapper 2.0.0` — маппер `IMapper<TFrom, TTo>`
 - `Infrastructure.Disposable 1.0.1` — `DisposableBase`
 - `Infrastructure.EntityFramework 1.0.4` — `DbContextBase`
 - `Infrastructure.Shared 1.0.6` — общие утилиты
