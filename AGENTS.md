@@ -1,4 +1,4 @@
-# KODA.md — Контекст проекта RM
+# AGENTS.md — Контекст проекта RM
 
 ## Обзор проекта
 
@@ -100,8 +100,8 @@ RM/
 │   ├── Constants/                  # DatabaseConstants, ApiConstants, HttpConstants
 │   └── Helpers/                    # Утилиты (ConfigurationHelper)
 └── RM.BLL.Tests/                   # xUnit тесты (BLL)
-    ├── Services/                   # Тесты сервисов (подпапки WorkTypeService, WorkUnitService, PerformerService)
-    └── TestSupport/                # Моки и поддержка
+    ├── Services/                   # Тесты сервисов: <Сервис>/<Метод>/<Метод>Tests.cs + <Метод>TestCases.cs
+    └── TestSupport/                # Моки и поддержка (Constants: имена методов репозиториев, номера вызовов)
 ```
 
 ---
@@ -179,6 +179,144 @@ dotnet run --environment Development
 cd RM/RM.BLL.Tests
 dotnet test
 ```
+
+### Организация тестов (RM.BLL.Tests)
+
+Тесты BLL написаны на **xUnit 2.9.3** + **Moq 4.21.0**. Репозитории в тестах мокаются, AutoMapper-профили проверяются на реальную конфигурацию (конструктор фикстуры вызывает `config.AssertConfigurationIsValid()`).
+
+#### Структура
+Каждый сервис имеет фикстуру (`<Service>ServiceFixture.cs`) и компаратор (`<Service>ModelEqualityComparer.cs`):
+
+```
+RM.BLL.Tests/
+├── Services/
+│   ├── WorkUnitService/
+│   │   ├── GetAllAsync/
+│   │   │   ├── GetAllAsyncTests.cs             # Тесты для метода
+│   │   │   └── GetAllAsyncTestCases.cs         # TheoryData сценариев
+│   │   ├── GetByIdAsync/
+│   │   │   ├── GetByIdAsyncTests.cs
+│   │   │   └── GetByIdAsyncTestCases.cs
+│   │   ├── WorkUnitServiceFixture.cs           # Моки репозитория + сервис + маппер
+│   │   └── WorkUnitModelEqualityComparer.cs    # IEqualityComparer для сравнения результатов
+│   ├── WorkTypeService/
+│   │   ├── GetAllAsync/
+│   │   ├── GetByIdAsync/
+│   │   ├── CreateAsync/
+│   │   ├── UpdateAsync/
+│   │   ├── DeleteAsync/
+│   │   ├── WorkTypeServiceFixture.cs
+│   │   └── WorkTypeModelEqualityComparer.cs
+│   └── PerformerService/
+│       ├── GetAllAsync/
+│       ├── GetByIdAsync/
+│       ├── DeleteAsync/
+│       ├── PerformerServiceFixture.cs
+│       └── PerformerModelEqualityComparer.cs
+├── TestSupport/
+│   └── Constants/
+│       ├── RepositoryMethodNames.cs            # Константы имён методов репозиториев
+│       └── StubSequenceConstants.cs            # First / Second / Third для stub‑порядка
+└── Usings.cs                                   # global using Xunit
+```
+
+#### Фикстура
+Каждая фикстура создаёт `Mapper`, регистрирует AutoMapper-профили BLL, вызывает `AssertConfigurationIsValid()`, создаёт маппер `IMapper<TFrom, TTo>` (обёртка над AutoMapper) и мок репозитория:
+
+```csharp
+public class WorkUnitServiceFixture
+{
+    public Mock<IWorkUnitRepository> WorkUnitRepositoryMock { get; }
+    public IWorkUnitService WorkUnitService { get; }
+    public IEqualityComparer<WorkUnitModel?> WorkUnitModelEqualityComparer { get; }
+
+    public WorkUnitServiceFixture()
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<WorkUnitMappingProfile>();
+        },
+        NullLoggerFactory.Instance);
+
+        config.AssertConfigurationIsValid();
+        var mapper = config.CreateMapper();
+        var workUnitMapper = new Mapper<WorkUnitEntity, WorkUnitModel>(mapper);
+
+        WorkUnitRepositoryMock = new Mock<IWorkUnitRepository>();
+        WorkUnitModelEqualityComparer = new WorkUnitModelEqualityComparer();
+        WorkUnitService = new BLL.Services.WorkUnitService(WorkUnitRepositoryMock.Object, workUnitMapper);
+    }
+}
+```
+
+#### Тестовые сценарии
+Сценарии определяются в статических `TheoryData`-пропертих `*TestCases.cs`:
+
+- **Одиночный результат** (`TestCaseWithStubs<TInput, TOutput>`): `InputData`, `OutputData`, `StubOutputs` (словарь заглушек), `ScenarioNumber`, `Description`.
+- **Коллекция** (`TestCaseResultWithStubs<TOutput>`): `OutputData` — коллекция, `StubOutputs` — заглушки.
+- **Исключения** (`TheoryData<Exception>`): просто список исключений для проверки ретроя.
+
+#### Заглушки (StubOutputs)
+Заглушки связываются с ожидаемым вызовом через `StubOutputKey` + `StubSequenceConstants`:
+
+```csharp
+[StubOutputKey(RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, StubSequenceConstants.First)]
+= new StubOutput
+{
+    OutputData = new WorkUnitEntity { Id = 1, Name = "Test" },
+    ExpectedType = typeof(WorkUnitEntity)
+}
+```
+
+Константы имён методов (`RepositoryMethodNames`) используются вместо магических строк:
+```csharp
+RepositoryMethodNames.WorkUnitRepository.GetByIdAsync  // "IWorkUnitRepository.GetByIdAsync"
+```
+
+Нумерация вызовов (`StubSequenceConstants.First / Second / Third`) нужна, когда в одном сценарии метод репозитория вызывается несколько раз.
+
+#### Типовой тест
+```csharp
+public class GetByIdAsyncTests : BaseTest<WorkUnitServiceFixture>
+{
+    public GetByIdAsyncTests(WorkUnitServiceFixture fixture) : base(fixture) {}
+
+    [Theory]
+    [MemberData(nameof(GetByIdAsyncTestCases.SuccessTestCases), MemberType = typeof(GetByIdAsyncTestCases))]
+    public async Task SucceedsForValidInput(TestCaseWithStubs<short, WorkUnitModel?> testCase)
+    {
+        // 1. Извлечь заглушку и подменить результат репозитория
+        var stubOutput = testCase.StubOutputs[new StubOutputKey(
+            RepositoryMethodNames.WorkUnitRepository.GetByIdAsync, StubSequenceConstants.First)];
+        var stubData = stubOutput.GetOutputData<WorkUnitEntity>();
+        _fixture.WorkUnitRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<short>()))
+                                       .ReturnsAsync(stubData);
+
+        // 2. Вызвать метод сервиса
+        var result = await _fixture.WorkUnitService.GetByIdAsync(testCase.InputData);
+
+        // 3. Сравнить результат
+        Assert.Equal(result, testCase.OutputData, _fixture.WorkUnitModelEqualityComparer);
+    }
+}
+```
+
+#### Проверка проброса исключений
+```csharp
+[Theory]
+[MemberData(nameof(GetAllAsyncTestCases.ErrorTestCases), MemberType = typeof(GetAllAsyncTestCases))]
+public async Task RethrowsRepositoryException(Exception expectedException)
+{
+    _fixture.WorkUnitRepositoryMock.Setup(p => p.GetAllAsync()).Throws(expectedException);
+
+    var thrown = await Assert.ThrowsAnyAsync<Exception>(_fixture.WorkUnitService.GetAllAsync);
+    Assert.Same(expectedException, thrown);
+    Assert.Equal(expectedException.Message, thrown.Message);
+}
+```
+
+#### Коллекции
+Для сравнения коллекций используется `AssertHelper.CollectionEqual(result, expected, comparer)`.
 
 ### Публикация
 ```bash
@@ -298,7 +436,7 @@ document-фильтр.
 
 ### Публикация NuGet-пакетов
 
-Клиентская библиотека **RM.Api** (v2.0.0) упаковывается как единый NuGet-пакет, не имеющий зависимостей от внутренних проектов решения. Все константы, ранее вынесенные в `RM.Common`, инкапсулированы внутри `RM.Api`.
+Клиентская библиотека **RM.Api** (v2.1.0) упаковывается как единый NuGet-пакет, не имеющий зависимостей от внутренних проектов решения. Все константы, ранее вынесенные в `RM.Common`, инкапсулированы внутри `RM.Api`.
 
 | Пакет | ID | Зависимости в nuspec |
 |-------|----|----------------------|
@@ -350,7 +488,10 @@ API пакета** — внешние потребители использую�
 - `WorkUnit` (Navigation) — навигация на единицу работы
 
 ### WorkUnit (Единица работы)
+- `Id` (short) — идентификатор
+- `Name` (string) — название единицы работы (макс. 50 символов)
 - Используется для привязки единиц измерения к видам работ
+- Поддерживается получение по ИД: `GET /api/work-unit/{workUnitId:short}` (`GetByIdAsync` во всех слоях: контроллер → BLL → репозиторий), с версии `RM.Api` 2.1.0 — и в клиентской библиотеке
 
 ### Performer (Исполнитель договора)
 - `Id` (Guid) — идентификатор
@@ -384,6 +525,7 @@ API пакета** — внешние потребители использую�
 
 #### WorkUnit (`api/work-unit`)
 - `GET /api/work-unit` — получить список
+- `GET /api/work-unit/{workUnitId:short}` — получить по ID (с версии 2.1.0)
 
 #### Performer (`api/performer`)
 - `GET /api/performer/all` — получить список (с пагинацией)

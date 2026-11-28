@@ -12,8 +12,9 @@ ASP.NET Core Web API application (.NET 9) for managing **work types** (WorkType)
 4. [UML Class Diagram of the Performer Domain](#uml-class-diagram-of-the-performer-domain)
 5. [Database Model (ER Diagram)](#database-model-er-diagram)
 6. [Database Selection](#database-selection)
-7. [Build and Run](#build-and-run)
-8. [Testing](#testing)
+7. [REST API Endpoints](#rest-api-endpoints)
+8. [Build and Run](#build-and-run)
+9. [Testing](#testing)
 
 ---
 
@@ -295,6 +296,41 @@ flowchart LR
 ```
 
 The `DataStorageType` value (`"MSSQL"` / `"PostgreSQL"`) and connection strings are set in `appsettings*.json` / User Secrets.
+
+---
+
+## REST API Endpoints
+
+All endpoints are implemented end-to-end through the layers (`Controller` → `BLL service` → `Repository`).
+
+### WorkType — `api/work-type`
+
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/api/work-type/all` | Get all work types (paginated) |
+| `GET` | `/api/work-type/{workTypeId:guid}` | Get a work type by ID |
+| `POST` | `/api/work-type` | Create a work type |
+| `PUT` | `/api/work-type` | Update a work type |
+| `DELETE` | `/api/work-type/{workTypeId:guid}` | Delete a work type |
+
+### WorkUnit — `api/work-unit`
+
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/api/work-unit` | Get all work units |
+| `GET` | `/api/work-unit/{workUnitId:short}` | Get a work unit by ID |
+
+> 💡 `workUnitId` is `short` (the `WorkUnits.Id` column is `smallint`). When no work unit with the given ID exists, the endpoint returns `200` with a `null` body (the same behavior as `GET /api/work-type/{workTypeId}`).
+
+### Performer — `api/performer`
+
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/api/performer/all` | Get all contract performers (paginated) |
+| `GET` | `/api/performer/{performerId:guid}` | Get a contract performer by ID |
+| `DELETE` | `/api/performer/{performerId:guid}` | Delete a contract performer |
+
+> ⚠️ Performer creation and update (`POST`/`PUT`) are not implemented yet.
 
 ---
 

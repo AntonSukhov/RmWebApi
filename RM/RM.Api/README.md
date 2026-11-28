@@ -119,6 +119,15 @@ try
     // Get all work units
     var workUnits = await workUnitService.GetAllAsync();
 
+    // Get a single work unit by ID
+    var workUnitId = (short)1;
+    var workUnit = await workUnitService.GetByIdAsync(workUnitId);
+
+    if (workUnit != null)
+    {
+        Console.WriteLine($"Work unit: {workUnit.Id} — {workUnit.Name}");
+    }
+
     // Get all performers with pagination
     var performers = await performerService.GetAllAsync(new PageOptionsRequest
     {
@@ -209,8 +218,8 @@ Dependency versions required by the package:
 
 | Dependency | Version |
 |------------|---------|
-| `Microsoft.Extensions.Http` | 10.0.14 |
-| `System.Text.Json` | 10.0.14 |
+| `Microsoft.Extensions.Http` | 9.0.23 |
+| `System.Text.Json` | 9.0.23 |
 
 > 💡 `System.Text.Json` is referenced explicitly because .NET Standard 2.0 does not include it in the platform — it is required by the generated client for serialization.
 
@@ -272,7 +281,7 @@ The NSwag version is fixed in `RM/RM.Api/.config/dotnet-tools.json`:
 
 ### Enum member names (`x-enumNames`)
 
-By default Swashbuckle 10 serializes enums as raw numbers, which makes NSwag emit members named `_0`, `_1`. The document filter `RM.WebApi/Filters/EnumNamesDocumentFilter.cs` adds `x-enumNames` to the spec, so the generated client keeps readable names (e.g. `GenderEnum.Male` / `GenderEnum.Female`). See the project `KODA.md` for the full explanation and its limitations.
+By default Swashbuckle 10 serializes enums as raw numbers, which makes NSwag emit members named `_0`, `_1`. The document filter `RM.WebApi/Filters/EnumNamesDocumentFilter.cs` adds `x-enumNames` to the spec, so the generated client keeps readable names (e.g. `GenderEnum.Male` / `GenderEnum.Female`). See the project `AGENTS.md` for the full explanation and its limitations.
 
 ---
 
@@ -326,9 +335,13 @@ The main types provided by this library are:
       <td>Updates a work type</td>
     </tr>
     <tr>
-      <td><code>WorkUnitService</code></td>
+      <td rowspan="2"><code>WorkUnitService</code></td>
       <td><code>GetAllAsync</code></td>
       <td>Gets all work units</td>
+    </tr>
+    <tr>
+      <td><code>GetByIdAsync</code></td>
+      <td>Gets a work unit by ID</td>
     </tr>
     <tr>
       <td rowspan="3"><code>PerformerService</code></td>
@@ -421,6 +434,8 @@ RM.Api/
 
 | Version | Target framework | Notes |
 |---------|------------------|-------|
+| **2.1.0** | `netstandard2.0` | Added `IWorkUnitService.GetByIdAsync(short, CancellationToken?)` — get a work unit by ID (`GET /api/work-unit/{workUnitId}`). |
+| **2.0.1** | `netstandard2.0` | Packaging fixes; public API unchanged. |
 | **2.0.0** | `netstandard2.0` | Retargeted from `net9.0` to .NET Standard 2.0 — usable from **.NET Framework 4.6.1+** (incl. 4.8). Added explicit `System.Text.Json` dependency (required by the generated client on .NET Standard). Public API (service interfaces, DTOs, `AddRmWebApi`) is unchanged. |
 | 1.0.0 | `net9.0` | First packaged release. |
 

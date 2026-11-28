@@ -44,4 +44,15 @@ public class WorkUnitService : IWorkUnitService
 
         return results;
     }
+
+    /// <inheritdoc/>
+    public async Task<WorkUnitResponse?> GetByIdAsync(
+        short workUnitId,
+        CancellationToken? cancellationToken = null)
+    {
+        var cancellationTokenLocal = cancellationToken ?? CancellationToken.None;
+        var workUnit = await _rmWebApiClient.GetWorkUnitAsync(workUnitId, cancellationTokenLocal);
+
+        return workUnit?.ToWorkUnitResponse();
+    }
 }

@@ -380,6 +380,49 @@
           }
         }
       }
+    },
+    "/api/work-unit/{workUnitId}": {
+      "get": {
+        "tags": [
+          "WorkUnits"
+        ],
+        "summary": "Предоставляет единицу работ по её ИД.",
+        "operationId": "GetWorkUnitAsync",
+        "parameters": [
+          {
+            "name": "workUnitId",
+            "in": "path",
+            "description": "ИД единицы работ.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkUnitResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkUnitResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkUnitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

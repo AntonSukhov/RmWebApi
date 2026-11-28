@@ -15,4 +15,11 @@ public interface IWorkUnitService: IDisposable, IAsyncDisposable
     /// </summary>
     /// <returns>Единицы работ.</returns>
     Task<IReadOnlyCollection<WorkUnitModel>> GetAllAsync();
+
+    /// <summary>
+    /// Предоставляет единицу работ по ИД.
+    /// </summary>
+    /// <param name="workUnitId">ИД единицы работ.</param>
+    /// <returns>Единица работ или <see langword="null"/>, если не найдена.</returns>
+    Task<WorkUnitModel?> GetByIdAsync(short workUnitId);
 }

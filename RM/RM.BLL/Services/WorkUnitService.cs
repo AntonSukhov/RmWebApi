@@ -46,6 +46,16 @@ public class WorkUnitService : DisposableBase, IWorkUnitService
     }
 
     /// <inheritdoc/>
+    public async Task<WorkUnitModel?> GetByIdAsync(short workUnitId)
+    {
+        var workUnitEntity = await _workUnitRepository.GetByIdAsync(workUnitId);
+
+        var result = workUnitEntity is not null ? _workUnitMapper.Map(workUnitEntity) : null;
+
+        return result;
+    }
+
+    /// <inheritdoc/>
     protected override void DisposeManagedResources()
     {
         _workUnitRepository?.Dispose();

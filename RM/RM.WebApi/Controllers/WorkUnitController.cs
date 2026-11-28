@@ -53,4 +53,20 @@ public class WorkUnitApiController : ControllerBase
 
         return result;
     }
+
+    /// <summary>
+    /// Предоставляет единицу работ по её ИД.
+    /// </summary>
+    /// <param name="workUnitId">ИД единицы работ.</param>
+    /// <returns>Единица работ.</returns>
+    [HttpGet("{workUnitId:short}")]
+    [SwaggerOperation(OperationId = "GetWorkUnitAsync")]
+    public async Task<WorkUnitResponse?> GetByIdAsync(short workUnitId)
+    {
+        var workUnit = await _workUnitService.GetByIdAsync(workUnitId);
+
+        var result = workUnit is not null ? _workUnitMapper.Map(workUnit) : null;
+
+        return result;
+    }
 }
