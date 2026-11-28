@@ -318,9 +318,9 @@ All endpoints are implemented end-to-end through the layers (`Controller` → `B
 | Method | Route | Description |
 |---|---|---|
 | `GET` | `/api/work-unit` | Get all work units |
-| `GET` | `/api/work-unit/{workUnitId:short}` | Get a work unit by ID |
+| `GET` | `/api/work-unit/{workUnitId:int}` | Get a work unit by ID |
 
-> 💡 `workUnitId` is `short` (the `WorkUnits.Id` column is `smallint`). When no work unit with the given ID exists, the endpoint returns `200` with a `null` body (the same behavior as `GET /api/work-type/{workTypeId}`).
+> 💡 `workUnitId` is `int` (the `WorkUnits.Id` column is `smallint`/`short`). The parameter is `int` in the route because ASP.NET Core doesn't have a built-in `:short` constraint — model binding converts `int` → `short` automatically. Non-numeric IDs return 404, values outside the `short` range return 400, and a non-existent ID returns **204 No Content** (the action returns `null`).
 
 ### Performer — `api/performer`
 

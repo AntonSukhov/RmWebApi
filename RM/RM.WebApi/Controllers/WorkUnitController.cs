@@ -59,7 +59,7 @@ public class WorkUnitApiController : ControllerBase
     /// </summary>
     /// <param name="workUnitId">ИД единицы работ.</param>
     /// <returns>Единица работ.</returns>
-    [HttpGet("{workUnitId:short}")]
+    [HttpGet("{workUnitId:int}")]
     [SwaggerOperation(OperationId = "GetWorkUnitAsync")]
     public async Task<WorkUnitResponse?> GetByIdAsync(short workUnitId)
     {
